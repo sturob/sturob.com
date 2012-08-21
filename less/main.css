@@ -102,7 +102,8 @@ section {
 nav ul {
   list-style: none;
 }
-blockquote, q {
+blockquote,
+q {
   quotes: none;
 }
 blockquote:before,
@@ -135,7 +136,8 @@ mark {
 del {
   text-decoration: line-through;
 }
-abbr[title], dfn[title] {
+abbr[title],
+dfn[title] {
   border-bottom: 1px dotted;
   cursor: help;
 }
@@ -152,7 +154,8 @@ hr {
   margin: 1em 0;
   padding: 0;
 }
-input, select {
+input,
+select {
   vertical-align: middle;
 }
 /* clearfix */
@@ -198,8 +201,6 @@ header {
 }
 section {
   display: block;
-  /*  background: #bbb;*/
-
   width: 960px;
   margin: 0 auto;
 }
@@ -226,7 +227,7 @@ section#about b {
   color: #333;
 }
 section#about img#stu {
-  height: 146px;
+  height: 147px;
   position: relative;
   left: -1px;
   -moz-border-radius: 8px 0 0 8px;
@@ -291,26 +292,18 @@ section#projects {
   border-top: 1px solid #333;
   border-bottom: 1px solid #333;
   overflow: hidden;
+  position: relative;
 }
 section#projects a {
   display: block;
-  /*    outline: 1px solid red;*/
-
 }
 section#projects h1 {
-  /*   padding: 16px 4px 4px 16px;*/
-
-  margin: 0 auto 12px auto;
-  position: relative;
-  /*   top: -48px;*/
-
-  padding-bottom: 8px;
-  width: 720px;
-  visibility: hidden;
-  background: #141414;
+  text-transform: uppercase;
+  top: 0;
+  left: 0;
   font-size: 18px;
   font-weight: normal;
-  color: #aaa;
+  color: #000;
 }
 section#projects section#work_links {
   width: 720px;
@@ -343,9 +336,9 @@ section#projects section#work_links > div span.with {
 section#projects section#work_links > div small {
   display: none;
   font-size: 8px;
-/*  -moz-border-radius: 24px;
+  -moz-border-radius: 24px;
   -webkit-border-radius: 24px;
-  border-radius: 24px; */
+  border-radius: 24px;
   position: absolute;
   right: 18px;
   top: -18px;
@@ -357,9 +350,6 @@ section#projects section#work_links > div small {
 
 }
 section#projects section#work_links > div img {
-  /* -moz-border-radius: 16px;
-  -webkit-border-radius: 16px;
-  border-radius: 16px; */
   width: 150px;
   height: 150px;
 }
