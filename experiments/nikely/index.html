@@ -1,0 +1,257 @@
+<html>
+
+<head>
+  <title>foo</title>
+
+  <style>
+    body {
+      background: #eee;
+      width: 600px;
+    }
+  </style>
+  
+  <script type='text/javascript'>
+    var io;
+  </script>
+  
+  <script type="text/javascript" src="paper.js"></script> 
+  <script type="text/javascript" src="DAT.GUI.min.js"></script> 
+  <!-- // <script type="text/javascript" src="http://localhost:8339/socket.io/socket.io.js"></script> -->
+
+</head>
+
+
+
+<body>
+  <img src="Nike.gif" style="position: absolute; top: 0; left: 0; opacity: 0.2">
+  <canvas id="canvas" keepalive="true" width='600' height='600' style='opacity: 0.8; outline: 1px solid black;'></canvas>
+  
+  <a id="foo">Get png</a>
+  <div id="meh"></div>
+  
+  <script type='text/javascript'>
+  
+    function append_png() {
+      var canvas = document.getElementById("canvas");
+      var context = canvas.getContext("2d");
+      var img     = canvas.toDataURL("image/png");
+
+      meh.innerHTML = '<img src="'+img+'"/>';
+    }
+  
+  
+    foo.onclick = append_png;
+  </script>
+
+  <script type="text/paperscript" canvas="canvas">
+  
+   /*
+   name: [ low high ] (invert?)
+   
+   [  
+       "#bundle",
+       2.3283064365386963e-10, 
+       ["/found",1],
+       ["/pose/position",331.7135009765625,299.0252380371094],
+       ["/pose/scale",4.546679973602295],    
+       ["/pose/orientation",0.19768942892551422,-0.03517482057213783,0.08837470412254333],
+       ["/gesture/mouth/width",11.840742111206055],
+       ["/gesture/mouth/height",1.2258708477020264],
+       ["/gesture/eyebrow/left",7.12239933013916],
+       ["/gesture/eyebrow/right",7.127347469329834],
+       ["/gesture/eye/left",3.0163376331329346],
+       ["/gesture/eye/right",2.8791418075561523],
+       ["/gesture/jaw",24.572105407714844],
+       ["/gesture/nostrils",5.659660339355469]
+    ]
+   
+  */
+  
+      // if (io) {
+      //   var socket = io.connect('http://localhost:8339');
+      //   socket.on('face', function (data) {
+      //     console.log(data);
+      //     if (data[4]) {
+      //       // console.log(data[4]);
+      //       options.scale = data[4][1] / 4;
+      //       options.AB_X = 266 - data[8][1] * 9;
+      //       options.AB_X = 120 - data[9][1] * 9;
+      //       options.symbolPositionX = 160 - 4 * data[7][1];
+      //       changed = true;
+      //     }
+      //     // socket.emit('my other event', { my: 'data' });
+      //   });
+      // }
+  
+
+      // [ default, min, max ]
+  
+  // point_hitch_x point_hitch_y
+  // c
+  
+  
+      var options = {
+        speed: 0,
+        symbolPositionX: 132, symbolPositionY: 0,
+        A_X: 317, A_Y: 142,
+
+        B_X: 62, B_Y: 146,
+        BA_X: 56, BA_Y: 196,
+
+
+        BA2_X: 100,  BA2_Y: 205,
+
+
+        AB2_X: 88,  AB2_Y: 244,
+        
+        AB_X: -4, AB_Y:271.2,
+
+        
+        AB3_X: 10,  AB3_Y: 197.6,
+        
+        
+        centerX: 300,
+        centerY: 300,
+        rotate: 1, scale: 1, 
+        color: '#000',
+        outline: true,
+        visible: true
+      };
+      
+      var propellers = 1;
+      var symbols = [];
+      var symbol = {};
+      var gui = new DAT.GUI();
+
+      var change = function () { change.d = true; };
+      change();
+
+      // gui.add( options, 'rotate' ).min(0).max(90).onChange(change);
+      // gui.add( options, 'scale' ).min(0).max(3).onChange(change);
+
+      // gui.add( options, 'symbolPositionX' ).min(0).max(200).onChange(change);
+      // gui.add( options, 'symbolPositionY' ).min(0).max(200).onChange(change);  
+
+      gui.add( options, 'A_X' ).min(0).max(400).onChange(change);
+      gui.add( options, 'A_Y' ).min(0).max(400).onChange(change);
+
+      gui.add( options, 'B_X' ).min( 0).max(400).onChange(change);
+      gui.add( options, 'B_Y' ).min( 0).max(400).onChange(change);
+
+      gui.add( options, 'BA_X' ).min( 0).max(400).onChange(change);
+      gui.add( options, 'BA_Y' ).min( 0).max(400).onChange(change);
+
+      gui.add( options, 'BA2_X' ).min(0).max(400).onChange(change);
+      gui.add( options, 'BA2_Y' ).min(0).max(380).onChange(change);
+
+      gui.add( options, 'AB2_X' ).min(0).max(400).onChange(change);
+      gui.add( options, 'AB2_Y' ).min(0).max(380).onChange(change);
+
+      gui.add( options, 'color' ).onChange(change);
+
+
+      gui.add( options, 'AB_X' ).min(-400).max(400).onChange(change);
+      gui.add( options, 'AB_Y' ).min(-100).max(380).onChange(change);
+
+
+      gui.add( options, 'AB3_X' ).min(-100).max(400).onChange(change);
+      gui.add( options, 'AB3_Y' ).min(0).max(380).onChange(change);
+
+
+
+           
+
+
+
+      gui.add( options, 'outline' ).onChange(change);
+
+      gui.add( options, 'visible' ).onChange(change);
+
+
+      // gui.add(options, 'centerX').min(0).max(300).onChange(change);
+      // gui.add(options, 'centerY').min(0).max(300).onChange(change);
+
+  
+
+      var centerPoint = new Point(options.centerX, options.centerY);
+
+     //  var centerCircle = new Path.Circle(centerPoint, 80);
+     // centerCircle.fillColor = '#000';
+
+      // var size = new Size(75, 10);
+      var point = new Point(centerPoint);
+      
+      window.path = path;
+
+      var path = new Path();
+      path.strokeWidth = '1';
+      path.selected = true;
+
+      path.add(options.A_X, options.A_Y);
+      path.lineTo(options.B_X, options.B_Y);
+      path.lineTo(options.C_X, options.C_Y);
+
+
+      for (var x = 0; x < propellers; x++) {
+        symbol = path.clone();
+        symbols.push(symbol);
+      }
+      
+
+
+      function onFrame(event) {
+        if (! change.d) return;
+        
+        path.removeSegments();
+        
+        // path.strokeColor = '#f00';
+        path.add(options.A_X, options.A_Y);
+        
+        var A = new Point(options.A_X, options.A_Y);
+
+        var B = new Point(options.B_X, options.B_Y);
+        var back_via=  new Point(options.BA_X, options.BA_Y);
+
+
+
+        path.lineTo(options.AB2_X, options.AB2_Y); // bottom flat line
+
+        // / path.curveTo(out_via, B);   // bottom curve
+        
+        
+
+        var handle1 = new Point(options.AB_X, options.AB_Y);        
+        var handle2 = new Point(options.AB3_X, options.AB3_Y);        
+        
+        path.cubicCurveTo(handle1, handle2, B);
+          
+                
+        
+        var last_stop = new Point(options.BA2_X, options.BA2_Y);
+        path.curveTo(back_via, last_stop);
+        
+        path.lineTo(options.A_X, options.A_Y);
+        
+        
+
+
+        change.d = false;
+        
+        for (var x = 0; x < propellers; x++) {
+          symbols[x].remove();
+          if (! options.visible) return;
+          
+          symbols[x] = path.clone();
+          symbols[x].selected = options.outline;
+          symbols[x].fillColor = options.color;
+          symbols[x].position += new Point(options.symbolPositionX, options.symbolPositionY);
+          symbols[x].rotate( (360 / propellers) * x, centerPoint);
+        }
+        
+        project.activeLayer.rotate( options.rotate, centerPoint );
+        project.activeLayer.scale( options.scale, centerPoint );        
+      }
+  </script>
+</body>
+
+</html>
