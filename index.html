@@ -17,22 +17,20 @@
     }
   </script>
 
-
   <script type="text/javascript" src="js/head.min.js"></script>
 
-  <script type="text/javascript"> 
-  
+  <script type="text/javascript">
     var BOTH = 1;
-  
-    function boom () {
+    window.addEventListener('blur', function(){ BOTH-- }, false);
+
+    function boom() {
       $('section#projects').animate( { height: 310 }, 600, 'easeInOutQuad', function() {
-      
         $('section#projects div.grid_4, footer').each( function (n,v) { 
           setTimeout(
             function() { 
               $(v).animate({ opacity: 1 }, 200, 'easeInOutQuad', function() {
                 if (n == 3) {
-                  $('#more_info').delay(400).animate({opacity: 1}, 400, 'easeInOutQuad');
+                  $('#more_info').delay(400).animate({ opacity: 1 }, 400, 'easeInOutQuad');
                 }
               })
             },
@@ -42,83 +40,47 @@
       });
     }
     
-    window.addEventListener('blur', function() {
-      BOTH--;
-    }, false);
-  
     head.js("js/jquery-1.6.min.js", "js/jquery-helpers.js", "js/jquery.effects.min.js", "js/less.min.js", function() {
-      
-      setTimeout(
-        function() { (++BOTH == 4) && boom(); },
-        500
-      );
-
-      setTimeout( // if things are taking too long, just do it
-        boom, 5000
-      );
+      setTimeout( function(){ (++BOTH == 4) && boom(); }, 500 );
+      setTimeout( boom, 5000 ); // if things are taking too long, just do it
       
       $('section#projects img').imagesLoaded(function() {
         (++BOTH == 4) && boom();
       });
-      
-
       $('footer').css({ opacity: 0 });
-      // $('section#projects').css({ height: 0} );
       $('section#projects div.grid_4').css({ opacity: 0} );
-      
-      
-      
       $(window).focus(function() {
         (++BOTH == 4) && boom();
-      })
-      
-      // $(window).mousemove(function() {
-      //   (++BOTH < 2) && boom();
-      // });
-      
-      $(document).ready(function() {
-
+      });
+      $(function() {
         (++BOTH == 4) && boom();
-        
         window.onkeyup = function(e) {
           if (e.keyCode == 27) less.watchMode = ! less.watchMode;
           window.status = 'less refresh ' + (less.watchMode ? 'on' : 'off');
         };
-
-      });   
-
+      });
     });
-    
   </script>
 </head>
 
 <body>
+  <header></header>
   
-  <header>
-
-  </header>
-  
-
   <section id="about">
     <img id="stu" src="images/me-eye-contact.jpg">
     
     <div id="me">
-      
       <p>Hello there, I'm Stuart Robinson, and this is where I tell you about myself:</p>
         
       <p>I&rsquo;m an <b>Interactive Service Designer</b> and <b>Interface Developer</b> based in London.</p>
       
       <p>
-        I like <b>making things</b> that improve behaviour through <b>visualisation</b>. I aim for <b>simplicity</b> of form 
-        and function. My process is <b>iterate, iterate, iterate</b>.
+        I like <b>making things</b> that improve behaviour through <b>visualisation</b>. I aim for <b>simplicity</b> of form and function. My process is <b>iterate, iterate, iterate</b>.
       </p>
-    
-      <!-- information visualisation, persuasive design, musical instrument design -->
-      
     </div>
 
     <section id="more_info">
-      <a href="http://twitter.com/sturob">Thoughts</a> 
+      <a href="http://twitter.com/sturob">Thoughts</a>
       <a href="http://www.google.com/reader/shared/04064256531898542584">Sources</a>
       <a href="http://pinterest.com/sturob/">Visuals</a>
       <a href="http://www.flickr.com/photos/stu/">Photos</a>
@@ -127,11 +89,8 @@
 
   </section>
   
-  
-
-  
   <section id="projects">
-    <h1>My Work</h1>
+    <h1>Projects</h1>
     
     <section id="work_links">
       <div class="grid_4">
@@ -172,10 +131,7 @@
     <div style="clear: left"></div>
   </section>
   
-
-  <footer style="clear: both">
-    &copy; 2012 Stuart Robinson 
-  </footer>
+  <footer style="clear: both">&copy; 2012 Stuart Robinson</footer>
  
 </body>
 </html>
