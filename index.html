@@ -1,74 +1,195 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <title>sturob &middot; purveyor of fine interactions</title>
+ 
+  <link rel="icon" href="favicon.ico" type="image/ico">
 
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Sturob.com : " />
+  <link id="main_styles" rel="stylesheet" href="less/main.css" type="text/css">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+  <script type="text/javascript">
+    var hostname = window.location.hostname;
+    if (hostname == 'localhost' || hostname == 'c9.io') {
+      var l = document.getElementById('main_styles');
+      l.rel = 'stylesheet/less';
+      l.href = 'less/main.less';
+    }
+  </script>
 
-    <title>Sturob.com</title>
-  </head>
 
-  <body>
+  <script type="text/javascript" src="js/head.min.js"></script>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/sturob/sturob.com">View on GitHub</a>
+  <script type="text/javascript"> 
+  
+      
+    var BOTH = 1;
+  
 
-          <h1 id="project_title">Sturob.com</h1>
-          <h2 id="project_tagline"></h2>
-
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/sturob/sturob.com/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/sturob/sturob.com/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <h3>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Sturob.com maintained by <a href="https://github.com/sturob">sturob</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
+    function boom () {
+      $('section#projects').animate( { height: 310 }, 600, 'easeInOutQuad', function() {
+      
+        $('section#projects div.grid_4, footer').each( function (n,v) { 
+          setTimeout(
+            function() { 
+              $(v).animate({ opacity: 1 }, 200, 'easeInOutQuad', function() {
+                if (n == 3) {
+                  $('#more_info').delay(400).animate({opacity: 1}, 400, 'easeInOutQuad');
+                }
+              })
+            },
+            (n * 500) + 250
+          );
+        });
+      });
+    }
+  
 
     
+    window.addEventListener('blur', function() {
+      BOTH--;
+    }, false);
+  
+    head.js("js/jquery-1.6.min.js", "js/jquery-helpers.js", "js/jquery.effects.min.js", "js/less.min.js", function() {
+      
+      setTimeout(
+        function() { (++BOTH == 4) && boom(); },
+        500
+      );
 
-  </body>
+      setTimeout( // if things are taking too long, just do it
+        boom, 5000
+      );
+
+
+      
+      $('section#projects img').imagesLoaded(function() {
+        (++BOTH == 4) && boom();
+      });
+      
+
+      $('footer').css({ opacity: 0 });
+      // $('section#projects').css({ height: 0} );
+      $('section#projects div.grid_4').css({ opacity: 0} );
+      
+      
+      
+      $(window).focus(function() {
+        (++BOTH == 4) && boom();
+      })
+      
+      // $(window).mousemove(function() {
+      //   (++BOTH < 2) && boom();
+      // });
+      
+      $(document).ready(function() {
+
+        (++BOTH == 4) && boom();
+        
+        window.onkeyup = function(e) {
+          if (e.keyCode == 27) less.watchMode = ! less.watchMode;
+          window.status = 'less refresh ' + (less.watchMode ? 'on' : 'off');
+        };
+
+      });   
+
+    });
+    
+  </script>
+</head>
+
+<body>
+  
+  <header>
+
+  </header>
+  
+
+  <section id="about">
+    <img id="stu" src="images/me-eye-contact.jpg">
+    
+    <div id="me">
+      
+      <p>Hello there, I'm Stuart Robinson, and this is where I tell you about myself:</p>
+        
+      <p>I&rsquo;m an <b>Interactive Service Designer</b> and <b>Interface Developer</b> based in London.</p>
+      
+      <p>
+        I like to make things that <b>improve behaviour through visualisation</b>. I aim for <b>simplicity</b> of form 
+        and function. My process is <b>iterate, iterate, iterate</b>.
+      </p>
+    
+      <!-- information visualisation, persuasive design, musical instrument design -->
+      
+    </div>
+    <section id="more_info">
+      <a href="http://pinboard.in/u:sturob">Links</a> 
+      <a href="http://twitter.com/sturob">Thoughts</a> 
+      <a href="http://www.google.com/reader/shared/04064256531898542584">Sources</a>
+      <a href="http://pinterest.com/sturob/">Visuals</a>
+      <a href="http://www.flickr.com/photos/stu/">Photos</a>
+    </section>
+
+  </section>
+  
+  
+
+  
+  <section id="projects">
+    <h1>My Work</h1>
+    
+    <section id="work_links">
+      <div class="grid_4">
+        <a href="http://thebackofyourhand.com">
+          <div class="fake-screenshot"><img height="150" width="150" src="images/tboyh.png"></div>
+          <h2>The Back of Your Hand</h2>
+          <p>Visualising the social life of cities</p>
+        </a>
+      </div>
+
+      <div class="grid_4">
+        <a href="http://useitorlose.it">
+          <div class="fake-screenshot"><img height="150" width="150" src="images/uioli.jpg"></div>
+          <h2>Use it or Lose it</h2>
+          <p>Own fewer but better things</p>
+        </a>
+      </div>
+
+      <div class="grid_4">
+        <a href="http://flippingtypical.com">
+          <div class="fake-screenshot"><img height="150" width="150" src="images/flippingtypical.png"></div>
+          <h2>Flipping Typical</h2>
+          <p>Preview text in all your popular fonts</p>
+        </a>
+      </div>
+    
+<!--       <div class="grid_4">
+        <a href="http://whencomesthesun.com">
+
+        <div class="fake-screenshot"><img height="150" width="150" src="images/wcts.png"></div>
+        <h2>When Comes the Sun</h2>
+        <p>Visualise daylight throughout the year</p>
+        </a>
+      </div> -->
+      
+    </section>
+
+    <div style="clear: left"></div>
+  </section>
+  
+
+  <footer style="clear: both">
+    &copy; 2012 Stuart Robinson 
+  </footer>
+ 
+</body>
 </html>
+
+<script type="text/javascript" src="http://use.typekit.com/hlx2kdo.js"></script>
+<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"> </script> 
+<script type="text/javascript"> 
+  _uacct = "UA-1333551-1";
+  urchinTracker();
+</script>
