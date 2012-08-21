@@ -56,8 +56,6 @@
       setTimeout( // if things are taking too long, just do it
         boom, 5000
       );
-
-
       
       $('section#projects img').imagesLoaded(function() {
         (++BOTH == 4) && boom();
