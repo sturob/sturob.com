@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html id="html">
+
+<head>
+  <title>retrovision</title>
+
+	<style>
+		img {
+			float: left;
+		}
+	</style>
+</head>
+
+<body>
+	<img id="img1">
+	<img id="img2">
+	<img id="img3">
+	<img id="img4">
+	<img id="map">
+</body>
+
+<script type="text/javascript">
+	var url 		 = 'http://maps.googleapis.com/maps/api/streetview?size=320x320&sensor=true',
+			options = {
+				heading: 180, fov: 90, pitch: 8,
+			},
+			position = { coords: { longitude: 0, latitude: 0 }},
+			getPos = function(callback) {
+				navigator.geolocation.getCurrentPosition(
+					function(new_pos) { position = new_pos; callback && callback(); }, 
+					function (error) {
+						switch(error.code) {
+							case error.TIMEOUT:							 alert ('Timeout');							 break;
+							case error.POSITION_UNAVAILABLE: alert ('Position unavailable'); break;
+							case error.PERMISSION_DENIED:		 alert ('Permission denied');		 break;
+							case error.UNKNOWN_ERROR:				 alert ('Unknown error');				 break;
+						}
+					}
+				);
+			},
+			showPos = function() {
+				for (i=0; i < 4; i++) {
+					var el = document.getElementById('img'+(i+1));
+					el.src =  url + '&heading=' + (options.heading + i*90) + '&fov=' + options.fov + '&pitch=' + options.pitch + '&location=' + position.coords.latitude + ',' + position.coords.longitude;
+				}
+				document.getElementById('map').src = 'http://maps.googleapis.com/maps/api/staticmap?center=' +  position.coords.latitude + ',' + position.coords.longitude + '&zoom=17&size=320x320&sensor=true';
+			},
+			update = function() {
+			};
+
+
+	window.addEventListener('deviceorientation', function(e) {
+		// heading = e.webkitCompassHeading + window.orientation;
+	})
+	
+	if (navigator.geolocation) {
+		getPos( showPos );
+		setInterval(function() { 
+			getPos();
+		}, 15000)
+	}
+
+	document.getElementById('img1').onclick = showPos;
+	document.getElementById('img2').onclick = showPos;
+	document.getElementById('img3').onclick = showPos;
+	document.getElementById('img4').onclick = showPos;
+	
+	
+	
+	</script>
+
+
+</html>
