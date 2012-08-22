@@ -17,9 +17,32 @@
     }
   </script>
 
+
+
   <script type="text/javascript" src="js/head.min.js"></script>
 
   <script type="text/javascript">
+  // http://pinterest.com/sturob/feed.rss
+  // http://feeds.pinboard.in/rss/u:sturob/
+
+    function parseRSS(url, callback) {
+      $.ajax({
+        url: document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(url),
+        dataType: 'json',
+        success: function(data) { callback(data.responseData.feed) }
+      });
+    }
+
+    //$.getJSON('http://whateverorigin.org/get?url=' + encodeURIComponent('http://pinterest.com/sturob/feed.rss') + '&callback=?', function(data){ $.parseXML(data) });
+
+    /*
+    var feeds = [
+      { url: '', itemMapper: function(){} }
+    ];
+    */
+
+
+
     var BOTH = 1;
     window.addEventListener('blur', function(){ BOTH-- }, false);
 
@@ -40,7 +63,11 @@
       });
     }
     
-    head.js("js/jquery-1.6.min.js", "js/jquery-helpers.js", "js/jquery.effects.min.js", "js/less.min.js", function() {
+    head.js( "js/jquery-1.6.min.js", 
+             "js/jquery-helpers.js", 
+             "js/jquery.effects.min.js", 
+             "js/less.min.js", 
+             "base/js/lib/underscore.js", function() {
       setTimeout( function(){ (++BOTH == 4) && boom(); }, 500 );
       setTimeout( boom, 5000 ); // if things are taking too long, just do it
       
@@ -90,7 +117,7 @@
   </section>
   
   <section id="projects">
-    <h1>Projects</h1>
+    <h1>Main Projects</h1>
 
     <section id="work_links">
       <div class="grid_4">
@@ -116,15 +143,6 @@
           <p>Preview text in all your popular fonts</p>
         </a>
       </div>
-    
-<!--       <div class="grid_4">
-        <a href="http://whencomesthesun.com">
-
-        <div class="fake-screenshot"><img height="150" width="150" src="images/wcts.png"></div>
-        <h2>When Comes the Sun</h2>
-        <p>Visualise daylight throughout the year</p>
-        </a>
-      </div> -->
       
     </section>
 
