@@ -3,8 +3,8 @@
 <head>
 
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-  <title>paper.js playground</title>
-  
+  <title>English Premier League visualisation</title>  
+
   <meta name="viewport" content="width=device-width,user-scalable=no"/>
   
  
@@ -35,9 +35,6 @@
       js( 'lib/less.js' );
       js( 'dev.js' );
       js( 'lib/canvas/stats.js' );
-
-      // $(function() {
-      // });
     }
 
     js( 'lib/underscore.js' );
@@ -105,26 +102,25 @@
   Team.prototype.addResult = function(scored, conceded) {
     this.goals += scored;
     this.points += (scored  > conceded) ? 3 :
-                   (scored == conceded) ? 1 : 0; 
+                   (scored == conceded) ? 1 : 0;
     var ppg = this.goals / (this.rounds.length + 1);
     this.rounds.push({ goals: this.goals, points: this.points, ppg: ppg });
-
     return this;
   }
 
   
   $(function() {
-    var stats = new Stats();
-    stats.getDomElement().style.position = 'absolute';
-    stats.getDomElement().style.right = '0px';
-    stats.getDomElement().style.top = '0px';
-    document.body.appendChild( stats.getDomElement() );
-
-    setInterval( function () {
-
+    if (CONFIG.devMode) {
+      var stats = new Stats();
+      stats.getDomElement().style.position = 'absolute';
+      stats.getDomElement().style.right = '0px';
+      stats.getDomElement().style.top = '0px';
+      document.body.appendChild( stats.getDomElement() );
+    
+      setInterval( function () {
         stats.update();
-
-    }, 1000 / 60 );
+      }, 1000 / 60 );
+    }
 
     $.getJSON('data/prem.json', function(data){
       matches = data;
