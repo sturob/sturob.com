@@ -51,44 +51,46 @@ d3.csv('2012-13.csv', loadCSV)
 function loadCSV(data) {
 	window.d = data;
 	window.mu = [];
-	var total = 0;;
+	window.teams = {};
+	window.total = {};
+
 	data.forEach(function(match) {
+		var t = match.HomeTeam;
 		// match.prototype = Match;
-		if (played(match, 'Man United')) {
-			total += points(match, 'Man United');
-			mu.push({
-				date: date(match),
-				points: total
+		if (played(match, t)) {
+			if (!total[t]) total[t]=0;
+			total[t] += points(match, t);
+			if (! teams[t])	teams[t] = [];
+			teams[t].push({
+				date: new Date( date(match) ),
+				points: total[t]
 			})
 		}
 	});
-	dataReady(mu)
+	for (t in teams) {
+		dataReady(teams[t])
+	}
+	// dataReady(teams['Man United'])
 }
 
-
 function dataReady(data) {
-	var max = d3.max(data, function(d){ return d.points });
+	var max = 40; //d3.max(data, function(d){ return d.points });
 
-	var viz = svg.selectAll("rect")
-               .data(data, function(d, i) { return i });
-
-	var x = d3.time.scale().domain([new Date(2012, 9, 1), new Date(2013, 3, 31)]).range([0, w]);
+	var x = d3.time.scale().domain([new Date(2012, 7, 22), new Date(2013, 3, 31)]).range([0, w]);
 	var y  = d3.scale.linear().domain([0, max]).range([h, 0]);
-	var ch = d3.scale.linear().domain([0, max]).range([0, h]);
 
-	viz.enter()
-    .append("rect")
-    .attr("x", function(d,i){ return x(new Date(d.date)) })
-    .attr("width", 10)
-    .attr("height", function (d, i) {
-    	return ch(d.points)
-    })
-    .attr("y", function(d, i) {
-    	return y(d.points)
-   	});
+	var line = d3.svg.line()
+  	  .x(function(d) { return x(d.date); })
+    	.y(function(d) { return y(d.points); })
+      .interpolate("basis");
 
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr('fill', 'none')
+      .attr('stroke', 'black') // stroke-width: 1.5px;
+      .attr("d", line);
 // ddd.exit().remove();
-
 }
 
 
