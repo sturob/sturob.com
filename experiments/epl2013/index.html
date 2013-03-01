@@ -72,15 +72,14 @@ function dataReady(data) {
 	var viz = svg.selectAll("rect")
                .data(data, function(d, i) { return i });
 
-	var l  = d3.scale.linear;
-	var x  = l().domain([0, data.length]).range([0, w]);
-	var y  = l().domain([0, max]).range([h, 0]);
-	var ch = l().domain([0, max]).range([0, h]);
+	var x = d3.time.scale().domain([new Date(2012, 9, 1), new Date(2013, 3, 31)]).range([0, w]);
+	var y  = d3.scale.linear().domain([0, max]).range([h, 0]);
+	var ch = d3.scale.linear().domain([0, max]).range([0, h]);
 
 	viz.enter()
     .append("rect")
-    .attr("x", function(d,i){ return x(i) })
-    .attr("width", 20)
+    .attr("x", function(d,i){ return x(new Date(d.date)) })
+    .attr("width", 10)
     .attr("height", function (d, i) {
     	return ch(d.points)
     })
@@ -89,9 +88,6 @@ function dataReady(data) {
    	});
 
 // ddd.exit().remove();
- 
-
-
 
 }
 
