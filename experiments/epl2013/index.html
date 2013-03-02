@@ -41,12 +41,12 @@
 // HTR = Half Time Result (H=Home Win, D=Draw, A=Away Win)
 
 var w = 500,
-    h = 300;
+    h = 400;
 
 var svg = d3.select("body").append("svg")
                            .style('background','#eee').attr("width", w).attr("height", h); 	
 
-d3.csv('2012-13.csv', loadCSV)
+d3.csv('2012-13.csv', loadCSV);
 
 function loadCSV(data) {
 	window.d = data;
@@ -55,9 +55,8 @@ function loadCSV(data) {
 	window.total = {};
 
 	data.forEach(function(match) {
-		var t = match.HomeTeam;
-		// match.prototype = Match;
-		if (played(match, t)) {
+		
+		function appendResult(t){
 			if (!total[t]) total[t]=0;
 			total[t] += points(match, t);
 			if (! teams[t])	teams[t] = [];
@@ -66,17 +65,20 @@ function loadCSV(data) {
 				points: total[t]
 			})
 		}
+
+		appendResult(match.HomeTeam)
+		appendResult(match.AwayTeam)
+		// match.prototype = Match;
 	});
 	for (t in teams) {
 		dataReady(teams[t])
 	}
-	// dataReady(teams['Man United'])
 }
 
 function dataReady(data) {
-	var max = 40; //d3.max(data, function(d){ return d.points });
+	var max = 80; //d3.max(data, function(d){ return d.points });
 
-	var x = d3.time.scale().domain([new Date(2012, 7, 22), new Date(2013, 3, 31)]).range([0, w]);
+	var x = d3.time.scale().domain([new Date(2012, 7, 16), new Date(2013, 3, 31)]).range([0, w]);
 	var y  = d3.scale.linear().domain([0, max]).range([h, 0]);
 
 	var line = d3.svg.line()
