@@ -13,24 +13,15 @@ var svg1 = d3.select("body")
 
 d3.csv('2012-13.csv', loadCSV);
 
-function loadCSV(matches) {
-	window.d = matches;
-	window.teams = {};
+var teams = {},
+    x = d3.time.scale(),
+    y = d3.scale.linear()
 
+function loadCSV(matches) {
 	var max = 105; //d3.max(matches, function(d){ return d.points });
 	
-	window.x = d3.time.scale()
-	          .domain([ new Date(2012, 7, 16), new Date(2013, 5, 19) ])
-	          .range([ 0, w ]);
-
-	window.y = d3.scale.linear()
-	          .domain([ 0, max ]) // input
-	          .range([ h, 0 ]);   // maps to
-
-	window.y2 = d3.scale.linear()
-	          .domain([ 0, max ])
-	          .rangeRound([h, 0]);
-
+	x.domain([ new Date(2012, 7, 16), new Date(2013, 5, 19) ]).range([ 0, w ]);
+	y.domain([ 0, max ]).range([ h, 0 ]);
 
 	matches.forEach(function populateTeamResults(match) {
 		_.extend(match, Match);
@@ -46,8 +37,9 @@ function loadCSV(matches) {
 
 			t.results.push({
 				date: new Date( match.date() ),
-				points: t.currentPoints,
-				scored: t.currentGoalsScored
+				goalDiff:  t.currentGoalDiff,
+				points:    t.currentPoints,
+				goalsScored: t.currentGoalsScored
 			});
 		}
 
@@ -55,7 +47,7 @@ function loadCSV(matches) {
 		saveResult(match.AwayTeam);
 	});
 	
-	// todo do this in d3 natively by mapping {} => []
+	// todo do this in d3 natively by using teamArray
 	for (t in teams) {
 		graphTeam(teams[t], t)
 	}
@@ -68,7 +60,7 @@ function loadCSV(matches) {
       .enter()
       .append("svg:text")
       .attr("x", function(datum, index) { return 400 })
-      .attr("y", function(datum) { return y2(datum.currentPoints); })
+      .attr("y", function(datum) { return y(datum.currentPoints); })
       .attr("class", "team-name")
       .text(function(datum) { return datum.name });
 
@@ -128,6 +120,10 @@ function graphTeam(data, team) {
 // --------------------------------------
 // Team Class
 // --------------------------------------
+var Season = {
+	sorted: function() {} // returns array sorted by position
+}
+
 
 var TeamProto = {};
 
