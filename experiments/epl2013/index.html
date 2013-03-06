@@ -10,37 +10,15 @@
 
 	<meta name="title" content="">
 	<meta name="description" content="">
-	<link rel="" href=""> 
-
-	<script type="text/javascript">
-var kits = {
-    "Arsenal":      { "base": "red",                       "v": "white"   },
-    "Aston Villa":  { "base": "#72092E",  "h": "#00B9FF",  "v": "#00B9FF" },
-    "Blackburn":    { "base": "blue",                      "v": "white"   },
-    "Bolton":       { "base": "white",    "h": "#002266"                },
-    "Chelsea":      { "base": "#0A33FF"                               },
-    "Everton":      { "base": "blue",     "h": "black"                  },
-    "Fulham":       { "base": "white"                                 },
-    "Liverpool":    { "base": "red"                                   },
-    "Man City":     { "base": "#00B9FF"                               },
-    "Man United":   { "base": "red",      "h": "#ffffff"                },
-    "Newcastle":    { "base": "black",                     "v": "white"   },
-    "Norwich":      { "base": "yellow",   "h": "green"                  },
-    "QPR":          { "base": "white",    "h": "blue",     "v": "white"   },
-    "Stoke":        { "base": "red",                       "v": "white"   },
-    "Sunderland":   { "base": "red",      "h": "black",    "v": "white"   },
-    "Swansea":      { "base": "white"                                 },
-    "Tottenham":    { "base": "white"                                 },
-    "West Brom":    { "base": "black",                    "v": "white"   },
-    "Wigan":        { "base": "#0049DB",                  "v": "white"   },
-    "Wolves":       { "base": "#DB7F02",  "h": "black"                  }
-}
-	</script>
+	<link rel="" href="">
 
 	<script src="../../base/js/dev.js"></script>
 
 	<script src="../../base/js/lib/d3.js"></script>
 	<script src="../../base/js/lib/underscore.js"></script>
+
+	<script src="kits.json"></script>
+	<script src="Match.js"></script>
 
 <!--
 	<meta name="twitter:card" content="summary">
@@ -54,121 +32,4 @@ var kits = {
 
 </html>
 
-<script>
-// Div = League Division
-// Date = Match Date (dd/mm/yy)
-// HomeTeam = Home Team
-// AwayTeam = Away Team
-// FTHG = Full Time Home Team Goals
-// FTAG = Full Time Away Team Goals
-// FTR = Full Time Result (H=Home Win, D=Draw, A=Away Win)
-// HTHG = Half Time Home Team Goals
-// HTAG = Half Time Away Team Goals
-// HTR = Half Time Result (H=Home Win, D=Draw, A=Away Win)
-
-var w = 500,
-    h = 400;
-
-var svg = d3.select("body").append("svg")
-                           .style('background','#888').attr("width", w).attr("height", h); 	
-
-d3.csv('2012-13.csv', loadCSV);
-
-function loadCSV(data) {
-	window.d = data;
-	window.mu = [];
-	window.teams = {};
-	window.total = {};
-
-	data.forEach(function(match) {
-		_.extend(match, Match);
-		
-		function appendResult(t){
-			if (!total[t]) total[t]=0;
-			total[t] += match.points(t);
-			if (! teams[t])	teams[t] = [];
-			teams[t].push({
-				date: new Date( match.date() ),
-				points: total[t]
-			})
-		}
-
-		appendResult(match.HomeTeam)
-		appendResult(match.AwayTeam)
-		// match.prototype = Match;
-	});
-	for (t in teams) {
-		dataReady(teams[t], t)
-	}
-}
-
-function dataReady(data, team) {
-	var max = 80; //d3.max(data, function(d){ return d.points });
-
-	var x = d3.time.scale().domain([new Date(2012, 7, 16), new Date(2013, 5, 19)]).range([0, w]);
-	var y  = d3.scale.linear().domain([0, max]).range([h, 0]);
-
-	var line = d3.svg.line()
-
-  	  .x(function(d) { return x(d.date); })
-    	.y(function(d) { return y(d.points); })
-      .interpolate("basis");
-
-  svg.append("path")
-      .datum(data)
-      .on("click", function() {
-      	console.log(team)
-      })
-      .attr("class", "line")
-      .attr('stroke', kits[team] ? kits[team].base : '#333')
-      .attr("d", line);
-// ddd.exit().remove();
-}
-
-
-
-
-// match prototype...
-
-var Match = {
-	date: function() {
-		var date = this.Date.split('/').reverse();
-		date[0] = '20' + date[0];
-		return date.join('-');
-	},
-	home: function (team) {
-		return (this.HomeTeam == team)
-	},
-	away: function (team) {
-		return (this.AwayTeam == team)
-	},
-	played: function (team) {
-		return this.home(team) || this.away(team)
-	},
-	scored: function (team) {
-		if (this.home(team)) return this.FTHG;
-		if (this.away(team)) return this.FTAG;
-	},
-	opponent: function (team) {
-		if (this.home(team)) return this.AwayTeam;
-		if (this.away(team)) return this.HomeTeam;	
-	},
-	conceded: function (team) {
-		if (this.home(team)) return this.FTAG;
-		if (this.away(team)) return this.FTHG;	
-	},
-	difference: function (team) {
-		return this.scored(team) - this.conceded(team)
-	},
-	points: function (team) {
-		if (this.played(team)) {
-			var diff = this.difference(team);
-			if (diff > 0) return 3;
-			else if (diff < 0) return 0;
-			else return 1;
-		}
-	}
-}
-
-
-</script>
+<script src="main.js"></script>

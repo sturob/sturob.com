@@ -1,24 +1,47 @@
+@import "/base/less/_reset";
+@import "/base/less/_utils";
 
-
-path {
-	opacity: 0.8;
-	padding: 4px;
-	fill: none;
-  stroke-width: 2px;
-  z-index: 1;
-  
-  -webkit-filter: drop-shadow( -5px -5px 5px #000 );
-          filter: drop-shadow( -5px -5px 5px #000 ); /* Same syntax as box-shadow */
-
-}
-
-path:hover {
-	// stroke: blue;
-	position: relative;
-	z-index: 1000;
-	opacity: 1;
-}
 
 body {
+	font-family: Geneva, Serif;
 	// background: #FF0;
 }
+
+
+svg {
+	background: #404040;
+	
+	path {
+		// opacity: 0.75;
+		fill: none;
+	  stroke-width: 2px;
+
+	  // -webkit-filter: drop-shadow( 5px 5px 5px #000 );
+	          // filter: drop-shadow( -5px -5px 5px #000 ); /* Same syntax as box-shadow */
+	}
+
+	path:hover {
+		stroke-width: 5px;
+		position: relative;
+		z-index: 1000;
+		opacity: 1;
+	}
+
+	text.team-name {
+		fill: #fff;
+		// text-shadow: 1px 1px 1px #000;
+		// opacity: 0.5;
+		font-size: 10px;
+		letter-spacing: 1px;
+		font-weight: bold;
+		background: #FFF;
+	}
+
+	.axis {
+		font-size: 10px;
+		font-weight: normal;
+		stroke-width: 0.5px;
+		stroke: #333;
+	}
+}
+
