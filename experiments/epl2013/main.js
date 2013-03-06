@@ -59,18 +59,6 @@ function loadCSV(matches) {
 
 	drawTeams('points');
 
-
-	window.tNames = svg1.selectAll("text").data(teamArray);
-
-	tNames.enter()
-        .append("svg:text")
-        .attr("x", function(datum, index) { return 400 })
-        .attr("y", function(datum) { return y(datum.currentPoints); })
-        .attr("class", "team-name")
-        .text(function(datum) { return datum.name });
-
-
-
 	// X+Y axis
 	var yAxe = d3.svg.axis();
 	var xAxe = d3.svg.axis();
@@ -124,6 +112,22 @@ function drawTeams(yStat){
 
   lines.transition().duration(1500).attr("d", line);
   lines.exit().remove();		
+
+	window.tNames = svg1.selectAll("text").data(teamArray);
+
+  var current = 'current' + yStat[0].toUpperCase() + yStat.slice(1);
+
+	tNames.enter()
+        .append("svg:text")
+        .attr("x", function(datum, index) { return 400 })
+        .attr("y", function(datum) { return y(datum[current]); })
+        .attr("class", "team-name")
+        .text(function(datum) { return datum.name });
+
+ 	tNames.transition().duration(1500).attr('y', function(d) { 
+ 		return y(d[current])
+ 	});
+
 }
 
 
