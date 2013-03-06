@@ -47,22 +47,46 @@ function loadCSV(matches) {
 		saveResult(match.AwayTeam);
 	});
 	
-	// todo do this in d3 natively by using teamArray
-	for (t in teams) {
-		graphTeam(teams[t], t)
-	}
-
 	// club titles
-	var teamArray = _.map(teams, function(t, name){ return t });
+	var teamArray = _.map(teams, function(t, name){ 
+		// t.currentPoints += 5;
+		return t
+	});
 
-	svg1.selectAll("text")
-	    .data(teamArray)
-      .enter()
-      .append("svg:text")
-      .attr("x", function(datum, index) { return 400 })
-      .attr("y", function(datum) { return y(datum.currentPoints); })
-      .attr("class", "team-name")
-      .text(function(datum) { return datum.name });
+	window.data =  _.map(teams, function(t, name){ 
+		return t.results
+	});
+
+
+  var line = d3.svg.line()
+      .interpolate("basis")
+      .x(function(d) { return x(d.date); })
+      .y(function(d) { return y(d.points); });
+
+  window.lines = svg1.selectAll('path').data( data );
+
+  lines.enter().append('path').attr("d", line)
+       .on("click", function() {
+      	 console.log( team )
+       })
+       .attr("class", "line")
+       .attr('stroke', function(d, n) {
+         return Kits[teamArray[n].name] ? Kits[teamArray[n].name].base : '#888'
+       });
+
+  lines.transition().duration(1500).attr("d", line);
+  lines.exit().remove();
+
+	window.tNames = svg1.selectAll("text").data(teamArray);
+
+	tNames.enter()
+        .append("svg:text")
+        .attr("x", function(datum, index) { return 400 })
+        .attr("y", function(datum) { return y(datum.currentPoints); })
+        .attr("class", "team-name")
+        .text(function(datum) { return datum.name });
+
+
 
 	// X+Y axis
 	var yAxe = d3.svg.axis();
@@ -97,24 +121,6 @@ function loadCSV(matches) {
 }
 
 
-function graphTeam(data, team) {
-	var line = d3.svg.line();
-
-  line.x(function(d) { return x(d.date); })
-    	.y(function(d) { return y(d.points); })
-      .interpolate("basis");
-
-  svg1.append("path")
-     .datum(data.results)
-     .on("click", function() {
-       console.log(team)
-     })
-     .attr("class", "line")
-     .attr('stroke', Kits[team] ? Kits[team].base : '#333')
-     .attr("d", line);
-
-	// ddd.exit().remove();
-}
 
 
 // --------------------------------------
