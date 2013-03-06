@@ -48,7 +48,7 @@ function loadCSV(matches) {
 	});
 	
 	// club titles
-	var teamArray = _.map(teams, function(t, name){ 
+	window.teamArray = _.map(teams, function(t, name){ 
 		// t.currentPoints += 5;
 		return t
 	});
@@ -57,25 +57,8 @@ function loadCSV(matches) {
 		return t.results
 	});
 
+	drawTeams('points');
 
-  var line = d3.svg.line()
-      .interpolate("basis")
-      .x(function(d) { return x(d.date); })
-      .y(function(d) { return y(d.points); });
-
-  window.lines = svg1.selectAll('path').data( data );
-
-  lines.enter().append('path').attr("d", line)
-       .on("click", function() {
-      	 console.log( team )
-       })
-       .attr("class", "line")
-       .attr('stroke', function(d, n) {
-         return Kits[teamArray[n].name] ? Kits[teamArray[n].name].base : '#888'
-       });
-
-  lines.transition().duration(1500).attr("d", line);
-  lines.exit().remove();
 
 	window.tNames = svg1.selectAll("text").data(teamArray);
 
@@ -120,6 +103,28 @@ function loadCSV(matches) {
 	          .attr("x2", w).attr("y2", d3.round(y(safetyPoints)));
 }
 
+
+
+function drawTeams(yStat){
+  var line = d3.svg.line()
+      .interpolate("basis")
+      .x(function(d) { return x(d.date); })
+      .y(function(d) { return y(d[yStat]); });
+
+  window.lines = svg1.selectAll('path').data( data );
+
+  lines.enter().append('path').attr("d", line)
+       .on("click", function() {
+      	 console.log( team )
+       })
+       .attr("class", "line")
+       .attr('stroke', function(d, n) {
+         return Kits[teamArray[n].name] ? Kits[teamArray[n].name].base : '#888'
+       });
+
+  lines.transition().duration(1500).attr("d", line);
+  lines.exit().remove();		
+}
 
 
 
