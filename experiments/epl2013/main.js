@@ -15,37 +15,37 @@ var cycle = function (arr) {
 }
 
 var nextStat = cycle([ 'points', 'goalsScored', 'goalDiff' ]);
-
-var svg1 = d3.select("body")
-             .append("svg")
-             .attr("width", w).attr("height", h)
-             .on("click", function() {
-             	 var stat = nextStat();
-             	 document.title = stat;
-             	 initGraph( stat );
-               update( stat );
-
-               var t = svg1.transition().duration(750);
-               t.select(".y.axis").call( yAxe );
-             });
-
-d3.csv('2012-13.csv', loadCSV);
-
 var teams = {},
-    x,
-    y;
+    x = d3.time.scale(),
+  	y = d3.scale.linear();
 
 // X+Y axis
 var yAxe = d3.svg.axis();
 var xAxe = d3.svg.axis();
 
+var svg1 = d3.select("body")
+             .append("svg")
+             .attr("width", w).attr("height", h)
+             .on("click", switchYStat);
+
+d3.csv('2011-12.csv', loadCSV);
+
+
+function switchYStat() {
+	var stat = nextStat();
+	document.title = stat;
+	initGraph( stat );
+	update( stat );
+	var t = svg1.transition().duration(1500);
+	t.select(".y.axis").call( yAxe );
+}
+
 function initGraph(stat) {
 	var max =  d3.max(teamArray, function(d){ return d[ currentize(stat) ] }) + 10;
 	var min =  d3.min(teamArray, function(d){ return d[ currentize(stat) ] }) - 10;
 	min = min > 0 ? 0 : min;
-  x = d3.time.scale(),
-  y = d3.scale.linear()
-	x.domain([ new Date(2012, 7, 16), new Date(2013, 5, 19) ]).range([ 0, w ]);
+
+	x.domain([ new Date(2011, 7, 13), new Date(2012, 5, 19) ]).range([ 0, w ]);
 	y.domain([ min, max ]).range([ h, 0 ]);	
 }
 
@@ -79,9 +79,8 @@ function loadCSV(matches) {
 		return t.results
 	});
 
-	var stat = nextStat();
-	initGraph( stat );
-	update( stat );
+	switchYStat();
+
 	initAxis();
 
 	var guidelines = svg1.append("svg:g")
@@ -101,18 +100,19 @@ function loadCSV(matches) {
 function currentize(stat) {
 	return 'current' + stat[0].toUpperCase() + stat.slice(1);
 }
-
+window.wtf = 'basis';
 function update(yStat){
   var line = d3.svg.line()
-      .interpolate("basis")
+      .interpolate(wtf)
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d[yStat]); });
 
   window.lines = svg1.selectAll('path').data( data );
 
   lines.enter().append('path').attr("d", line)
-       .on("click", function() {
+       .on("click", function(d, n) {
       	 console.log( teamArray[n].name )
+      	 return false;
        })
        .attr("class", "line")
        .attr('stroke', function(d, n) {
@@ -128,7 +128,7 @@ function update(yStat){
 
 	tNames.enter()
         .append("svg:text")
-        .attr("x", function(datum, index) { return 400 })
+        .attr("x", function(datum, index) { return 540 })
         .attr("y", function(datum) { return y(datum[current]); })
         .attr("class", "team-name")
         .text(function(datum) { return datum.name });
