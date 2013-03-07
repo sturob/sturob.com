@@ -10,11 +10,11 @@ body {
 
 svg {
 	background: #404040;
-	
+  
 	path {
 		// opacity: 0.75;
 		fill: none;
-	  stroke-width: 2px;
+	  stroke-width: 1.4px;
 
 	  // -webkit-filter: drop-shadow( 5px 5px 5px #000 );
 	          // filter: drop-shadow( -5px -5px 5px #000 ); /* Same syntax as box-shadow */
@@ -23,8 +23,10 @@ svg {
 
 	.guidelines {
 		line {
+			shape-rendering:crispEdges;
 			stroke: white;
-			stroke-width: 1px;
+			stroke-width: 1;
+			opacity: 0.25;
 		}
 		
 	}

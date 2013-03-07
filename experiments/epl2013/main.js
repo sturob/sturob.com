@@ -9,7 +9,10 @@ var championsPoints = 95,
 
 var svg1 = d3.select("body")
              .append("svg")
-             .attr("width", w).attr("height", h); 	
+             .attr("width", w).attr("height", h)
+             .on("click", function() {
+               update( nextStat() );
+             }); 	
 
 d3.csv('2012-13.csv', loadCSV);
 
@@ -57,7 +60,16 @@ function loadCSV(matches) {
 		return t.results
 	});
 
-	drawTeams('points');
+	var cycle = function (arr) {
+		var i = 0;
+		return function() {
+			return arr[i++ % arr.length]
+		}
+	}
+
+	window.nextStat = cycle(['points', 'goalsScored']);
+
+	update( nextStat() );
 
 	// X+Y axis
 	var yAxe = d3.svg.axis();
@@ -93,7 +105,7 @@ function loadCSV(matches) {
 
 
 
-function drawTeams(yStat){
+function update(yStat){
   var line = d3.svg.line()
       .interpolate("basis")
       .x(function(d) { return x(d.date); })
