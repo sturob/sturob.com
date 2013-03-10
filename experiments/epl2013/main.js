@@ -1,11 +1,18 @@
 
 var w = 600,
-    h = 500,
+    h = 600,
     padding = 0;
 
 // todo - calc averages
 var championsPoints = 95,
     safetyPoints = 40;
+
+
+var period = {
+	end: 2013
+};
+period.start = period.end - 1;
+period.file = period.start + '-' + (period.end - 2000) + '.csv';
 
 var cycle = function (arr) {
 	var i = 0;
@@ -14,7 +21,7 @@ var cycle = function (arr) {
 	}
 }
 
-var nextStat = cycle([ 'points', 'goalsScored', 'goalDiff' ]);
+var nextStat = cycle([ 'points', 'ppg', 'goalsScored', 'goalDiff' ]);
 var teams = {},
     x = d3.time.scale(),
   	y = d3.scale.linear();
@@ -28,8 +35,10 @@ var svg1 = d3.select("body")
              .attr("width", w).attr("height", h)
              .on("click", switchYStat);
 
-d3.csv('2011-12.csv', loadCSV);
+d3.csv(period.file, loadCSV);
 
+
+// ---------------------------------
 
 function switchYStat() {
 	var stat = nextStat();
@@ -41,11 +50,11 @@ function switchYStat() {
 }
 
 function initGraph(stat) {
-	var max =  d3.max(teamArray, function(d){ return d[ currentize(stat) ] }) + 10;
-	var min =  d3.min(teamArray, function(d){ return d[ currentize(stat) ] }) - 10;
+	var max =  d3.max(teamArray, function(d){ return d[ currentize(stat) ] });
+	var min =  d3.min(teamArray, function(d){ return d[ currentize(stat) ] });
 	min = min > 0 ? 0 : min;
 
-	x.domain([ new Date(2011, 7, 13), new Date(2012, 5, 19) ]).range([ 0, w ]);
+	x.domain([ new Date(period.start, 7, 13), new Date(period.end, 5, 19) ]).range([ 0, w ]);
 	y.domain([ min, max ]).range([ h, 0 ]);	
 }
 
@@ -71,7 +80,7 @@ function loadCSV(matches) {
 	matches.forEach( populateTeamResults ); // Matches -> Team + Results
 	
 	// club titles
-	window.teamArray = _.map(teams, function(t, name){ 
+	window.teamArray = _.map(teams, function(t){ 
 		return t
 	});
 
@@ -100,10 +109,10 @@ function loadCSV(matches) {
 function currentize(stat) {
 	return 'current' + stat[0].toUpperCase() + stat.slice(1);
 }
-window.wtf = 'basis';
+
 function update(yStat){
   var line = d3.svg.line()
-      .interpolate(wtf)
+      .interpolate('monotone')
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d[yStat]); });
 
@@ -136,12 +145,11 @@ function update(yStat){
  	tNames.transition().duration(1500).attr('y', function(d) { 
  		return y(d[current])
  	});
-
 }
 
 
 
-function populateTeamResults(match) {
+function populateTeamResults(match, n) {
 	_.extend(match, Match);
 
 	function saveResult(name) {
@@ -149,12 +157,15 @@ function populateTeamResults(match) {
 		if (! t) {
 			teams[name] = t = new Team(name);
 		}
+
 		t.currentPoints += match.points(name);
 		t.currentGoalDiff += match.difference(name);
 		t.currentGoalsScored += match.scored(name);
+		t.currentPpg = t.currentPoints / (t.results.length + 1);
 
 		t.results.push({
 			date: new Date( match.date() ),
+			ppg: t.currentPpg,
 			goalDiff:  t.currentGoalDiff,
 			points:    t.currentPoints,
 			goalsScored: t.currentGoalsScored
@@ -181,6 +192,7 @@ var TeamProto = {};
 function Team(name){
 	this.name = name;
 	this.results = [];
+	this.currentPpg = 0;
 	this.currentPoints = 0;
 	this.currentGoalDiff = 0;
 	this.currentGoalsScored = 0;
