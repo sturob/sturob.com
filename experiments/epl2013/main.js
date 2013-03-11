@@ -1,6 +1,7 @@
 
-var w = 600,
-    h = 600,
+var margin = { top: 20, right: 0, bottom: 30, left: 50 },
+    w = 620 - margin.left - margin.right,
+    h = 600 - margin.top - margin.bottom;
     padding = 0;
 
 // todo - calc averages
@@ -9,18 +10,25 @@ var championsPoints = 95,
 
 
 var period = {
-	end: 2013
+	end: 2012
 };
 period.start = period.end - 1;
 period.file = period.start + '-' + (period.end - 2000) + '.csv';
 
 var cycle = function (arr) {
-	var i = 0;
+	var i = 0;	
 	return function() {
 		return arr[i++ % arr.length]
 	}
 }
 
+
+var interpols = {
+	points: 'monotone',
+	ppg: 'monotone',
+	goalsScored: 'monotone', 
+	goalDiff: 'monotone'
+};
 var nextStat = cycle([ 'points', 'ppg', 'goalsScored', 'goalDiff' ]);
 var teams = {},
     x = d3.time.scale(),
@@ -32,7 +40,8 @@ var xAxe = d3.svg.axis();
 
 var svg1 = d3.select("body")
              .append("svg")
-             .attr("width", w).attr("height", h)
+             .attr("width", w + margin.left + margin.right)
+             .attr("height", h + margin.top + margin.bottom)
              .on("click", switchYStat);
 
 d3.csv(period.file, loadCSV);
@@ -41,7 +50,7 @@ d3.csv(period.file, loadCSV);
 // ---------------------------------
 
 function switchYStat() {
-	var stat = nextStat();
+	window.stat = nextStat();
 	document.title = stat;
 	initGraph( stat );
 	update( stat );
@@ -52,10 +61,14 @@ function switchYStat() {
 function initGraph(stat) {
 	var max =  d3.max(teamArray, function(d){ return d[ currentize(stat) ] });
 	var min =  d3.min(teamArray, function(d){ return d[ currentize(stat) ] });
-	min = min > 0 ? 0 : min;
 
-	x.domain([ new Date(period.start, 7, 13), new Date(period.end, 5, 19) ]).range([ 0, w ]);
-	y.domain([ min, max ]).range([ h, 0 ]);	
+	min = min > 0 ? 0 : min; //
+
+	max = max < 3 ? 3 : max;
+
+	x.domain([ new Date(period.start, 7, 13), new Date(period.end, 5, 19) ])
+	 .range([ margin.left, w ]);
+	y.domain([ min, max ]).range([ h, margin.bottom ]);	
 }
 
 
@@ -66,12 +79,12 @@ function initAxis () {
 	svg1.append("g")
 	    .attr("class", "axis x")
 	    // .text(function(d, i) { return monthNames[i]; })
-	    .attr("transform", "translate(0," + 0 + ")")
+	    .attr("transform", "translate(0," + h + ")")
 	    .call(xAxe);
 
 	svg1.append("g")
 	    .attr("class", "axis y")
-	    .attr("transform", "translate(" + 30 + ",0)")
+	    .attr("transform", "translate(" + margin.left + ",0)")
 	    .call(yAxe);
 }
 
@@ -112,7 +125,7 @@ function currentize(stat) {
 
 function update(yStat){
   var line = d3.svg.line()
-      .interpolate('monotone')
+      .interpolate( interpols[stat] )
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d[yStat]); });
 

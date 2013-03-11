@@ -205,11 +205,16 @@ body {
   background: #FFF;
 }
 svg {
-  background: #404040;
+  background: #bbb;
 }
-svg path {
+svg path.domain {
+  stroke-width: 1px;
   fill: none;
-  stroke-width: 1.4px;
+}
+svg path.line {
+  opacity: 0.45;
+  fill: none;
+  stroke-width: 10px;
 }
 svg .guidelines line {
   shape-rendering: crispEdges;
@@ -218,7 +223,6 @@ svg .guidelines line {
   opacity: 0.25;
 }
 svg path:hover {
-  stroke-width: 5px;
   position: relative;
   z-index: 1000;
   opacity: 1;
