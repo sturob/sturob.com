@@ -25,27 +25,42 @@ function n_to_date (n) {
 
 
 
+var yearsRange = _.range(2001, 2010);
+
 var yearAsGet = function(year) {
 
 	var yearCSV = function(csv) {
 		var yearData = d3.csv.parse( csv );
-		console.log( year )
-		console.log( yearData )
+
+		// loadYear()
+
+		// console.log( year )
+		// console.log( yearData )
 	};
 
 	return $.get('http://localhost:6969/football/' + year + '.csv').done( yearCSV ) 
 }
 
-var spendLoaded = function(csv) {
-	console.log( csv )
+var spendData;
+var spendLoaded = function(json) {
+	spendData = json;
 }
 
-var requests = _.range(2001, 2011).map( yearAsGet );
-requests.push( $.get('http://localhost:6969/football/spend-2000-10.json').done( spendLoaded ) );
+var requests = yearsRange.map( yearAsGet );
+requests.unshift( $.getJSON('http://localhost:6969/football/spend-2000-10.json').done( spendLoaded ) );
 
+// .apply() cos we're passing in an array not args (jquery is stoopid)
+$.when.apply($, requests).then( function(requests, b){ 
+	_(spendData).each(function(club) {
+		console.log('merging spend into club:' + club.team);
 
+		_.each(yearsRange, function(year) {
+			var cost = (club['total' + year] - 0) + (club['net' + year] - 0)
+			console.log( year + ": £" + cost )
+		})
+	  // team
+	});
 
-$.when( requests ).done( function(requests, b){ 
 	// start the real business
 })
 
@@ -53,7 +68,7 @@ $.when( requests ).done( function(requests, b){
 
 
 
-var winner_data = d3.range(0,38).map(function(d, n){ 
+var winner_data = d3.range(0, 38).map(function(d, n){ 
 	return {
 		points: championsPoints/38 * d,
 		date: n_to_date( d )
