@@ -5,7 +5,7 @@
 // if (false) { switchYStat(); initAxis(); }
 
 var data_host = 'http://localhost:6969/football/';
-var yearsRange = _.range(2001, 2010);
+var yearsRange = _.range(2003, 2012);
 
 var yearAsGet = function (year) {
 	var yearCSV = function (csv) {
@@ -34,7 +34,14 @@ $.when.apply($, requests).then(function (requests, b) {
 		})
 	});
 
-	var c = ['Everton', 'Man City', 'Man United', 'Liverpool', 'Chelsea', 'Tottenham', 'Arsenal'];
+	// 'Liverpool',
+
+	window.c = _.keys(teams)
+
+	// [
+	// 	'Fulham',
+	// 	'Everton', 'Man City', 'Man United',  'Chelsea', 'Tottenham', 'Arsenal'
+	// ];
 
 	window.data = _.map(c, function (name) {
 		var seasons = _(yearsRange).map(function (year) {
@@ -42,8 +49,10 @@ $.when.apply($, requests).then(function (requests, b) {
 			    cpp = t.cost / t.currentPoints;
 			return { year:year, cpp:cpp, cost:t.cost, points:t.currentPoints }
 		});
-		return { name:name, seasons:seasons }
-	})
+		return seasons // { name:name, seasons:seasons }
+	});
+
+	initGraph()
 })
 
 
@@ -54,12 +63,13 @@ function loadSeason(year, matches) {
 	}); // Matches -> Team + Results
 
 	// club titles
-	return;
 
 	window.teamArray = _.chain(teams)
 	                    .map(function (t) { return t })
 	                    .sortBy(function (t) { return t.currentPoints })
 	                    .value();
+
+	return;
 
 	window.results = _.map(teamArray, function (t, name) { 
 		return t.results
@@ -104,9 +114,6 @@ var Season = {
 	sorted: function() {} // returns array sorted by position
 }
 
-
-
-
 var TeamProto = {
 	setEmptySeasons: function (a, b) {
 		var team = this;
@@ -139,7 +146,7 @@ Team.prototype = TeamProto;
 
 
 var margin = { top: 20, right: 0, bottom: 30, left: 50 },
-    w = 600 - margin.left - margin.right,
+    w = 800 - margin.left - margin.right,
     h = 600 - margin.top - margin.bottom;
     padding = 0;
 
@@ -206,19 +213,62 @@ function switchYStat() {
 	// t.select(".y.axis").call( yAxe );
 }
 
-function initGraph(stat) {
+function initGraph() {
 	// var max =  d3.max(teamArray, function (d){ return d[ currentize(stat) ] });
 	// var min =  d3.min(teamArray, function (d){ return d[ currentize(stat) ] });
 
 	// min = min > 0 ? 0 : min; //
 	// max = max < 3 ? 3 : max; // hack for ppg
 
-	x.domain([ 0, 100 ]).range([ margin.left, w ]);
-	y.domain([ 0, 100 ]).range([ h - 480, margin.bottom ]);
+	x.domain([ 21, 300 ]).range([ margin.left, w ]);
+	y.domain([ 40, 95 ]).range([ h, margin.bottom ]);
+
+
+
+	var line = d3.svg.line()
+	    .interpolate( 'monotone' ).tension(0.99)
+	    .x(function(d, n) { return x(d.cost); })
+	    .y(function(d, n) { return y(d.points) })
+
+
+	window.lines = svg1.selectAll('path.line').data( data )	    
+
+
+	// debugger;
+
+	lines.enter()
+		.append('path').attr("d", line).attr("class", "line").attr('stroke', function(d, n) {
+         return teams[ c[n] ].kit.base
+       })
+			.on("click", function(d, n) {
+				console.log( c[n] );
+				return false;
+			});
+
+
+	_.each(data, function(team) {
+		var dots = svg1.selectAll("dot").data( team );
+
+		 dots.enter().append("circle")
+		     .attr("r", 1)
+		     .attr("cx", function(d) { return x(d.cost); })
+		     .attr("cy", function(d) { return y(d.points); })
+	})
+
 }
 
 
-initGraph();
+     // .on("click", function(d, n) {
+    	//  console.log( teamArray[n].name );
+    	//  return false;
+     // })
+     // .attr("transform", function(d, n) {
+     // 		return "translate(0, " + (100 * n) + ')'
+     // })
+     // .attr('stroke-dasharray', function(d, n) { return 8*(n+1) + ',1' })
+
+
+
 
 
 function initAxis () {
@@ -274,14 +324,9 @@ function update(yStat){
   lines.exit().remove();
 
 
-  // window.winners = svg1.selectAll('path.winners-line').data( winner_data );
- 
- 	winners.enter().append('path').attr("d", w_line)
-       .attr("transform", function(d, n) {
-       	  return "translate(0, " + (20 * (20-n)) + ')'
-       	})
-       // .attr('stroke-dasharray', function(d, n) { return 8*(n+1) + ',1' })
-       .attr("class", "line-winners")
+
+
+
 
   
 
