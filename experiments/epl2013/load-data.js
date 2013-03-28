@@ -2,13 +2,14 @@
 // Get data bit 
 //////////////////
 
-var teams = {},
-		seasons = {};
-
 var data_host = 'http://localhost:6969/football/';
-var yearsRange = _.range(2003, 2012);
+var yearsRange = _.range(2001, 2012);
 
-var yearAsGet = function (year) {
+var teams = {},
+		seasons = {},
+		Seasons = {};
+
+Seasons.yearAsGet = function (year) {
 	var yearCSV = function (csv) {
 		var matches = d3.csv.parse( csv );
 		seasons[year] = new Season( matches, year );
@@ -16,28 +17,42 @@ var yearAsGet = function (year) {
 	return $.get(data_host + year + '.csv').done( yearCSV ) 
 }
 
-var requests = yearsRange.map( yearAsGet );
+var requests = yearsRange.map( Seasons.yearAsGet );
 requests.unshift( $.getJSON( data_host + 'spend-2000-10.json' ) );
 
-var mergeSpendingData = function(requests, b) {
-	var spendData = requests[0];
+// .apply() cos we're passing in an array not args (jquery is stoopid)
+$.when.apply($, requests).then( function(requests) {
+	Seasons.mergeSpendingData( requests[0] );
+	dataReady();	
+});
+
+
+
+// -------------------------------------
+// Seasons
+// -------------------------------------
+
+Seasons.mergeSpendingData = function(spendData) {
+
 	_.each(spendData, function (club) {
 		_.each(yearsRange, function (year) {
 			var total_wages  = (club['total' + (year - 1)] - 0);
 			var net_transfer = (club['net' + (year - 1)] - 0);
 			var yearly_cost  = total_wages + net_transfer;
-			if (isNaN(yearly_cost)) { cost = 0; }
+			// if (isNaN(yearly_cost)) { cost = 0; }
 			if (teams[ club.team ]) {
-				teams[ club.team ].seasons[year].cost = yearly_cost;	
+				if (isNaN(yearly_cost)) {
+					
+				} else {
+					teams[ club.team ].seasons[year].cost = yearly_cost;						
+				}
+
+			} else {
+				console.log( club.team )
 			}
 		})
 	})
-	dataReady();
 }
-
-// .apply() cos we're passing in an array not args (jquery is stoopid)
-$.when.apply($, requests).then( mergeSpendingData );
-
 
 // --------------------------------------
 // Season Class
@@ -62,6 +77,10 @@ function Season(matches, year){
 
 Season.prototype = SeasonProto;
 
+
+// --------------------------------------
+//  Teams Singleton
+// --------------------------------------
 
 var Teams = {
 	propagateMatch: function(match, year) {
@@ -96,15 +115,15 @@ var Teams = {
 };
 
 // --------------------------------------
-// Team Class
+//  Team Class
 // --------------------------------------
 
 var TeamProto = {
-	setEmptySeasons: function (a, b) {
+	setEmptySeasons: function (years) {
 		var team = this;
 		team.seasons = {};
 
-		_.each( _.range(a, b), function (year) {
+		_.each( years, function (year) {
 			team.seasons[year] = {
 				results: [],
 				currentPpg: 0,  currentPoints: 0,
@@ -117,7 +136,7 @@ var TeamProto = {
 function Team(name){
 	this.name = name;
 	this.kit = Kits[name] ? Kits[name] : Kits.default;
-	this.setEmptySeasons(2000, 2013);
+	this.setEmptySeasons(yearsRange);
 };
 
 Team.prototype = TeamProto;

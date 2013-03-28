@@ -1,25 +1,10 @@
 
-// if (false) { switchYStat(); initAxis(); }
-
-////////////////////////////////////////////
-// show data bit
-////////////////////////////////////////////
-
-
 var margin = { top: 20, right: 0, bottom: 30, left: 50 },
-    w = 800 - margin.left - margin.right,
+    w = 1200 - margin.left - margin.right,
     h = 600 - margin.top - margin.bottom;
     padding = 0;
 
 var transTime = 1500;
-
-function n_to_date (n, period) {
-	var a = new Date( period.start, 7, 13 )
-	var b = new Date( period.end, 5, 19 )
-	return new Date( a + ((b - a) / n) )
-}
-
-
 
 // var winner_data = d3.range(0, 38).map(function(d, n){ 
 // 	return {
@@ -27,6 +12,8 @@ function n_to_date (n, period) {
 // 		date: n_to_date( d )
 // 	}
 // });
+
+// if (false) { switchYStat(); initAxis(); }
 
 var cycle = function (arr) {
 	var i = 0;	
@@ -75,12 +62,21 @@ function switchYStat() {
 }
 
 function dataReady() {
+
+	window.c = _.keys(teams);
 	window.data = _.map(teams, function (team) {
 		var seasons = _(yearsRange).map(function (year) {
 			var t   = team.seasons[year],
 			    cpp = t.cost / t.currentPoints;
 			return { year:year, cpp:cpp, cost:t.cost, points:t.currentPoints }
 		});
+
+		seasons = _.filter(seasons, function(season) {
+			// console.log(season.cost)
+			return season.points && ! isNaN(season.cost) 
+		})
+
+
 		return seasons // { name:name, seasons:seasons }
 	});
 
@@ -90,8 +86,8 @@ function dataReady() {
 	// min = min > 0 ? 0 : min; //
 	// max = max < 3 ? 3 : max; // hack for ppg
 
-	x.domain([ 21, 300 ]).range([ margin.left, w ]);
-	y.domain([ 40, 95 ]).range([ h, margin.bottom ]);
+	x.domain([ 10, 300 ]).range([ margin.left, w ]);
+	y.domain([ 18, 95 ]).range([ h, margin.bottom ]);
 
 
 
@@ -120,7 +116,7 @@ function dataReady() {
 		var dots = svg1.selectAll("dot").data( team );
 
 		 dots.enter().append("circle")
-		     .attr("r", 1)
+		     .attr("r", function(d) { return 2 })
 		     .attr("cx", function(d) { return x(d.cost); })
 		     .attr("cy", function(d) { return y(d.points); })
 	})
