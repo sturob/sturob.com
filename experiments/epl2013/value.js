@@ -75,6 +75,15 @@ function switchYStat() {
 }
 
 function dataReady() {
+	window.data = _.map(teams, function (team) {
+		var seasons = _(yearsRange).map(function (year) {
+			var t   = team.seasons[year],
+			    cpp = t.cost / t.currentPoints;
+			return { year:year, cpp:cpp, cost:t.cost, points:t.currentPoints }
+		});
+		return seasons // { name:name, seasons:seasons }
+	});
+
 	// var max =  d3.max(teamArray, function (d){ return d[ currentize(stat) ] });
 	// var min =  d3.min(teamArray, function (d){ return d[ currentize(stat) ] });
 
