@@ -1,6 +1,6 @@
 
 var margin = { top: 20, right: 0, bottom: 30, left: 50 },
-    w = 620 - margin.left - margin.right,
+    w = 320 - margin.left - margin.right,
     h = 600 - margin.top - margin.bottom;
     padding = 0;
 
@@ -9,11 +9,27 @@ var championsPoints = 95,
     safetyPoints = 40;
 
 
+
+var transTime = 1500;
+
 var period = {
-	end: 2012
+	end: 2013
 };
 period.start = period.end - 1;
 period.file = period.start + '-' + (period.end - 2000) + '.csv';
+
+function n_to_date (n) {
+	var a = new Date(period.start, 7, 13)
+	var b = new Date(period.end, 5, 19)
+	return new Date( a + ((b - a) / n) )
+}
+
+var winner_data = d3.range(0,38).map(function(d, n){ 
+	return {
+		points: championsPoints/38 * d,
+		date: n_to_date( d )
+	}
+});
 
 var cycle = function (arr) {
 	var i = 0;	
@@ -22,14 +38,17 @@ var cycle = function (arr) {
 	}
 }
 
-
 var interpols = {
-	points: 'monotone',
+	points: 'step-after',
 	ppg: 'monotone',
 	goalsScored: 'monotone', 
 	goalDiff: 'monotone'
 };
+
 var nextStat = cycle([ 'points', 'ppg', 'goalsScored', 'goalDiff' ]);
+
+var div = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
+
 var teams = {},
     x = d3.time.scale(),
   	y = d3.scale.linear();
@@ -54,7 +73,7 @@ function switchYStat() {
 	document.title = stat;
 	initGraph( stat );
 	update( stat );
-	var t = svg1.transition().duration(1500);
+	var t = svg1.transition().duration(transTime);
 	t.select(".y.axis").call( yAxe );
 }
 
@@ -63,12 +82,11 @@ function initGraph(stat) {
 	var min =  d3.min(teamArray, function(d){ return d[ currentize(stat) ] });
 
 	min = min > 0 ? 0 : min; //
-
-	max = max < 3 ? 3 : max;
+	max = max < 3 ? 3 : max; // hack for ppg
 
 	x.domain([ new Date(period.start, 7, 13), new Date(period.end, 5, 19) ])
 	 .range([ margin.left, w ]);
-	y.domain([ min, max ]).range([ h, margin.bottom ]);	
+	y.domain([ min, max ]).range([ h - 480, margin.bottom ]);
 }
 
 
@@ -91,31 +109,19 @@ function initAxis () {
 
 function loadCSV(matches) {
 	matches.forEach( populateTeamResults ); // Matches -> Team + Results
-	
-	// club titles
-	window.teamArray = _.map(teams, function(t){ 
-		return t
-	});
 
-	window.data = _.map(teams, function(t, name){ 
+	// club titles
+	window.teamArray = _.chain(teams)
+	                    .map(function(t){ return t })
+	                    .sortBy(function(t) { return t.currentPoints })
+	                    .value();
+
+	window.results = _.map(teamArray, function(t, name){ 
 		return t.results
 	});
 
 	switchYStat();
-
 	initAxis();
-
-	var guidelines = svg1.append("svg:g")
-			                 .attr('class', 'guidelines')
-			                 .attr("transform", "translate("+ padding + ", " + padding + ")");
-
-	guidelines.append("svg:line")
-	          .attr("x1", 0).attr("y1", d3.round(y(championsPoints)))
-	          .attr("x2", w).attr("y2", d3.round(y(championsPoints)));
-
-	guidelines.append("svg:line")
-	          .attr("x1", 0).attr("y1", d3.round(y(safetyPoints)))
-	          .attr("x2", w).attr("y2", d3.round(y(safetyPoints)));
 }
 
 
@@ -123,26 +129,89 @@ function currentize(stat) {
 	return 'current' + stat[0].toUpperCase() + stat.slice(1);
 }
 
+
 function update(yStat){
   var line = d3.svg.line()
       .interpolate( interpols[stat] )
       .x(function(d) { return x(d.date); })
-      .y(function(d) { return y(d[yStat]); });
+      .y(function(d, n) { return y(d[yStat]) });
 
-  window.lines = svg1.selectAll('path').data( data );
+  var w_line = d3.svg.line()
+      .interpolate( 'linear' )
+      .x(function(d) { return x(d.date); })
+      .y(function(d, n) { return y('points') } );
+
+  window.lines = svg1.selectAll('path.line').data( results );
 
   lines.enter().append('path').attr("d", line)
        .on("click", function(d, n) {
-      	 console.log( teamArray[n].name )
+      	 console.log( teamArray[n].name );
       	 return false;
        })
+       .attr("transform", function(d, n) {
+       		return "translate(0, " + (100 * n) + ')'
+       })
+       // .attr('stroke-dasharray', function(d, n) { return 8*(n+1) + ',1' })
        .attr("class", "line")
-       .attr('stroke', function(d, n) {
-         return Kits[teamArray[n].name] ? Kits[teamArray[n].name].base : '#888'
-       });
+       // .attr('stroke', function(d, n) {
+       //   return teamArray[n].kit.base
+       // });
 
-  lines.transition().duration(1500).attr("d", line);
-  lines.exit().remove();		
+  lines.transition().duration(transTime).attr("d", line);
+  lines.exit().remove();
+
+
+  window.winners = svg1.selectAll('path.winners-line').data( winner_data );
+ 
+ 	winners.enter().append('path').attr("d", w_line)
+       .attr("transform", function(d, n) {
+       	  return "translate(0, " + (20 * (20-n)) + ')'
+       	})
+       // .attr('stroke-dasharray', function(d, n) { return 8*(n+1) + ',1' })
+       .attr("class", "line-winners")
+
+  
+
+
+	// var dots = svg1.selectAll("dot").data( results[19] );
+
+ //  dots.enter().append("circle")
+ //      .attr("r", 1.5)
+ //      .attr("cx", function(d) { return x(d.date); })
+ //      .attr("cy", function(d) { return y(d[yStat]); })
+ //      .on("mouseover", function(d) {      
+ //          div.transition().duration(200).style("opacity", .9);
+ //          div.html(d.result).style("left", (d3.event.pageX) + "px")
+ //                            .style("top", (d3.event.pageY - 28) + "px");
+ //          })
+ //      .on("mouseout", function(d) {
+ //          div.transition().duration(500).style("opacity", 0);
+ //      });
+
+	// dots.transition().duration(transTime)
+	//     .attr("cx", function(d) { return x(d.date); })
+ //      .attr("cy", function(d) { return y(d[yStat]); });
+
+	// dots.exit().remove();
+
+
+
+  window.short = svg1.selectAll('path.line-2').data( results );
+  short.enter().append('path').attr("d", line)
+       // .attr('stroke-dasharray', function(d, n) { return 8*(n+1) + ',1' })
+       .attr("class", "line-2")
+       .attr("transform", function(d, n) {
+       	 return "translate(0, " + (20 * (20-n)) + ')'
+       })
+
+       // .attr('stroke', function(d, n) {
+       //   return teamArray[n].kit.v
+       // });
+  short.transition().duration(transTime).attr("d", line);
+  short.exit().remove();
+
+
+
 
 	window.tNames = svg1.selectAll("text").data(teamArray);
 
@@ -150,14 +219,26 @@ function update(yStat){
 
 	tNames.enter()
         .append("svg:text")
-        .attr("x", function(datum, index) { return 540 })
+        .attr("x", function(datum, n) { return 540 })
         .attr("y", function(datum) { return y(datum[current]); })
         .attr("class", "team-name")
         .text(function(datum) { return datum.name });
 
- 	tNames.transition().duration(1500).attr('y', function(d) { 
+ 	tNames.transition().duration(transTime).attr('y', function(d) { 
  		return y(d[current])
  	});
+
+	// window.guidelines = svg1.append("svg:g")
+	// 	                 .attr('class', 'guidelines')
+	// 	                 .attr("transform", "translate("+ padding + ", " + padding + ")");
+
+ // 	guidelines.append("svg:line")
+	//           .attr("x1", 0).attr("y1", d3.round(y(championsPoints)))
+	//           .attr("x2", w).attr("y2", d3.round(y(championsPoints)));
+
+	// guidelines.append("svg:line")
+	//           .attr("x1", 0).attr("y1", d3.round(y(safetyPoints)))
+	//           .attr("x2", w).attr("y2", d3.round(y(safetyPoints)));
 }
 
 
@@ -178,6 +259,7 @@ function populateTeamResults(match, n) {
 
 		t.results.push({
 			date: new Date( match.date() ),
+			result: match.toString(),
 			ppg: t.currentPpg,
 			goalDiff:  t.currentGoalDiff,
 			points:    t.currentPoints,
@@ -204,6 +286,7 @@ var TeamProto = {};
 
 function Team(name){
 	this.name = name;
+	this.kit = Kits[name] ? Kits[name] : Kits.default;
 	this.results = [];
 	this.currentPpg = 0;
 	this.currentPoints = 0;
