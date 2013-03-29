@@ -42,7 +42,7 @@ Seasons.mergeSpendingData = function(spendData) {
 			// if (isNaN(yearly_cost)) { cost = 0; }
 			if (teams[ club.team ]) {
 				if (isNaN(yearly_cost)) {
-					
+
 				} else {
 					teams[ club.team ].seasons[year].cost = yearly_cost;						
 				}
@@ -130,6 +130,16 @@ var TeamProto = {
 				currentGoalDiff: 0,  currentGoalsScored: 0
 			};
 		})
+	},
+	seasonsInPremiership: function() {
+		return _(this.seasons).filter(function (s) {
+			return s.currentPoints > 0
+		}).length
+	},
+	totalPoints: function() {
+		return _.reduce(this.seasons, function (memo, season) {
+			return memo + season.currentPoints; 
+		}, 0);
 	}
 };
 

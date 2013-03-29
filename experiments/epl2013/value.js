@@ -4,17 +4,6 @@ var margin = { top: 20, right: 0, bottom: 50, left: 50 },
     h = 600 - margin.top - margin.bottom;
     padding = 0;
 
-var transTime = 1500;
-
-// var winner_data = d3.range(0, 38).map(function(d, n){ 
-// 	return {
-// 		points: championsPoints/38 * d,
-// 		date: n_to_date( d )
-// 	}
-// });
-
-// if (false) { switchYStat(); initAxis(); }
-
 var cycle = function (arr) {
 	var i = 0;	
 	return function() {
@@ -23,9 +12,6 @@ var cycle = function (arr) {
 }
 
 var nextStat = cycle([ 'points', 'ppg', 'goalsScored', 'goalDiff' ]);
-
-var div = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
-
 
 var x = d3.scale.linear(),
   	y = d3.scale.linear();
@@ -45,22 +31,26 @@ $("body").append('<div id="teams">');
 
 // ---------------------------------
 
-function switchYStat() {
-	// window.stat = nextStat();
-	// document.title = stat;
-	// initGraph( stat );
-	// update( stat );
-	// var t = svg1.transition().duration(transTime);
-	// t.select(".y.axis").call( yAxe );
-}
 
 function dataReady() {
-
 	window.c = _.keys(teams);
 
 	_.each(c, function(t, n) {
-		$('#teams').append( t + " " )
-	})
+		$('#teams').append( '<b>' + t + '</b> ' )
+	});
+
+	$('b').on('click', function() {
+		var teamName = $(this).text();
+		var n =  c.indexOf( teamName );
+
+		$('text.year').hide();
+		$('text.year.n' + n).show()
+	
+		$('b').removeClass('selected')
+		$(this).addClass('selected')
+		d3.selectAll('path.line').classed('selected', false)
+		d3.select('path.line.n' + n).classed('selected', true)
+	});
 
 	window.data = _.map(teams, function (team) {
 		var seasons = _(yearsRange).map(function (year) {
@@ -68,14 +58,11 @@ function dataReady() {
 			    cpp = t.cost / t.currentPoints;
 			return { year:year, cpp:cpp, cost:t.cost, points:t.currentPoints }
 		});
-
 		seasons = _.filter(seasons, function(season) {
-			// console.log(season.cost)
 			return season.points && ! isNaN(season.cost) 
 		})
-
 		seasons.team = team; // hacky
-		return seasons // { name:name, seasons:seasons }
+		return seasons;
 	});
 
 	// var max =  d3.max(teamArray, function (d){ return d[ currentize(stat) ] });
@@ -95,19 +82,13 @@ function dataReady() {
 	    .x(function(d, n) { return x(d.cost); })
 	    .y(function(d, n) { return y(d.points) })
 
-
-	window.lines = svg1.selectAll('path.line').data( data )	    
-
-
-	// debugger;
+	window.lines = svg1.selectAll('path.line').data( data );
 
 	lines.enter()
-		.append('path').attr("d", line).attr("class", "line").attr('stroke', function(d, n) {
-         // return teams[ c[n] ].kit.base
-       })
-			.on("click", function(d, n, line) {
+		.append('path').attr("d", line)
+		  .attr('class', function (d, n) { return 'line n' + n })
+			.on("click", function (d, n, line) {
 				console.log( d.team.name );
-				$('*.n'+n).toggle();
 				return false;
 			});
 
@@ -115,8 +96,7 @@ function dataReady() {
 		var dots = svg1.selectAll("text.n" + n).data( team );
 
 		 dots.enter().append("text")
-		 		 .attr('class', 'n'+n)
-		 		 .attr('class', 'year')
+		 		 .attr('class', 'year n' + n)
 		     // .attr("width", function(d) { return 4 })
 		     // .attr("height", function(d) { return 4 })
 		     .text(function(d){ return (d.year - 1) + "-" + (d.year - 2000) })
@@ -186,3 +166,12 @@ function update(yStat){
 
 
 
+
+function switchYStat() {
+	// window.stat = nextStat();
+	// document.title = stat;
+	// initGraph( stat );
+	// update( stat );
+	// var t = svg1.transition().duration(transTime);
+	// t.select(".y.axis").call( yAxe );
+}

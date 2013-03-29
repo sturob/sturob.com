@@ -10,6 +10,8 @@
 //  HTAG = Half Time Away Team Goals
 //  HTR = Half Time Result (H=Home Win, D=Draw, A=Away Win)
 
+
+
 var Match = {
 	date: function() {
 		var date = this.Date.split('/').reverse();
@@ -47,5 +49,9 @@ var Match = {
 			else if (diff < 0) return 0;
 			else return 1;
 		}
+	},
+	toString: function() {
+		var score = this.HomeTeam + ' ' + this.FTHG + '-' + this.FTAG + ' ' + this.AwayTeam;
+		return this.date() + ': ' + score;
 	}
 }
