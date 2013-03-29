@@ -33,18 +33,27 @@ $("body").append('<div id="teams">');
 
 
 function dataReady() {
-	window.c = _.keys(teams);
+	window.teamsArray = _.chain(teams).sortBy(function (team) {
+		return team.totalPoints()
+	}).sortBy(function (team) {
+		return team.seasonsInPremiership()
+	}).reverse().value();
 
-	_.each(c, function(t, n) {
+	var teamNames = teamsArray.map(function (team) { return team.name })
+
+	_.each(teamNames, function (t, n) {
 		$('#teams').append( '<b>' + t + '</b> ' )
 	});
 
-	$('b').on('click', function() {
-		var teamName = $(this).text();
-		var n =  c.indexOf( teamName );
+	$('body').on('click', function() {
+		console.log('boom')
+	});
 
+	$('b').on('click', function () {
+		var teamName = $(this).text();
+		var n =  teamNames.indexOf( teamName );
 		$('text.year').hide();
-		$('text.year.n' + n).show()
+		$('text.year.n' + n).show();
 	
 		$('b').removeClass('selected')
 		$(this).addClass('selected')
@@ -52,13 +61,13 @@ function dataReady() {
 		d3.select('path.line.n' + n).classed('selected', true)
 	});
 
-	window.data = _.map(teams, function (team) {
+	window.data = _.map(teamsArray, function (team) {
 		var seasons = _(yearsRange).map(function (year) {
 			var t   = team.seasons[year],
 			    cpp = t.cost / t.currentPoints;
 			return { year:year, cpp:cpp, cost:t.cost, points:t.currentPoints }
 		});
-		seasons = _.filter(seasons, function(season) {
+		seasons = _.filter(seasons, function (season) {
 			return season.points && ! isNaN(season.cost) 
 		})
 		seasons.team = team; // hacky
