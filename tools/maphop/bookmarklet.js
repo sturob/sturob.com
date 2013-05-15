@@ -16,9 +16,9 @@
     return keys;
   }
 
-  function A() {
-    var pos = { site: '', lat: 0, lng: 0, dir: 0 };
+  var pos = { site: '', lat: 0, lng: 0, dir: 0 };
 
+  function A() {
     function google() {
       var url = gApplication.getPageUrl();
       var keys = url2keys(url);
@@ -52,17 +52,26 @@
 
   function B(site, a) {
     var sites = {
-      google: 'https://maps.google.co.uk/?cbp=12,0,,0,0&ie=UTF8&vpsrc=4&layer=c&ll=' 
+      google: 'https://maps.google.co.uk/?cbp=12,' + a.dir + ',,0,0&ie=UTF8&vpsrc=4&layer=c&ll=' 
                + a.lat + ',' + a.lng + '&spn…=15&cbll=' + a.lat + ',' + a.lng,
       bing:   'http://www.bing.com/maps/default.aspx?cp=' + a.lat + '~' + a.lng + '&lvl=18&sty=b',
-      nokia:  'http://here.com/'+ a.lat + ',' + a.lng + ',18.8,16,68,3d.day'
+      nokia:  'http://here.com/'+ a.lat + ',' + a.lng + ',17,' + a.dir + ',0,3d.day' // 0->65
     }
-    window.location = sites[site];
+    return sites[site];
   }
 
+  if (window.gumtree) {
+    if (! gumtree.state.vip_mapLarge) {
+      alert('load large map first')
+      return;
+    }
+    pos.lng = gumtree.state.vip_mapLarge.lon;
+    pos.lat = gumtree.state.vip_mapLarge.lat;
+    window.location = B('bing', pos);
+  }
 
   var CYCLE = { nokia:'google', google:'bing', bing:'nokia' };
 
   var a = A();
-  a && B(CYCLE[a.site], a);
+  if (a) window.location = B(CYCLE[a.site], a);
 })();
