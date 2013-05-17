@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>B&#x2AF7; &mdash; blimpeye</title>
+  <title>Hindenburg bookmarklet &#x2AF7; Switch between maps</title>
   <style>
     * {
       font-family: sans-serif;
@@ -10,7 +10,7 @@
     body {
       width: 600px;
       margin: auto;
-      line-height: 1.4em;
+      line-height: 1.6em;
     }
 
     img {
@@ -20,34 +20,43 @@
     }
 
     body h1 {
-      /*text-decoration: underline;*/
+      /* text-decoration: underline; */
+    }
+
+    a {
+      color: #555;
+    }
+
+    a.bookmarklet {
+      color: #00f;
     }
   </style>
 </head>
 <body>
-<h1>B&#x2AF7; &mdash; blimpeye</h1>
+<h1>Hindenburg bookmarklet &#x2AF7;</h1>
 
-<p>One click jump between Google Streetview, Bing Bird's Eye View + Nokia Here 3D Maps.</p>
+<p>Switch between <a href="http://maps.google.com/">Google Streetview</a>, <a href="http://maps.bing.com/">Bing Birds Eye</a> + <a href="http://here.com">Nokia Here 3D</a> with one click.</p>
 
-<p>Google, Bing and Nokia each have different satellite, aerial and streetview images. Who has the best? That depends on where you want to view.</p>
+<p>Google, Bing and Nokia each have different databases of aerial, satellite and street imagery. This bookmarklet makes it easy to switch between each, while maintaining your geo-location.</p>
+
+<h2>To Install</h2>
+<p>
+  Drag this link: <a class="bookmarklet">H&#x2AF7;</a> to your bookmarks bar... Click it when you are on Google Maps, Bing Maps or here.com.
+</p>
 
 <p>
   <img src="bookmarklet.png">
 </p>
 
-
-<h2>To Install</h2>
-<p>
-  Drag this link:  <a class="bookmarklet">B&#x2AF7;</a> to your bookmarks bar
-</p>
-
-<p>
-  blimpeye is a bookmarklet, a tiny program that lives inside a browser bookmark.
-  You can add it to your browser like you'd add any ordinary bookmark.
-  Like a bookmark, click it to execute it.
-</p>
+<p>By <a href="http://sturob.com/">Stuart Robinson</a></p>
 
 
+<!-- 
+TODO
+    fix here.com jumping north
+    sync zoom level
+    new google maps
+ -->
 
 <script class="load-script-function" type="text">
   function(url) {
