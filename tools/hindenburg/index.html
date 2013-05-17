@@ -95,6 +95,8 @@ TODO
     // this assumes the js file is in the same folder as this file
     var bookmarkletLocation = window.location.href.match(/.*\//)[0];
 
+    bookmarkletLocation = '//raw.github.com/sturob/bookmarklets/master/'
+
     var url = bookmarkletLocation + bookmarkletFilename;
 
     // get loadScript function and remove extra spaces
@@ -117,7 +119,7 @@ TODO
   }
 
   $(function () {
-    makeBookmarklet($('.bookmarklet'), 'bookmarklet.js');
+    makeBookmarklet($('.bookmarklet'), 'hindenburg.js');
   });
 </script>
 </body>
