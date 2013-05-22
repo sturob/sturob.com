@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Hindenburg bookmarklet &#x2AF7; Switch between maps</title>
+  <title>Hindenburg bookmarklet &#x2AF7; Switch between map sites</title>
   <style>
     * {
       font-family: sans-serif;
@@ -35,9 +35,9 @@
 <body>
 <h1>Hindenburg bookmarklet &#x2AF7;</h1>
 
-<p>Switch between <a href="http://maps.google.com/">Google Streetview</a>, <a href="http://maps.bing.com/">Bing Birds Eye</a> + <a href="http://here.com">Nokia Here 3D</a> with one click.</p>
+<p>Scout locations more easily.</p> <p>Switch between <a href="http://maps.google.com/">Google Maps</a>, <a href="http://maps.bing.com/">Bing Maps</a> + <a href="http://here.com">Nokia Here</a> with one click.</p>
 
-<p>Google, Bing and Nokia each have different databases of aerial, satellite and street imagery. This bookmarklet makes it easy to switch between each, while maintaining your geo-location.</p>
+<p>Google, Bing and Nokia each have their own collections of aerial imagery. This bookmarklet makes it easy to switches from one to the next, maintaining your geolocation.</p>
 
 <h2>To Install</h2>
 <p>
@@ -95,8 +95,9 @@ TODO
     // this assumes the js file is in the same folder as this file
     var bookmarkletLocation = window.location.href.match(/.*\//)[0];
 
-    bookmarkletLocation = '//raw.github.com/sturob/bookmarklets/master/'
-
+    var prod = (window.location.hostname.substr(-3) == 'com');
+    bookmarkletLocation = prod ? '//raw.github.com/sturob/bookmarklets/master/' : 'http://bookmarklets.dev/'
+  
     var url = bookmarkletLocation + bookmarkletFilename;
 
     // get loadScript function and remove extra spaces
