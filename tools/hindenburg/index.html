@@ -15,12 +15,21 @@
 
     img {
       display: block;
-      margin: 6px auto;
-      width: 550px;
+      margin-top: -16px;
+      width: 616px;
+      /*border: 1px solid black;*/
+      margin-left: -8px;
+    
     }
 
     body h1 {
       /* text-decoration: underline; */
+    }
+
+    h2 {
+      padding-top: 20px;
+      margin-bottom: 0;
+      padding-bottom: 0;
     }
 
     a {
@@ -35,28 +44,22 @@
 <body>
 <h1>Hindenburg bookmarklet &#x2AF7;</h1>
 
-<p>Scout locations more easily.</p> <p>Switch between <a href="http://maps.google.com/">Google Maps</a>, <a href="http://maps.bing.com/">Bing Maps</a> + <a href="http://here.com">Nokia Here</a> with one click.</p>
+<h2>Scout locations more easily</h2>
 
-<p>Google, Bing and Nokia each have their own collections of aerial imagery. This bookmarklet makes it easy to switches from one to the next, maintaining your geolocation.</p>
+<p>Each map provider (<a href="http://maps.google.com/">Google</a>, <a href="http://maps.bing.com/">Bing</a>, <a href="http://here.com">Nokia Here</a>) has different aerial imagery.</p> <p>This bookmarklet lets you switch between them, while maintaining your geolocation.</p>
 
 <h2>To Install</h2>
 <p>
-  Drag this link: <a class="bookmarklet">H&#x2AF7;</a> to your bookmarks bar... Click it when you are on Google Maps, Bing Maps or here.com.
+  Drag this link: <a class="bookmarklet">H&#x2AF7;</a> to your bookmarks bar.</p> 
 </p>
 
+<h2>To Use</h2>
 <p>
+  <p>Click the bookmarklet when you are on Google Maps, Bing Maps or here.com. The following will happen:
   <img src="bookmarklet.png">
 </p>
 
 <p>By <a href="http://sturob.com/">Stuart Robinson</a></p>
-
-
-<!-- 
-TODO
-    fix here.com jumping north
-    sync zoom level
-    new google maps
- -->
 
 <script class="load-script-function" type="text">
   function(url) {
