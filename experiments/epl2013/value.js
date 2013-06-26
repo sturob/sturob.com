@@ -116,6 +116,8 @@ function dataReady() {
 			     	return false;
 		     });
 	})
+  
+  $('text.year').hide();
 
 }
 
