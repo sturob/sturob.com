@@ -1,0 +1,84 @@
+* {
+	font-family: Helvetica, Verdana, Sans-Serif;
+}
+
+svg {
+/* 	background: url(cup.png) no-repeat 10% 93%; */
+	background-size: 4%;
+}
+
+#Rectangle-1 {
+/* 	fill-opacity: 0.6; */
+/* 	fill: #000; */
+}
+
+#ui { 
+	position: absolute;
+	text-align: right;
+	left: 340px;
+	top: 20px;
+	width: 300px;
+	font-size: 11px;
+	color: #555;
+}
+option {
+	font-size: 11px;
+}
+
+image {
+	opacity: 0.9;
+}
+
+body.dark {
+	background: black;
+}
+
+#Team-0, #Team-1, #Team-2, #Team-3 {
+	-webkit-font-smoothing: antialiased;
+}
+
+body.dark #Rectangle-1 {
+	fill-opacity: 1;
+	fill: #111;
+} 
+
+polygon {
+/* 	fill: #888; */
+}
+
+body.dark polygon {
+	fill: #ccc;
+}
+
+
+
+body.dark path#Line-19, 
+body.dark path#Line-18,
+body.dark path#Line-17,
+body.dark path#Line-16, 
+body.dark path#Line-15,
+body.dark path#Line-14,
+body.dark path#Line-13, 
+body.dark path#Line-12, 
+body.dark path#Line-11,
+body.dark path#Line-10, 
+body.dark path#Line-9, 
+body.dark path#Line-8, 
+body.dark path#Line-7, 
+body.dark path#Line-6, 
+body.dark path#Line-5, 
+body.dark path#Line,
+body.dark path#Line-4, 
+body.dark path#Line-3, 
+body.dark path#Line-2, 
+body.dark path#Line-1 {
+	stroke: #888;
+}
+
+body.dark text#World-Cup-2014-Plann tspan {
+	fill: #fff;
+}
+text#World-Cup-2014-Plann tspan {
+	-webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: greyscale;
+}
