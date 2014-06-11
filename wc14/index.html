@@ -882,12 +882,17 @@
 		};
 	}
 
+	// should have probably used Moment.js
 	var Datetime = {
 		days: [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ],
 		months: [ '', '', '', '', '', 'Jun', 'July' ],
 		dt: function(str, tz) {
-			var tmpDate = new Date( str );
-			return new Date( (tmpDate - 0) + ((tz - 0) * 60 * 60 * 1000 ) )
+			// console.log( str )
+			var oneHour =  60 * 60 * 1000
+			var tmpDate = new Date( str ); 
+			var tzOffset = ((tz - 0) * oneHour);
+			var	stOffset = Settings.isSummertime ? oneHour : 0;
+			return new Date( (tmpDate - 0) + tzOffset + stOffset - oneHour); // the embeded strings have +1:00 in them
 		},
 		niceDay: function (dt) {
 			return this.days[ dt.getDay() ].toUpperCase()
@@ -901,7 +906,7 @@
 			if (! Settings.is24h) {
 				postfix = dt.getHours() > 11 ? 'pm' : 'am';
 			}
-			var minutes = Settings.is24h ? (dt.getMinutes() == '0' ? ':00' : dt.getMinutes()) :
+			var minutes = Settings.is24h ? (dt.getMinutes() == '0' ? ':00' : ':' + dt.getMinutes()) :
 			                               (dt.getMinutes() == '0' ? '' : dt.getMinutes())
 
 			return hours + minutes + postfix;
@@ -922,6 +927,12 @@
 		});
 	}
 
+	function isDST() {
+		var d = new Date();
+		var d2 = new Date(d - 0 + 1000*60*60*24*182);
+		return (d.getTimezoneOffset() < d2.getTimezoneOffset());
+	}
+
 	var el = {
 		timezone: document.getElementById('timezone'),
 		summertime: document.getElementById('summertime'),
@@ -929,7 +940,6 @@
 	};
 
 	var d = new Date();
-	var dstOffsetMinutes = d.getTimezoneOffset();
 
 	var Settings = {
 		is24h: true,
@@ -942,13 +952,14 @@
 			// localStorage
 		},
 		detect: function () {
-			this.isSummertime = dstOffsetMinutes != 0;
-			this.timezone = d.getUTCHours() - d.getHours() - (dstOffsetMinutes / 60);
+			this.isSummertime = isDST();
+			this.timezone = d.getUTCHours() - d.getHours() + (this.isSummertime ? 1 : 0);
 		}
 	};
 
 	Settings.detect();
 	Settings.load(); // overwrite detected values
+	updateDatetimes()
 
 	// update UI
 	for (var option, j = 0; option = el.timezone.options[j]; j++) {
