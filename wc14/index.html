@@ -846,9 +846,9 @@
 
 
 	var forEach = function(arr, callback, context) {
-	    for (var i = 0, l = arr.length; i < l; i++) {
-	        callback.call(context, arr[i], i, arr);
-	    }
+		for (var i = 0, l = arr.length; i < l; i++) {
+			callback.call(context, arr[i], i, arr);
+		}
 	}
 
 	// should have probably used Moment.js
@@ -883,9 +883,10 @@
 
 	function nudgeTime (elDatetime) {
 		var dt = Datetime.dt(elDatetime.getAttribute('sketch:datetime'), Settings.timezone);
-		elDatetime.children[1].textContent = Datetime.niceDay(dt);
-		elDatetime.children[2].textContent = Datetime.niceDate(dt);
-		elDatetime.children[3].textContent = Datetime.niceTime(dt);
+		var texts = elDatetime.getElementsByTagName('text');
+		texts[0].textContent = Datetime.niceDay(dt);
+		texts[1].textContent = Datetime.niceDate(dt);
+		texts[2].textContent = Datetime.niceTime(dt);
 	}
 
 	function updateDatetimes() {
@@ -942,18 +943,19 @@
 		el.summertime.checked = Settings.isSummertime;
 		
 		// UI onchange
-		el.time24.onchange = function time24Changed () {
+		el.time24.onchange = function () {
 			Settings.is24h = el.time24.checked;
 			Settings.save();
 			updateDatetimes();
 		}
-		el.summertime.onchange = function time24Changed () {
+		el.summertime.onchange = function () {
 			Settings.isSummertime = el.summertime.checked;
 			Settings.save();
 			updateDatetimes();
 		}
-		el.timezone.onchange = function timezoneChanged(){
-			Settings.timezone = this.selectedOptions[0].value - 0;
+		el.timezone.onchange = function (){
+			var tz = el.timezone.options[ el.timezone.selectedIndex ].value - 0;
+			Settings.timezone = tz - 0;
 			Settings.save();
 			updateDatetimes();
 		};
