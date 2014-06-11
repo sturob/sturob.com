@@ -896,42 +896,20 @@
 			return dt.getDate() + ' ' +  this.months[ dt.getMonth() ]
 		},
 		niceTime: function (dt) {
-			// 24h
-			return dt.getHours() + ':' + (dt.getMinutes() == '0' ? '00' : dt.getMinutes())
+			var hours = Settings.is24h ? dt.getHours() : dt.getHours() % 12;
+			var postfix = '';
+			if (! Settings.is24h) {
+				postfix = dt.getHours() > 11 ? 'pm' : 'am';
+			}
+			var minutes = Settings.is24h ? (dt.getMinutes() == '0' ? ':00' : dt.getMinutes()) :
+			                               (dt.getMinutes() == '0' ? '' : dt.getMinutes())
+
+			return hours + minutes + postfix;
 		}
 	}
 
-	var el = {
-		timezone: document.getElementById('timezone'),
-		summertime: document.getElementById('summertime'),
-		time24: document.getElementById('time24')
-	};
-
-	var d = new Date();
-	var dstOffsetMinutes = d.getTimezoneOffset();
-
-	var setting = {
-		is24h: true,
-		isSummertime: dstOffsetMinutes != 0,
-		timezone: 0
-	};
-
-	setting.timezone = d.getUTCHours() - d.getHours() - (dstOffsetMinutes / 60);
-
-	// set form elements
-
-
-	// save + load if localStorage
-
-	function timezoneChanged(){
-		setting.timezone = this.selectedOptions[0].value - 0;
-		updateDatetimes();
-	}
-
-	el.timezone.onchange = timezoneChanged;
-
-	function nudgeTime(elDatetime) {
-		var dt = Datetime.dt(elDatetime.getAttribute('sketch:datetime'), setting.timezone);
+	function nudgeTime (elDatetime) {
+		var dt = Datetime.dt(elDatetime.getAttribute('sketch:datetime'), Settings.timezone);
 		elDatetime.children[1].textContent = Datetime.niceDay(dt);
 		elDatetime.children[2].textContent = Datetime.niceDate(dt);
 		elDatetime.children[3].textContent = Datetime.niceTime(dt);
@@ -943,6 +921,61 @@
 			nudgeTime(elDatetime);
 		});
 	}
+
+	var el = {
+		timezone: document.getElementById('timezone'),
+		summertime: document.getElementById('summertime'),
+		time24: document.getElementById('time24')
+	};
+
+	var d = new Date();
+	var dstOffsetMinutes = d.getTimezoneOffset();
+
+	var Settings = {
+		is24h: true,
+		isSummertime: false,
+		timezone: 0,
+		load: function () {
+			// localStorage
+		},
+		save: function () {
+			// localStorage
+		},
+		detect: function () {
+			this.isSummertime = dstOffsetMinutes != 0;
+			this.timezone = d.getUTCHours() - d.getHours() - (dstOffsetMinutes / 60);
+		}
+	};
+
+	Settings.detect();
+	Settings.load(); // overwrite detected values
+
+	// update UI
+	for (var option, j = 0; option = el.timezone.options[j]; j++) {
+		if (option.value == Settings.timezone) {
+			el.timezone.selectedIndex = j;
+			break;
+		}
+	}
+	el.time24.checked = Settings.is24h;
+	el.summertime.checked = Settings.isSummertime;
+	
+	// UI onchange
+	el.time24.onchange = function time24Changed () {
+		Settings.is24h = el.time24.checked;
+		Settings.save();
+		updateDatetimes();
+	}
+	el.summertime.onchange = function time24Changed () {
+		Settings.isSummertime = el.summertime.checked;
+		Settings.save();
+		updateDatetimes();
+	}
+	el.timezone.onchange = function timezoneChanged(){
+		Settings.timezone = this.selectedOptions[0].value - 0;
+		Settings.save();
+		updateDatetimes();
+	};
 
 </script>
 
