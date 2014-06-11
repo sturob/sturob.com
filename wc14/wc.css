@@ -2,10 +2,20 @@
 	font-family: Helvetica, Verdana, Sans-Serif;
 }
 
+#fakezoom {
+	width: 330px;
+	height: 660px;
+	position: absolute;
+/* 	background:red; */
+	opacity: 0.5;
+	left: 161px;
+	top: 140px;
+}
+
 svg {
 /* 	font-size: 104%; */
 /* 	background: url(cup.png) no-repeat 10% 93%; */
-	background-size: 4%;
+/* 	background-size: 4%; */
 }
 
 #Rectangle-1 {
@@ -13,15 +23,17 @@ svg {
 /* 	fill: #000; */
 }
 
-#ui { 
+#ui {
 	position: absolute;
-	text-align: right;
-	left: 340px;
-	top: 20px;
-	width: 300px;
+	text-align: center;
+	top: 820px;
+	left: 100px;
+	right: 100px;
+/* 	background: red; */
 	font-size: 11px;
 	color: #555;
 }
+
 option {
 	font-size: 11px;
 }
