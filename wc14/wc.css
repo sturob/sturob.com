@@ -1,5 +1,10 @@
 * {
+	margin: 0;
 	font-family: Helvetica, Verdana, Sans-Serif;
+}
+
+body {
+	position: relative;
 }
 
 #fakezoom {
@@ -8,8 +13,8 @@
 	position: absolute;
 /* 	background:red; */
 	opacity: 0.5;
-	left: 161px;
-	top: 140px;
+	left: 154px;
+	top: 130px;
 }
 
 svg {
@@ -21,6 +26,11 @@ svg {
 #Rectangle-1 {
 /* 	fill-opacity: 0.6; */
 /* 	fill: #000; */
+}
+
+#wc {
+	position: relative;
+	width: 640px;
 }
 
 #ui {
