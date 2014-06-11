@@ -12,9 +12,10 @@ body {
 	height: 660px;
 	position: absolute;
 /* 	background:red; */
-	opacity: 0.5;
+	opacity: 1;
 	left: 154px;
 	top: 130px;
+	z-index: 1;
 }
 
 svg {
