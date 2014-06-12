@@ -28,7 +28,12 @@ h1 {
 	text-decoration: none;
 }
 
+
+body.dark p {
+	color: #999;
+}
 p {
+	margin-top: 24px;
 	font-size: 12px;
 	margin-bottom: 8px;
 }
