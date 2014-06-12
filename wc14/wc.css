@@ -40,13 +40,26 @@ svg {
 
 #ui {
 	position: absolute;
-	text-align: center;
-	top: 800px;
+	text-align: right;
+	top: 16px;
 	left: 100px;
-	right: 100px;
-/* 	background: red; */
+	right: 4px;
 	font-size: 11px;
 	color: #555;
+}
+
+#ui label {
+	background: #f7f7f7;
+	padding: 6px 8px;
+}
+
+#ui input {
+	position: relative;
+	top: 1px;
+}
+
+body.dark #ui label {
+		background: #222;
 }
 
 option {
@@ -68,16 +81,20 @@ body.dark {
 body.dark #Rectangle-1 {
 	fill-opacity: 1;
 	fill: #111;
-} 
+}
+
+body.dark #Big-G {
+	fill: #333;	
+}
+
 
 polygon {
 /* 	fill: #888; */
 }
 
 body.dark polygon {
-	fill: #ccc;
+	fill: #555;
 }
-
 
 
 body.dark path#Line-19, 
@@ -100,7 +117,7 @@ body.dark path#Line-4,
 body.dark path#Line-3, 
 body.dark path#Line-2, 
 body.dark path#Line-1 {
-	stroke: #888;
+	stroke: #555;
 }
 
 body.dark text#World-Cup-2014-Plann tspan {
