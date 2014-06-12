@@ -22,10 +22,15 @@ h1 {
 	font-size: 14px;
 }
 
-a {
+#header a {
 	font-size: 11px;
 	color: #3F58C0;
 	text-decoration: none;
+}
+
+p {
+	font-size: 12px;
+	margin-bottom: 8px;
 }
 
 #Flag-0 rect,
