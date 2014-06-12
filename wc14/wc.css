@@ -8,8 +8,35 @@ body {
 	position: relative;
 }
 
-text.match {
-	font-size: 105%;
+div#header {
+	z-index: 1;
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	width: 50%;
+	line-height: 0.9em;
+}
+
+h1 {
+	padding: 0;
+	font-size: 14px;
+}
+
+a {
+	font-size: 11px;
+	color: #3F58C0;
+	text-decoration: none;
+}
+
+#Flag-0 rect,
+#Flag-1 rect,
+#Flag-2 rect,
+#Flag-3 rect {
+	opacity: 0;
+}
+
+#Big-G {
+  fill: #444;
 }
 
 text {
@@ -41,9 +68,9 @@ svg {
 #ui {
 	position: absolute;
 	text-align: right;
-	top: 16px;
+	top: 14px;
 	left: 100px;
-	right: 4px;
+	right: 8px;
 	font-size: 11px;
 	color: #555;
 }
@@ -59,7 +86,12 @@ svg {
 }
 
 body.dark #ui label {
+	color: #888;
 		background: #222;
+}
+
+body.dark h1 {
+	color: #aaa;
 }
 
 option {
@@ -97,6 +129,8 @@ body.dark polygon {
 }
 
 
+body.dark path#Line-21,
+body.dark path#Line-20,
 body.dark path#Line-19, 
 body.dark path#Line-18,
 body.dark path#Line-17,
