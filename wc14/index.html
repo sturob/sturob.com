@@ -48,7 +48,8 @@
 			</select> -->
 			
 			<!-- <input id="summertime" type="checkbox"><label for="summertime">SummerTime/DST</label> -->
-			<input id="time24" type="checkbox"><label for="time24">24h</label>
+			<label for="time24"><input id="time24" type="checkbox">24h</label>
+			<label for="darkmode"><input id="darkmode" type="checkbox">Dark</label>
 			
 		</div>
 
@@ -893,46 +894,39 @@
 			nudgeTime(elDatetime);
 		});
 	}
-
+	
+	function updateDarkness() {
+		var classValue = Settings.isDark ? 'dark' : '';
+		document.getElementsByTagName('body')[0].setAttribute('class', classValue)
+	}
 
 	var el = {
-		// timezone: document.getElementById('timezone'),
-		// summertime: document.getElementById('summertime'),
+		darkmode: document.getElementById('darkmode'),
 		time24: document.getElementById('time24')
 	};
 
-	var d = new Date();
-
 	var Settings = {
 		is24h: true,
+		isDark: false,
 		load: function () {
-			// localStorage
+			if (! window.localStorage) return;
+			Settings.isDark = localStorage.getItem('wc14_isDark') == 't' || Settings.isDark;
+			Settings.is24h = localStorage.getItem('wc14_is24h') == 't' || Settings.is24h;
 		},
 		save: function () {
-			// localStorage
-		},
-		detect: function () {
-			// this.isSummertime = moment().isDST();
-			// this.timezone = (moment().zone() / -60);
-			// alert( JSON.stringify( Settings ) )
+			if (! window.localStorage) return;
+			localStorage.setItem('wc14_isDark', Settings.isDark ? 't' : 'f')
+			localStorage.setItem('wc14_is24h', Settings.is24h ? 't' : 'f')
 		}
 	};
 
-
 	function init(){
-		Settings.detect();
 		Settings.load(); // overwrite detected values
 		updateDatetimes();
+		updateDarkness();
 
-		// update UI
-		// for (var option, j = 0; option = el.timezone.options[j]; j++) {
-		// 	if (option.value == Settings.timezone) {
-		// 		el.timezone.selectedIndex = j;
-		// 		break;
-		// 	}
-		// }
 		el.time24.checked = Settings.is24h;
-		// el.summertime.checked = Settings.isSummertime;
+		el.darkmode.checked = Settings.isDark;
 		
 		// UI onchange
 		el.time24.onchange = function () {
@@ -940,17 +934,11 @@
 			Settings.save();
 			updateDatetimes();
 		}
-		// el.summertime.onchange = function () {
-		// 	Settings.isSummertime = el.summertime.checked;
-		// 	Settings.save();
-		// 	updateDatetimes();
-		// }
-		// el.timezone.onchange = function (){
-		// 	var tz = el.timezone.options[ el.timezone.selectedIndex ].value - 0;
-		// 	Settings.timezone = tz - 0;
-		// 	Settings.save();
-		// 	updateDatetimes();
-		// };
+		el.darkmode.onchange = function () {
+				Settings.isDark = el.darkmode.checked;
+				Settings.save();
+				updateDarkness();
+		}
 	}
 
 	if (Modernizr.svg && Modernizr.inlinesvg) {

@@ -4,7 +4,16 @@
 }
 
 body {
+	background: #fff;
 	position: relative;
+}
+
+text.match {
+	font-size: 105%;
+}
+
+text {
+	color
 }
 
 #fakezoom {
@@ -19,14 +28,9 @@ body {
 }
 
 svg {
-/* 	font-size: 104%; */
-/* 	background: url(cup.png) no-repeat 10% 93%; */
-/* 	background-size: 4%; */
 }
 
 #Rectangle-1 {
-/* 	fill-opacity: 0.6; */
-/* 	fill: #000; */
 }
 
 #wc {
