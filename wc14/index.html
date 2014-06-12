@@ -865,7 +865,7 @@
 			return dt.getDate() + ' ' +  this.months[ dt.getMonth() ]
 		},
 		niceTime: function (dt) {
-			var tmpH = dt.getHours() - 2;
+			var tmpH = dt.getHours();
 			var hours = Settings.is24h ? tmpH : tmpH % 12;
 			if (!Settings.is24h && hours == 0)  hours = 12;
 			var postfix = '';
