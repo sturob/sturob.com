@@ -35,7 +35,7 @@
 
 	<div id="fakezoom"></div>
 
-	<div id="main"></div>
+	<div id="fallback"></div>
 
 	<div id="wc">
 		<div id="header">
@@ -968,7 +968,7 @@
 		init();
 	} else {
 		document.getElementById('wc').remove();
-		embedImage('main', 600);
+		embedImage('fallback', 600);
 	}
 	
 	setTimeout(function () {
