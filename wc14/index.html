@@ -32,12 +32,17 @@
 </head>
 
 <body>
-	<div id="header">
-		<h1>World Cup 2014</h1>
-		<a href="http://sturob.com/wc14/">sturob.com/wc14</a>
-	</div>
+
 	<div id="fakezoom"></div>
+
+	<div id="main"></div>
+
 	<div id="wc">
+		<div id="header">
+			<h1>World Cup 2014</h1>
+			<a href="http://sturob.com/wc14/">sturob.com/wc14</a>
+		</div>
+
 		<div id="ui">
 			<!-- <input id="summertime" type="checkbox"><label for="summertime">SummerTime/DST</label> -->
 			<label for="time24"><input id="time24" type="checkbox"> 24h</label>
@@ -45,7 +50,7 @@
 			
 		</div>
 
-<svg width="640px" height="800px" viewBox="0 0 640 800" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+<svg viewBox="0 0 640 800" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
 
 
 	    
@@ -824,11 +829,13 @@
 
 
 </svg>
+
+<p style="text-align: center; width: 640px;"><small>Designed by <a href="http://twitter.com/sturob">Stuart Robinson</small></p>
 </div>
 
-	<div id="main"></div>
+	
 
-	<p style="text-align: center; width: 640px;"><small>Designed by <a href="http://twitter.com/sturob">Stuart Robinson</small></p>
+
 
 	<div id="pinnable"></div>
 
@@ -900,7 +907,9 @@
 
 	var el = {
 		darkmode: document.getElementById('darkmode'),
-		time24: document.getElementById('time24')
+		time24: document.getElementById('time24'),
+		svg: document.getElementsByTagName('svg')[0],
+		header: document.getElementById('header')
 	};
 
 	var Settings = {
@@ -937,18 +946,34 @@
 				Settings.save();
 				updateDarkness();
 		}
+
+		var stopProp = function (ev) { ev.stopPropagation() };
+
+		if (! ('ontouchstart' in window)) {
+			var wc = document.getElementById('wc');
+			el.svg.onmousedown = function () {
+				var current = wc.getAttribute('class');
+				var newClass = (current == 'zoomed') ? '' : 'zoomed';
+				wc.setAttribute('class', newClass);
+			}
+
+			el.time24.onmousedown = stopProp;
+			el.darkmode.onmousedown = stopProp;
+			el.header.onmousedown = stopProp;
+		}
+
 	}
 
 	if (Modernizr.svg && Modernizr.inlinesvg) {
-		init()
+		init();
 	} else {
-		document.getElementById('wc').remove()
-		embedImage('main', 600)
+		document.getElementById('wc').remove();
+		embedImage('main', 600);
 	}
 	
 	setTimeout(function () {
 		if (navigator.userAgent.search(/Mobile/) == -1) {
-			embedImage('pinnable', 1)
+			embedImage('pinnable', 1);
 		}
 	}, 5000);
 
