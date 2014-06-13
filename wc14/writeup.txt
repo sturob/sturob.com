@@ -1,0 +1,11 @@
+
+It's a overview of the whole world cup.
+
+world cup group viz
+  Match times in your timezone
+  minimalist visually
+  concise: less text + less repetition
+  retina + mobile first overview
+  one screen/image
+  group position -> knock-out consequences
+  fill-in-able
