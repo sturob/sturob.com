@@ -14,6 +14,54 @@ svg {
 }
 
 
+#Group-A .datetime text,
+#Group-B .datetime text,
+#Group-C .datetime text,
+#Group-D .datetime text,
+#Group-E .datetime text,
+#Group-F .datetime text,
+#Group-G .datetime text,
+#Group-H .datetime text {
+	fill: #bbb;
+}
+
+.datetime text {
+	opacity: 0.9;
+}
+
+#When-01.datetime path,
+#When-12.datetime path,
+#When-23.datetime path,
+#When-03.datetime path,
+#When-0123.datetime path{
+	stroke-width: 0;
+}
+
+
+.datetime[sketch\:soon] text {
+	opacity: 1;
+}
+
+#When-01.datetime[sketch\:soon] path,
+#When-12.datetime[sketch\:soon] path,
+#When-23.datetime[sketch\:soon] path,
+#When-03.datetime[sketch\:soon] path,
+#When-0123.datetime[sketch\:soon] path {
+	fill: #222;
+	stroke-width: 0.8px;
+	stroke: #ddd;
+}
+
+.datetime[sketch\:expired] {
+	opacity: 0.5;
+	fill: #555 !important;
+}
+.datetime[sketch\:expired] path {
+	stroke-width: 0px !important;
+}
+
+
+
 #wc.zoomed {
 	width: auto;
 }
