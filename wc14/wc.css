@@ -47,14 +47,14 @@ svg {
 #When-23.datetime[sketch\:soon] path,
 #When-03.datetime[sketch\:soon] path,
 #When-0123.datetime[sketch\:soon] path {
-	fill: #222;
-	stroke-width: 0.8px;
-	stroke: #ddd;
+/* 	fill: #222; */
+	stroke-width: 1.2px;
+	stroke: #fff;
 }
 
 .datetime[sketch\:expired] {
 	opacity: 0.5;
-	fill: #555 !important;
+	fill: #444 !important;
 }
 .datetime[sketch\:expired] path {
 	stroke-width: 0px !important;
