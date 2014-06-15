@@ -7,12 +7,12 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=9">
 	<title>World Cup 2014 Planner: visualise groups, matches and routes to the final</title>
 
-	<meta property="og:site_name" content="World Cup Planner - sturob " />
+	<meta property="og:site_name" content="World Cup Planner - sturob" />
 	<meta property="og:type" content="article" />
 	<meta property="og:title" content="World Cup 2014 Visual Planner"/>
 	<meta property="og:url" content="http://sturob.com/wc14"/>
 	<meta property="og:image" content="http://sturob.com/wc14/wc-dark.png"/>
-	<meta property="og:description " content="Visualise the 2014 World Cup Finals: all the group games, possible knock-out round match-ups and the possible routes to the final. Optimised for retina mobile devices" />
+	<meta property="og:description" content="Visualise the 2014 World Cup Finals: all the group games, possible knock-out round match-ups and the possible routes to the final. Optimised for retina mobile devices" />
 
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:site" content="@sturob">
@@ -21,14 +21,20 @@
 	<meta name="twitter:description" content="Visualise the 2014 World Cup Finals: all the group games, possible knock-out round match-ups and the possible routes to the final. Optimised for retina mobile devices">
 	<meta name="twitter:image:src" content="http://sturob.com/wc14/wc-dark.png">
 
-	<meta name='keywords' context='World Cup, World Cup 2014, FIFA World Cup, World Cup schedule, World Cup results, World Cup draws'>
+	<meta name="keywords" context="World Cup, World Cup 2014, FIFA World Cup, World Cup schedule, World Cup results, World Cup draws">
 
 	<link rel="icon" href="favicon.png">
 
 	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="mobile-web-app-capable" content="yes" />
+	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="icon72.png">
+
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="icons/icon72.png">
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="icons/icon144.png">
+	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="icons/icon57.png">
+
+	<link rel="icon" sizes="196x196" href="icons/icon196.png">
+
 </head>
 
 <body>
@@ -989,10 +995,14 @@
 			var dayInMs = (24*60*60*1000);
 			var matchInMs = (110*60*1000);
 
+			// var expired = (dt - 0) < (now - 0 - matchInMs);
+
 			if ((dt - 0) < (now - 0 + dayInMs)) {
 				// workaround for buggy SVG + el.classList.add('soon')
 				el.setAttribute('sketch:soon', 'true')//.appendItem('soon')
 			}
+
+			// if ((dt - 0) < (now - 0)  - matchInMs)) {
 
 			if ((dt - 0) < (now - 0 - matchInMs)) {
 				el.setAttribute('sketch:expired', 'true')//.appendItem('soon')
