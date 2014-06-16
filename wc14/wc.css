@@ -14,6 +14,28 @@ svg {
 }
 
 
+#A,
+#B,
+#C,
+#D,
+#E,
+#F,
+#G,
+#H {
+	fill: #666;
+}
+
+body.dark #A,
+body.dark #B,
+body.dark #C,
+body.dark #D,
+body.dark #E,
+body.dark #F,
+body.dark #G,
+body.dark #H {
+	fill: #555;
+}
+
 #Group-A .datetime text,
 #Group-B .datetime text,
 #Group-C .datetime text,
