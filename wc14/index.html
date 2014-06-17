@@ -1891,43 +1891,24 @@
 
 				var match = matches[matchID - 1]; // hack :/
 
-
-				// console.log(match.score1 + '-' + match.score2 + teams)
-
 				var goalsEls = el.getElementsByTagName('g');
 
 				forEach(goalsEls, function(gEl, n) {
 					var team = teams[ gEl.id.split('-')[1] ];
 					var goals = teamScore(match, team);
 				
-					// if (goals == '' || (typeof goals === "undefined")) return;
+					if (goals == '' || (typeof goals === "undefined")) return;
 
 					var circles = gEl.getElementsByTagName('circle');
 
 					forEach(circles, function(circleEl, n) { 
 						if ((circleEl.id.split('-')[1] - 0) > goals) {
-							circleEl.setAttribute('fill', 'transparent')
 						} else {
-							circleEl.setAttribute('fill', 'white')
+							circleEl.setAttribute('sketch:scored', 'true')
 						}
-					})
-					
-				})
-				// forEach(teams, function(team, n) {
-				// 	var goals = teamScore(match, team);
-				// 	if (! team) return;
-				// 	if (goals == '' || (typeof goals === "undefined")) return;
+					});
+				});
 
-
-				// 	console.log(el)
-					
-				// 	// Goals#' + n)
-
-				// 	console.log( goalsEl );
-				// });
-
-				// select elements 'Goals-0'// select 'Goals-1'// select 'Goals-2'// select 'Goals-3'
-				// foreach attempt to 
 			}
 
 		})
