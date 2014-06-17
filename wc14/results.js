@@ -172,8 +172,8 @@ var matches = [
     "team1": "Brazil",
     "team2": "Mexico",
     "datetime": "2014-06-17T20:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "0",
+    "score2": "0"
   },
   {
     "match_n": "17",

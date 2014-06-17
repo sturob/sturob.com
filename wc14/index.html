@@ -1901,7 +1901,11 @@
 
 					var circles = gEl.getElementsByTagName('circle');
 
-					forEach(circles, function(circleEl, n) { 
+					forEach(circles, function(circleEl, n) {
+						if (goals == 0 && (circleEl.id.split('-')[1] == 1)) {
+							circleEl.setAttribute('sketch:nil', 'true')
+						}
+
 						if ((circleEl.id.split('-')[1] - 0) > goals) {
 						} else {
 							circleEl.setAttribute('sketch:scored', 'true')
