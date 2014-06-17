@@ -161,8 +161,8 @@ var matches = [
     "team1": "Belgium",
     "team2": "Algeria",
     "datetime": "2014-06-17T17:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "2",
+    "score2": "1"
   },
   {
     "match_n": "16",
