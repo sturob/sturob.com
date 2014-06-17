@@ -13,6 +13,17 @@ svg {
 /* 	height: 100%; */
 }
 
+circle#Goal-7,
+circle#Goal-6,
+circle#Goal-5,
+circle#Goal-4,
+circle#Goal-3,
+circle#Goal-2,
+circle#Goal-1 {
+	/*fill: transparent;*/
+}
+
+
 
 #A,
 #B,
