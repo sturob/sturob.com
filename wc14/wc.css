@@ -74,7 +74,7 @@ circle#Goal-1[sketch\:nil] {
 
 .datetime[sketch\:soon] text {
 	opacity: 1;
-	fill: #fff !important;
+	fill: #111 !important;
 }
 
 #When-01.datetime[sketch\:soon] #Oval-Pointer > *,
@@ -82,11 +82,18 @@ circle#Goal-1[sketch\:nil] {
 #When-23.datetime[sketch\:soon] #Oval-Pointer > *,
 #When-03.datetime[sketch\:soon] #Oval-Pointer > *,
 #When-0123.datetime[sketch\:soon] #Oval-Pointer > * {
-	fill: #999;
+	fill: #aaa;
 /* 	stroke-width: 1px; */
 /* 	stroke: #fff; */
 }
 
+
+.datetime[sketch\:current] #Oval-Pointer > * {
+	fill: white;
+}
+.datetime[sketch\:current] text {
+	fill: #111 !important;	
+}
 
 .datetime #Oval-Pointer polygon {
 	fill: black; 
