@@ -74,24 +74,36 @@ circle#Goal-1[sketch\:nil] {
 
 .datetime[sketch\:soon] text {
 	opacity: 1;
+	fill: #fff !important;
 }
 
-#When-01.datetime[sketch\:soon] path,
-#When-12.datetime[sketch\:soon] path,
-#When-23.datetime[sketch\:soon] path,
-#When-03.datetime[sketch\:soon] path,
-#When-0123.datetime[sketch\:soon] path {
-/* 	fill: #222; */
-	stroke-width: 1.2px;
-	stroke: #fff;
+#When-01.datetime[sketch\:soon] #Oval-Pointer > *,
+#When-12.datetime[sketch\:soon] #Oval-Pointer > *,
+#When-23.datetime[sketch\:soon] #Oval-Pointer > *,
+#When-03.datetime[sketch\:soon] #Oval-Pointer > *,
+#When-0123.datetime[sketch\:soon] #Oval-Pointer > * {
+	fill: #999;
+/* 	stroke-width: 1px; */
+/* 	stroke: #fff; */
 }
 
-.datetime[sketch\:expired] > path,
-.datetime[sketch\:expired] > text {
-	opacity: 0.2;
+
+.datetime #Oval-Pointer polygon {
+	fill: black; 
+}
+
+.datetime[sketch\:expired] polygon {
+	visibility: hidden;
 }
 .datetime[sketch\:expired] path {
-	stroke-width: 0px !important;
+	fill: #222 !important;
+}
+
+.datetime[sketch\:expired] > text {
+	opacity: .2;
+}
+.datetime[sketch\:expired] path {
+/* 	stroke-width: 0px !important; */
 }
 
 
