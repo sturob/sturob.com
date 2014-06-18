@@ -2038,7 +2038,7 @@
 
 			var expired = (dt - 0) < (now - 0 - matchInMs),
 			    soon = (dt - 0) < (now - 0 + dayInMs),
-			    current = (dt - 0) < (now - 0 + matchInMs);
+			    current = (dt - 0) < (now - 0);
 
 			// workaround for buggy SVG + el.classList.add('soon')
 			if (soon && ! expired && ! current) {
