@@ -183,8 +183,8 @@ var matches = [
     "team1": "Russia",
     "team2": "South Korea",
     "datetime": "2014-06-17T23:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "1",
+    "score2": "1"
   },
   {
     "match_n": "18",
