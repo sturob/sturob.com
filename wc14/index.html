@@ -50,17 +50,13 @@
 		</div>
 
 		<div id="ui">
-			<!-- <input id="summertime" type="checkbox"><label for="summertime">SummerTime/DST</label> -->
 			<label for="time24"><input id="time24" type="checkbox"> 24h</label>
 			<label for="darkmode"><input id="darkmode" type="checkbox"> Dark</label>
-			
 		</div>
 
 <svg viewBox="0 0 640 800" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
 
 
-
-	    
 	    <title>chart-final</title>
 	    <description>Created with Sketch.</description>
 	    <defs/>
@@ -1702,12 +1698,8 @@
 
 </svg>
 
-<p style="text-align: center; width: 640px;"><small>Designed by <a href="http://twitter.com/sturob">Stuart Robinson</small></p>
-</div>
-
-	
-
-
+		<p style="text-align: center; width: 640px;"><small>Designed by <a href="http://twitter.com/sturob">Stuart Robinson</small></p>
+	</div>
 
 	<div id="pinnable"></div>
 
@@ -1725,73 +1717,72 @@
 
 	// classlist poly fill
 	(function () {
+		if (typeof window.Element === "undefined" || "classList" in document.documentElement) return;
 
-	if (typeof window.Element === "undefined" || "classList" in document.documentElement) return;
+		var prototype = Array.prototype,
+		    push = prototype.push,
+		    splice = prototype.splice,
+		    join = prototype.join;
 
-	var prototype = Array.prototype,
-	    push = prototype.push,
-	    splice = prototype.splice,
-	    join = prototype.join;
+		function DOMTokenList(el) {
+		  this.el = el;
+		  // The className needs to be trimmed and split on whitespace
+		  // to retrieve a list of classes.
+		  var classes = el.className.replace(/^\s+|\s+$/g,'').split(/\s+/);
+		  for (var i = 0; i < classes.length; i++) {
+		    push.call(this, classes[i]);
+		  }
+		};
 
-	function DOMTokenList(el) {
-	  this.el = el;
-	  // The className needs to be trimmed and split on whitespace
-	  // to retrieve a list of classes.
-	  var classes = el.className.replace(/^\s+|\s+$/g,'').split(/\s+/);
-	  for (var i = 0; i < classes.length; i++) {
-	    push.call(this, classes[i]);
-	  }
-	};
+		DOMTokenList.prototype = {
+		  add: function(token) {
+		    if(this.contains(token)) return;
+		    push.call(this, token);
+		    this.el.className = this.toString();
+		  },
+		  contains: function(token) {
+		    return this.el.className.indexOf(token) != -1;
+		  },
+		  item: function(index) {
+		    return this[index] || null;
+		  },
+		  remove: function(token) {
+		    if (!this.contains(token)) return;
+		    for (var i = 0; i < this.length; i++) {
+		      if (this[i] == token) break;
+		    }
+		    splice.call(this, i, 1);
+		    this.el.className = this.toString();
+		  },
+		  toString: function() {
+		    return join.call(this, ' ');
+		  },
+		  toggle: function(token) {
+		    if (!this.contains(token)) {
+		      this.add(token);
+		    } else {
+		      this.remove(token);
+		    }
 
-	DOMTokenList.prototype = {
-	  add: function(token) {
-	    if(this.contains(token)) return;
-	    push.call(this, token);
-	    this.el.className = this.toString();
-	  },
-	  contains: function(token) {
-	    return this.el.className.indexOf(token) != -1;
-	  },
-	  item: function(index) {
-	    return this[index] || null;
-	  },
-	  remove: function(token) {
-	    if (!this.contains(token)) return;
-	    for (var i = 0; i < this.length; i++) {
-	      if (this[i] == token) break;
-	    }
-	    splice.call(this, i, 1);
-	    this.el.className = this.toString();
-	  },
-	  toString: function() {
-	    return join.call(this, ' ');
-	  },
-	  toggle: function(token) {
-	    if (!this.contains(token)) {
-	      this.add(token);
-	    } else {
-	      this.remove(token);
-	    }
+		    return this.contains(token);
+		  }
+		};
 
-	    return this.contains(token);
-	  }
-	};
+		window.DOMTokenList = DOMTokenList;
 
-	window.DOMTokenList = DOMTokenList;
+		function defineElementGetter (obj, prop, getter) {
+		    if (Object.defineProperty) {
+		        Object.defineProperty(obj, prop,{
+		            get : getter
+		        });
+		    } else {
+		        obj.__defineGetter__(prop, getter);
+		    }
+		}
 
-	function defineElementGetter (obj, prop, getter) {
-	    if (Object.defineProperty) {
-	        Object.defineProperty(obj, prop,{
-	            get : getter
-	        });
-	    } else {
-	        obj.__defineGetter__(prop, getter);
-	    }
-	}
-
-	defineElementGetter(Element.prototype, 'classList', function () {
-	  return new DOMTokenList(this);
-	});
+		defineElementGetter(Element.prototype, 'classList', function () {
+		  return new DOMTokenList(this);
+		});
 
 	})();
 
@@ -1912,9 +1903,7 @@
 						}
 					});
 				});
-
 			}
-
 		})
 	}
 
@@ -1927,16 +1916,22 @@
 
 	var Settings = {
 		is24h: true,
-		isDark: false,
+		isDark: true,
+		_prefix: 'wc14_',
+		loadSettingFor: function (setting) {
+			var stored = localStorage.getItem(this._prefix + setting);
+			if (stored == null) return;
+			Settings[setting] = (stored == 'true');
+		},
 		load: function () {
 			if (! window.localStorage) return;
-			Settings.isDark = localStorage.getItem('wc14_isDark') == 't' || Settings.isDark;
-			Settings.is24h = localStorage.getItem('wc14_is24h') == 't' || Settings.is24h;
+			this.loadSettingFor('isDark');
+			this.loadSettingFor('is24h');
 		},
 		save: function () {
 			if (! window.localStorage) return;
-			localStorage.setItem('wc14_isDark', Settings.isDark ? 't' : 'f')
-			localStorage.setItem('wc14_is24h', Settings.is24h ? 't' : 'f')
+			localStorage.setItem(this._prefix + 'isDark', Settings.isDark)
+			localStorage.setItem(this._prefix + 'is24h', Settings.is24h)
 		}
 	};
 
@@ -1948,7 +1943,7 @@
 
 		el.time24.checked = Settings.is24h;
 		el.darkmode.checked = Settings.isDark;
-		
+
 		// UI onchange
 		el.time24.onchange = function () {
 			Settings.is24h = el.time24.checked;
@@ -1976,7 +1971,6 @@
 			el.darkmode.onmousedown = stopProp;
 			el.header.onmousedown = stopProp;
 		}
-
 	}
 
 	if (Modernizr.svg && Modernizr.inlinesvg) {
@@ -2005,7 +1999,7 @@
 
 </script>
 
-// <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"> </script> 
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"> </script> 
 <script type="text/javascript"> 
   _uacct = "UA-1333551-1";
   urchinTracker();
