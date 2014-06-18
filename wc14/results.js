@@ -216,8 +216,8 @@ var matches = [
     "team1": "Cameroon",
     "team2": "Croatia",
     "datetime": "2014-06-18T23:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "0",
+    "score2": "4"
   },
   {
     "match_n": "21",
