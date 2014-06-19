@@ -227,8 +227,8 @@ var matches = [
     "team1": "Colombia",
     "team2": "Ivory Coast",
     "datetime": "2014-06-19T17:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "2",
+    "score2": "1"
   },
   {
     "match_n": "22",
@@ -238,8 +238,8 @@ var matches = [
     "team1": "Uruguay",
     "team2": "England",
     "datetime": "2014-06-19T20:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "2",
+    "score2": "1"
   },
   {
     "match_n": "23",
@@ -249,8 +249,8 @@ var matches = [
     "team1": "Japan",
     "team2": "Greece",
     "datetime": "2014-06-19T23:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "0",
+    "score2": "0"
   },
   {
     "match_n": "24",
