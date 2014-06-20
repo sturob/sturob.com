@@ -260,8 +260,8 @@ var matches = [
     "team1": "Italy",
     "team2": "Costa Rica",
     "datetime": "2014-06-20T17:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "0",
+    "score2": "1"
   },
   {
     "match_n": "25",
