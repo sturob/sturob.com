@@ -293,8 +293,8 @@ var matches = [
     "team1": "Argentina",
     "team2": "Iran",
     "datetime": "2014-06-21T17:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "1",
+    "score2": "0"
   },
   {
     "match_n": "28",
@@ -304,8 +304,8 @@ var matches = [
     "team1": "Germany",
     "team2": "Ghana",
     "datetime": "2014-06-21T20:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "2",
+    "score2": "2"
   },
   {
     "match_n": "29",
