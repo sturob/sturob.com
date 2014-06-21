@@ -11,6 +11,7 @@ body {
 svg {
 /* 	width: 100%; */
 /* 	height: 100%; */
+
 }
 
 circle#Goal-7,
@@ -31,7 +32,8 @@ circle#Goal-3[sketch\:scored],
 circle#Goal-2[sketch\:scored],
 circle#Goal-1[sketch\:scored] {
 	visibility: visible;
-	fill: #fff;
+	fill: #d0d0d0;
+/* 	fill: #fff; */
 }
 
 circle#Goal-1[sketch\:nil] {
@@ -261,7 +263,7 @@ option {
 }
 
 image {
-	opacity: 0.9;
+	opacity: 0.85;
 }
 
 body.dark {
