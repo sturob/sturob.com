@@ -326,8 +326,8 @@ var matches = [
     "team1": "Belgium",
     "team2": "Russia",
     "datetime": "2014-06-22T17:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "1",
+    "score2": "0"
   },
   {
     "match_n": "31",
@@ -337,8 +337,8 @@ var matches = [
     "team1": "South Korea",
     "team2": "Algeria",
     "datetime": "2014-06-22T20:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "2",
+    "score2": "4"
   },
   {
     "match_n": "32",
@@ -348,8 +348,8 @@ var matches = [
     "team1": "USA",
     "team2": "Portugal",
     "datetime": "2014-06-22T23:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "2",
+    "score2": "2"
   },
   {
     "match_n": "33",
