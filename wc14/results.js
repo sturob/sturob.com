@@ -425,8 +425,8 @@ var matches = [
     "team1": "Japan",
     "team2": "Colombia",
     "datetime": "2014-06-24T21:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "1",
+    "score2": "4"
   },
   {
     "match_n": "40",
@@ -436,8 +436,8 @@ var matches = [
     "team1": "Greece",
     "team2": "Ivory Coast",
     "datetime": "2014-06-24T21:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "2",
+    "score2": "1"
   },
   {
     "match_n": "41",
