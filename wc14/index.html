@@ -2147,19 +2147,25 @@
 					var teamName = orderedTeamNames[ gEl.id.split('-')[1] ];
 					var goalsN = scoreForTeamNameFromSimultaneous(playedMatches, teamName);
 				
-					var nudge = function(el){}
+					var nudge = function(el) { };
 
-					if (goalsN > 1 && (goalsN % 2 == 0)) {
-						if (gEl.getBBox) {
-							var dims = gEl.getBBox();
-							if (dims.width > dims.height) {
-								// move left
-								nudge = function (el) {
-									el.setAttribute('transform', 'translate(-2, 0)');
-								};
-							} else {
-								// nothing yet
-							}
+					if (goalsN > 1 && (goalsN % 2 == 0)) { // 2+ and even
+						// var dims = gEl.getBoundingClientRect(); // can't due to iOS bug :/
+						// so:
+
+						function isHorizontal (matchid, teamid) {
+							if (matchid == '01' && teamid == '1') return true;
+							if (matchid == '03' && teamid == '3') return true;
+							if (matchid == '12' && teamid == '1') return true;
+							if (matchid == '23' && teamid == '3') return true;
+							if (matchid == '0123' && (teamid == '0' || teamid == '2')) return true;
+							return false;
+						}
+
+						if (isHorizontal( el.id.split('-')[1], gEl.id.split('-')[1] )) {
+							nudge = function (el) {		// move left
+								el.setAttribute('transform', 'translate(-2, 0)');
+							};
 						}
 					}
 					if (goalsN == '' || (typeof goalsN === "undefined")) return;
