@@ -73,9 +73,6 @@ p {
 	margin-bottom: 8px;
 }
 
-svg {
-	height: 100%;
-}
 
 #ui:hover {
 	cursor: default;
@@ -109,51 +106,34 @@ option {
 /* SVG */
 
 svg {
+	height: 100%;
 }
 
-circle#Goal-7,
-circle#Goal-6,
-circle#Goal-5,
-circle#Goal-4,
-circle#Goal-3,
-circle#Goal-2,
-circle#Goal-1 {
-	visibility: hidden;
+#Flag-0 rect,
+#Flag-1 rect,
+#Flag-2 rect,
+#Flag-3 rect {
+	opacity: 0;
 }
 
-circle#Goal-7[sketch\:scored],
-circle#Goal-6[sketch\:scored],
-circle#Goal-5[sketch\:scored],
-circle#Goal-4[sketch\:scored],
-circle#Goal-3[sketch\:scored],
-circle#Goal-2[sketch\:scored],
-circle#Goal-1[sketch\:scored] {
-	visibility: visible;
-	fill: #d0d0d0;
-/* 	fill: #fff; */
+#Big-G {
+  fill: #444;
 }
 
-circle#Goal-1[sketch\:nil] {
-	visibility: visible;
-	fill: #222;
+image {
+	opacity: 0.85;
 }
 
-#Big-Letters > * {
-	fill: #666;
+#Team-0, #Team-1, #Team-2, #Team-3 {
+	-webkit-font-smoothing: antialiased;
 }
 
 #Big-Letters > * {
 	fill: #444;
 }
 
-#Group-A .datetime text,
-#Group-B .datetime text,
-#Group-C .datetime text,
-#Group-D .datetime text,
-#Group-E .datetime text,
-#Group-F .datetime text,
-#Group-G .datetime text,
-#Group-H .datetime text {
+#Group-A .datetime text, #Group-B .datetime text, #Group-C .datetime text, #Group-D .datetime text,
+#Group-E .datetime text, #Group-F .datetime text, #Group-G .datetime text, #Group-H .datetime text {
 	fill: #bbb;
 }
 
@@ -161,13 +141,34 @@ circle#Goal-1[sketch\:nil] {
 	opacity: 0.9;
 }
 
-#When-01.datetime path,
-#When-12.datetime path,
-#When-23.datetime path,
-#When-03.datetime path,
-#When-0123.datetime path{
+#When-01.datetime path, #When-12.datetime path,
+#When-23.datetime path, #When-03.datetime path,
+#When-0123.datetime path {
 	stroke-width: 0;
 }
+
+circle#Goal-7, circle#Goal-6, circle#Goal-5, circle#Goal-4,
+circle#Goal-3, circle#Goal-2, circle#Goal-1 {
+	visibility: hidden;
+}
+
+.datetime #Oval-Pointer polygon {
+	fill: black; 
+}
+
+circle#Goal-7[sketch\:scored], circle#Goal-6[sketch\:scored], circle#Goal-5[sketch\:scored],
+circle#Goal-4[sketch\:scored], circle#Goal-3[sketch\:scored], circle#Goal-2[sketch\:scored],
+circle#Goal-1[sketch\:scored] {
+	visibility: visible;
+	fill: #d0d0d0;
+}
+
+circle#Goal-1[sketch\:nil] {
+	visibility: visible;
+	fill: #222;
+}
+
+/* Match SOON */
 
 .datetime[sketch\:soon] text {
 	opacity: 1;
@@ -180,21 +181,19 @@ circle#Goal-1[sketch\:nil] {
 #When-03.datetime[sketch\:soon] #Oval-Pointer > *,
 #When-0123.datetime[sketch\:soon] #Oval-Pointer > * {
 	fill: #aaa;
-/* 	stroke-width: 1px; */
-/* 	stroke: #fff; */
 }
 
+/* Match NOW */
 
 .datetime[sketch\:current] #Oval-Pointer > * {
 	fill: white;
 }
+
 .datetime[sketch\:current] text {
 	fill: #111 !important;
 }
 
-.datetime #Oval-Pointer polygon {
-	fill: black; 
-}
+/* Match OVER */
 
 .datetime[sketch\:expired] polygon {
 	visibility: hidden;
@@ -211,27 +210,6 @@ circle#Goal-1[sketch\:nil] {
 }
 
 
-#Flag-0 rect,
-#Flag-1 rect,
-#Flag-2 rect,
-#Flag-3 rect {
-	opacity: 0;
-}
-
-#Big-G {
-  fill: #444;
-}
-
-#Rectangle-1 {
-}
-
-image {
-	opacity: 0.85;
-}
-
-#Team-0, #Team-1, #Team-2, #Team-3 {
-	-webkit-font-smoothing: antialiased;
-}
 
 /* Dark Mode */
 
@@ -251,7 +229,6 @@ body.dark #ui label {
 body.dark h1 {
 	color: #aaa;
 }
-
 
 
 body.dark #Calendar rect#Rectangle-57 {
