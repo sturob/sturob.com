@@ -1,121 +1,25 @@
+
 * {
 	margin: 0;
 	font-family: Helvetica, Verdana, Sans-Serif;
 }
+
+/* HTML */
 
 body {
 	background: #fff;
 	position: relative;
 }
 
-svg {
-/* 	width: 100%; */
-/* 	height: 100%; */
-
-}
-
-circle#Goal-7,
-circle#Goal-6,
-circle#Goal-5,
-circle#Goal-4,
-circle#Goal-3,
-circle#Goal-2,
-circle#Goal-1 {
-	visibility: hidden;
-}
-
-circle#Goal-7[sketch\:scored],
-circle#Goal-6[sketch\:scored],
-circle#Goal-5[sketch\:scored],
-circle#Goal-4[sketch\:scored],
-circle#Goal-3[sketch\:scored],
-circle#Goal-2[sketch\:scored],
-circle#Goal-1[sketch\:scored] {
-	visibility: visible;
-	fill: #d0d0d0;
-/* 	fill: #fff; */
-}
-
-circle#Goal-1[sketch\:nil] {
-	visibility: visible;
-	fill: #222;
-}
-
-
-#Big-Letters > * {
-	fill: #666;
-}
-
-#Big-Letters > * {
-	fill: #444;
-}
-
-#Group-A .datetime text,
-#Group-B .datetime text,
-#Group-C .datetime text,
-#Group-D .datetime text,
-#Group-E .datetime text,
-#Group-F .datetime text,
-#Group-G .datetime text,
-#Group-H .datetime text {
-	fill: #bbb;
-}
-
-.datetime text {
-	opacity: 0.9;
-}
-
-#When-01.datetime path,
-#When-12.datetime path,
-#When-23.datetime path,
-#When-03.datetime path,
-#When-0123.datetime path{
-	stroke-width: 0;
-}
-
-
-.datetime[sketch\:soon] text {
+#fakezoom {
+	width: 330px;
+	height: 660px;
+	position: absolute;
 	opacity: 1;
-	fill: #111 !important;
+	left: 154px;
+	top: 130px;
+	z-index: 1;
 }
-
-#When-01.datetime[sketch\:soon] #Oval-Pointer > *,
-#When-12.datetime[sketch\:soon] #Oval-Pointer > *,
-#When-23.datetime[sketch\:soon] #Oval-Pointer > *,
-#When-03.datetime[sketch\:soon] #Oval-Pointer > *,
-#When-0123.datetime[sketch\:soon] #Oval-Pointer > * {
-	fill: #aaa;
-/* 	stroke-width: 1px; */
-/* 	stroke: #fff; */
-}
-
-
-.datetime[sketch\:current] #Oval-Pointer > * {
-	fill: white;
-}
-.datetime[sketch\:current] text {
-	fill: #111 !important;	
-}
-
-.datetime #Oval-Pointer polygon {
-	fill: black; 
-}
-
-.datetime[sketch\:expired] polygon {
-	visibility: hidden;
-}
-.datetime[sketch\:expired] path {
-	fill: #222 !important;
-}
-
-.datetime[sketch\:expired] > text {
-	opacity: .2;
-}
-.datetime[sketch\:expired] path {
-/* 	stroke-width: 0px !important; */
-}
-
-
 
 #wc.zoomed {
 	width: auto;
@@ -125,7 +29,6 @@ circle#Goal-1[sketch\:nil] {
 	position: relative;
 	margin: 0 auto;
  	width: 640px; 
-/* 	height: 100%; */
 }
 
 #wc:hover {
@@ -163,9 +66,6 @@ h1 {
 	cursor: default;
 }
 
-body.dark p {
-	color: #999;
-}
 
 p {
 	margin-top: 24px;
@@ -173,54 +73,7 @@ p {
 	margin-bottom: 8px;
 }
 
-#Flag-0 rect,
-#Flag-1 rect,
-#Flag-2 rect,
-#Flag-3 rect {
-	opacity: 0;
-}
-
-#Big-G {
-  fill: #444;
-}
-
-text {
-	color
-}
-
-#fakezoom {
-	width: 330px;
-	height: 660px;
-	position: absolute;
-/* 	background:red; */
-	opacity: 1;
-	left: 154px;
-	top: 130px;
-	z-index: 1;
-}
-
-
-#Rectangle-1 {
-}
-
-
-
-body.dark #Calendar rect#Rectangle-57 {
-	fill: black;
-}
-
-body.dark #Key > Rect {
-	fill: #222;
-}
-
-body.dark #Key text  {
-	fill: #bbb;	
-}
-
-
 svg {
-	/* width: auto; */
-	
 	height: 100%;
 }
 
@@ -249,6 +102,147 @@ svg {
 	top: 1px;
 }
 
+option {
+	font-size: 11px;
+}
+
+/* SVG */
+
+svg {
+}
+
+circle#Goal-7,
+circle#Goal-6,
+circle#Goal-5,
+circle#Goal-4,
+circle#Goal-3,
+circle#Goal-2,
+circle#Goal-1 {
+	visibility: hidden;
+}
+
+circle#Goal-7[sketch\:scored],
+circle#Goal-6[sketch\:scored],
+circle#Goal-5[sketch\:scored],
+circle#Goal-4[sketch\:scored],
+circle#Goal-3[sketch\:scored],
+circle#Goal-2[sketch\:scored],
+circle#Goal-1[sketch\:scored] {
+	visibility: visible;
+	fill: #d0d0d0;
+/* 	fill: #fff; */
+}
+
+circle#Goal-1[sketch\:nil] {
+	visibility: visible;
+	fill: #222;
+}
+
+#Big-Letters > * {
+	fill: #666;
+}
+
+#Big-Letters > * {
+	fill: #444;
+}
+
+#Group-A .datetime text,
+#Group-B .datetime text,
+#Group-C .datetime text,
+#Group-D .datetime text,
+#Group-E .datetime text,
+#Group-F .datetime text,
+#Group-G .datetime text,
+#Group-H .datetime text {
+	fill: #bbb;
+}
+
+.datetime text {
+	opacity: 0.9;
+}
+
+#When-01.datetime path,
+#When-12.datetime path,
+#When-23.datetime path,
+#When-03.datetime path,
+#When-0123.datetime path{
+	stroke-width: 0;
+}
+
+.datetime[sketch\:soon] text {
+	opacity: 1;
+	fill: #111 !important;
+}
+
+#When-01.datetime[sketch\:soon] #Oval-Pointer > *,
+#When-12.datetime[sketch\:soon] #Oval-Pointer > *,
+#When-23.datetime[sketch\:soon] #Oval-Pointer > *,
+#When-03.datetime[sketch\:soon] #Oval-Pointer > *,
+#When-0123.datetime[sketch\:soon] #Oval-Pointer > * {
+	fill: #aaa;
+/* 	stroke-width: 1px; */
+/* 	stroke: #fff; */
+}
+
+
+.datetime[sketch\:current] #Oval-Pointer > * {
+	fill: white;
+}
+.datetime[sketch\:current] text {
+	fill: #111 !important;
+}
+
+.datetime #Oval-Pointer polygon {
+	fill: black; 
+}
+
+.datetime[sketch\:expired] polygon {
+	visibility: hidden;
+}
+.datetime[sketch\:expired] path {
+	fill: #222 !important;
+}
+
+.datetime[sketch\:expired] > text {
+	opacity: .2;
+}
+.datetime[sketch\:expired] path {
+/* 	stroke-width: 0px !important; */
+}
+
+
+#Flag-0 rect,
+#Flag-1 rect,
+#Flag-2 rect,
+#Flag-3 rect {
+	opacity: 0;
+}
+
+#Big-G {
+  fill: #444;
+}
+
+#Rectangle-1 {
+}
+
+image {
+	opacity: 0.85;
+}
+
+#Team-0, #Team-1, #Team-2, #Team-3 {
+	-webkit-font-smoothing: antialiased;
+}
+
+/* Dark Mode */
+
+body.dark {
+	background: black;
+}
+
+body.dark p {
+	color: #999;
+}
+
 body.dark #ui label {
 	color: #888;
 		background: #222;
@@ -258,20 +252,18 @@ body.dark h1 {
 	color: #aaa;
 }
 
-option {
-	font-size: 11px;
+
+
+body.dark #Calendar rect#Rectangle-57 {
+	fill: black;
 }
 
-image {
-	opacity: 0.85;
+body.dark #Key > Rect {
+	fill: #222;
 }
 
-body.dark {
-	background: black;
-}
-
-#Team-0, #Team-1, #Team-2, #Team-3 {
-	-webkit-font-smoothing: antialiased;
+body.dark #Key text  {
+	fill: #bbb;	
 }
 
 body.dark g#Page-1 > #Rectangle-1 {
@@ -283,15 +275,9 @@ body.dark #Big-G {
 	fill: #333;	
 }
 
-
-polygon {
-/* 	fill: #888; */
-}
-
 body.dark polygon {
 	fill: #555;
 }
-
 
 body.dark path#Line-21,
 body.dark path#Line-20,
@@ -316,12 +302,4 @@ body.dark path#Line-3,
 body.dark path#Line-2, 
 body.dark path#Line-1 {
 	stroke: #555;
-}
-
-body.dark text#World-Cup-2014-Plann tspan {
-	fill: #fff;
-}
-text#World-Cup-2014-Plann tspan {
-	-webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: greyscale;
 }
