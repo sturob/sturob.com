@@ -1,5 +1,13 @@
 
-It's a overview of the whole world cup.
+# What is this?
+
+It's an visual overview of the 2014 World Cup.
+no repetition
+high information density
+fit on 
+
+# Timezones?
+
 
 world cup group viz
   Match times in your timezone
