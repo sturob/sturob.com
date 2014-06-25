@@ -57,8 +57,6 @@
 <svg viewBox="0 0 640 800" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
 
 
-
-
 	    
 	    <title>chart-final</title>
 	    <description>Created with Sketch.</description>
@@ -2214,13 +2212,14 @@
 
 				var el1 = document.getElementById(letter + '1-Name');
 				el1.textContent = table[0].name.toUpperCase();
-				el1.style.fill = 'white';
+				// el1.style.fill = 'white';
+				el1.setAttribute('sketch:filled', 'true');
 				el1.setAttribute('transform', 'translate(' + x1 + ', 28)');
 
 				var x2 = standardOffsetX(letter + '2');
 				var el2 = document.getElementById(letter + '2-Name')
 				el2.textContent = table[1].name.toUpperCase();
-				el2.style.fill = 'white';
+				el2.setAttribute('sketch:filled', 'true');
 				el2.setAttribute('transform', 'translate(' + x2 + ', 10)');
 			}
 		})

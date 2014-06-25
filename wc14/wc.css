@@ -209,7 +209,47 @@ circle#Goal-1[sketch\:nil] {
 /* 	stroke-width: 0px !important; */
 }
 
+#AB-Linetext text[sketch\:filled],
+#CD-Linetext text[sketch\:filled],
+#EF-Linetext text[sketch\:filled],
+#GH-Linetext text[sketch\:filled],
+#BA-Linetext text[sketch\:filled],
+#DC-Linetext text[sketch\:filled],
+#FE-Linetext text[sketch\:filled],
+#HG-Linetext text[sketch\:filled] {
+	fill: #111;
+	letter-spacing: -0.2px;
+}
 
+
+path#Line-21,
+path#Line-20,
+path#Line-19, 
+path#Line-18,
+path#Line-17,
+path#Line-16, 
+path#Line-15,
+path#Line-14,
+path#Line-13, 
+path#Line-12, 
+path#Line-11,
+path#Line-10, 
+path#Line-9, 
+path#Line-8, 
+path#Line-7, 
+path#Line-6, 
+path#Line-5, 
+path#Line,
+path#Line-4, 
+path#Line-3, 
+path#Line-2, 
+path#Line-1 {
+	stroke: #444;
+}
+
+polygon { 
+	/*fill: #444;*/
+}
 
 /* Dark Mode */
 
@@ -228,6 +268,17 @@ body.dark #ui label {
 
 body.dark h1 {
 	color: #aaa;
+}
+
+body.dark #AB-Linetext text[sketch\:filled],
+body.dark #CD-Linetext text[sketch\:filled],
+body.dark #EF-Linetext text[sketch\:filled],
+body.dark #GH-Linetext text[sketch\:filled],
+body.dark #BA-Linetext text[sketch\:filled],
+body.dark #DC-Linetext text[sketch\:filled],
+body.dark #FE-Linetext text[sketch\:filled],
+body.dark #HG-Linetext text[sketch\:filled] {
+	fill: #ddd;
 }
 
 
@@ -253,7 +304,7 @@ body.dark #Big-G {
 }
 
 body.dark polygon {
-	fill: #555;
+	fill: #666;
 }
 
 body.dark path#Line-21,
@@ -278,5 +329,5 @@ body.dark path#Line-4,
 body.dark path#Line-3, 
 body.dark path#Line-2, 
 body.dark path#Line-1 {
-	stroke: #555;
+	stroke: #666;
 }
