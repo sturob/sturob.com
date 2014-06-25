@@ -469,8 +469,8 @@ var matches = [
     "team1": "Honduras",
     "team2": "Switzerland",
     "datetime": "2014-06-25T21:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "0",
+    "score2": "3"
   },
   {
     "match_n": "44",
@@ -480,8 +480,8 @@ var matches = [
     "team1": "Ecuador",
     "team2": "France",
     "datetime": "2014-06-25T21:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "0",
+    "score2": "0"
   },
   {
     "match_n": "45",
