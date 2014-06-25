@@ -2145,18 +2145,34 @@
 
 				forEach(goalsEls, function(gEl, n) {
 					var teamName = orderedTeamNames[ gEl.id.split('-')[1] ];
-					var goals = scoreForTeamNameFromSimultaneous(playedMatches, teamName);
+					var goalsN = scoreForTeamNameFromSimultaneous(playedMatches, teamName);
 				
-					if (goals == '' || (typeof goals === "undefined")) return;
+					var nudge = function(el){}
+
+					if (goalsN > 1 && (goalsN % 2 == 0)) {
+						if (gEl.getBBox) {
+							var dims = gEl.getBBox();
+							if (dims.width > dims.height) {
+								// move left
+								nudge = function (el) {
+									el.setAttribute('transform', 'translate(-2, 0)');
+								};
+							} else {
+								// nothing yet
+							}
+						}
+					}
+					if (goalsN == '' || (typeof goalsN === "undefined")) return;
 
 					var circles = gEl.getElementsByTagName('circle');
 
 					forEach(circles, function(circleEl, n) {
-						if (goals == 0 && (circleEl.id.split('-')[1] == 1)) {
+						nudge(circleEl)
+						if (goalsN == 0 && (circleEl.id.split('-')[1] == 1)) {
 							circleEl.setAttribute('sketch:nil', 'true')
 						}
 
-						if ((circleEl.id.split('-')[1] - 0) > goals) {
+						if ((circleEl.id.split('-')[1] - 0) > goalsN) {
 						} else {
 							circleEl.setAttribute('sketch:scored', 'true')
 						}
@@ -2209,10 +2225,8 @@
 			var table = groupTable(letter);
 			if (table) {
 				var x1 = standardOffsetX(letter + '1');
-
 				var el1 = document.getElementById(letter + '1-Name');
 				el1.textContent = table[0].name.toUpperCase();
-				// el1.style.fill = 'white';
 				el1.setAttribute('sketch:filled', 'true');
 				el1.setAttribute('transform', 'translate(' + x1 + ', 28)');
 
