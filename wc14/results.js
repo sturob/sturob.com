@@ -491,8 +491,8 @@ var matches = [
     "team1": "Portugal",
     "team2": "Ghana",
     "datetime": "2014-06-26T17:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "2",
+    "score2": "1"
   },
   {
     "match_n": "46",
@@ -502,8 +502,8 @@ var matches = [
     "team1": "USA",
     "team2": "Germany",
     "datetime": "2014-06-26T17:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "0",
+    "score2": "1"
   },
   {
     "match_n": "47",
