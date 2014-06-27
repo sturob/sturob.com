@@ -156,6 +156,30 @@ circle#Goal-3, circle#Goal-2, circle#Goal-1 {
 	fill: black; 
 }
 
+#Group-A .datetime > path,
+#Group-B .datetime > path,
+#Group-C .datetime > path,
+#Group-D .datetime > path,
+#Group-E .datetime > path,
+#Group-F .datetime > path,
+#Group-G .datetime > path,
+#Group-H .datetime > path
+{
+/* 	fill: #3c3c3c !important; */
+	fill: #2a2a2a !important;
+
+/* 	stroke: #44f !important; */
+/* 	stroke-width: .4 !important; */
+}
+
+path#Oval-V, path#Oval-H {
+/* 	fill: #3c3c3c; */
+	fill: #000;
+	opacity: 0.2;
+	stroke-width: 0;
+}
+
+
 circle#Goal-7[sketch\:scored], circle#Goal-6[sketch\:scored], circle#Goal-5[sketch\:scored],
 circle#Goal-4[sketch\:scored], circle#Goal-3[sketch\:scored], circle#Goal-2[sketch\:scored],
 circle#Goal-1[sketch\:scored] {
@@ -200,6 +224,10 @@ circle#Goal-1[sketch\:nil] {
 }
 .datetime[sketch\:expired] path {
 	fill: #222 !important;
+}
+
+#When-0123.datetime[sketch\:expired] path {
+	fill: none !important;
 }
 
 .datetime[sketch\:expired] > text {
