@@ -559,8 +559,8 @@ var matches = [
     "team1": "1B",
     "team2": "2A",
     "datetime": "2014-06-29T17:00:00+01:00",
-    "score1": "1",
-    "score2": "2"
+    "score1": "2",
+    "score2": "1"
   },
   {
     "match_n": "52",
@@ -646,7 +646,6 @@ var matches = [
     "location": "Salvador",
     "group_or_stage": "Quarter-finals",
     "team1": "W51",
-    "dash": "- ",
     "team2": "W52",
     "datetime": "2014-07-05T21:00:00+01:00",
     "score1": "",
@@ -658,7 +657,6 @@ var matches = [
     "location": "Brasilia ",
     "group_or_stage": "Quarter-finals",
     "team1": "W55",
-    "dash": "- ",
     "team2": "W56",
     "datetime": "2014-07-05T17:00:00+01:00",
     "score1": "",
