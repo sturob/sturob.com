@@ -570,8 +570,10 @@ var matches = [
     "team1": "1D",
     "team2": "2C",
     "datetime": "2014-06-29T21:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "1",
+    "score2": "1",
+    "penalties1": "11111",
+    "penalties2": "1110-"
   },
   {
     "match_n": "53",
