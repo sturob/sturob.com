@@ -217,6 +217,10 @@ circle#Goal-1[sketch\:nil] {
 	fill: #111 !important;
 }
 
+#Team-A, #Team-B {
+	fill: transparent;
+}
+
 /* Match OVER */
 
 .datetime[sketch\:expired] polygon {
@@ -247,6 +251,10 @@ circle#Goal-1[sketch\:nil] {
 #HG-Linetext text[sketch\:filled] {
 	fill: #111;
 	letter-spacing: -0.2px;
+}
+
+#Team-A tspan[sketch\:filled], #Team-B tspan[sketch\:filled] {
+	fill: #111;
 }
 
 
@@ -309,6 +317,9 @@ body.dark #HG-Linetext text[sketch\:filled] {
 	fill: #ddd;
 }
 
+body.dark #Team-A tspan[sketch\:filled], body.dark #Team-B tspan[sketch\:filled] {
+	fill: #ddd;
+}
 
 body.dark #Calendar rect#Rectangle-57 {
 	fill: black;

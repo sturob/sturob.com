@@ -532,20 +532,24 @@ var matches = [
     "weird_timezone": "29/06/14 00:00",
     "location": "Belo Horizonte ",
     "group_or_stage": "Round of 16",
-    "team1": "1A",
-    "dash": "- ",
-    "team2": "2B",
-    "datetime": "2014-06-28T17:00:00+01:00"
+    "team1": "1A", // brazil
+    "team2": "2B", // chile
+    "datetime": "2014-06-28T17:00:00+01:00",
+    "score1": "1",
+    "score2": "1",
+    "penalties1": "10101",
+    "penalties2": "00110"
   },
   {
     "match_n": "50",
     "weird_timezone": "29/06/14 04:00",
     "location": "Rio De Janeiro ",
     "group_or_stage": "Round of 16",
-    "team1": "1C",
-    "dash": "- ",
-    "team2": "2D",
-    "datetime": "2014-06-28T21:00:00+01:00"
+    "team1": "1C", // colombia
+    "team2": "2D", // uruguay
+    "datetime": "2014-06-28T21:00:00+01:00",
+    "score1": "2",
+    "score2": "0"
   },
   {
     "match_n": "51",
@@ -553,9 +557,10 @@ var matches = [
     "location": "Fortaleza ",
     "group_or_stage": "Round of 16",
     "team1": "1B",
-    "dash": "- ",
     "team2": "2A",
-    "datetime": "2014-06-29T17:00:00+01:00"
+    "datetime": "2014-06-29T17:00:00+01:00",
+    "score1": "",
+    "score2": ""
   },
   {
     "match_n": "52",
@@ -563,9 +568,10 @@ var matches = [
     "location": "Recife ",
     "group_or_stage": "Round of 16",
     "team1": "1D",
-    "dash": "- ",
     "team2": "2C",
-    "datetime": "2014-06-29T21:00:00+01:00"
+    "datetime": "2014-06-29T21:00:00+01:00",
+    "score1": "",
+    "score2": ""
   },
   {
     "match_n": "53",
@@ -573,9 +579,10 @@ var matches = [
     "location": "Brasilia ",
     "group_or_stage": "Round of 16",
     "team1": "1E",
-    "dash": "- ",
     "team2": "2F",
-    "datetime": "2014-06-30T17:00:00+01:00"
+    "datetime": "2014-06-30T17:00:00+01:00",
+    "score1": "",
+    "score2": ""
   },
   {
     "match_n": "54",
@@ -583,9 +590,10 @@ var matches = [
     "location": "Porto Alegre ",
     "group_or_stage": "Round of 16",
     "team1": "1G",
-    "dash": "- ",
     "team2": "2H",
-    "datetime": "2014-06-30T21:00:00+01:00"
+    "datetime": "2014-06-30T21:00:00+01:00",
+    "score1": "",
+    "score2": ""
   },
   {
     "match_n": "55",
@@ -593,9 +601,10 @@ var matches = [
     "location": "Sao Paulo ",
     "group_or_stage": "Round of 16",
     "team1": "1F",
-    "dash": "- ",
     "team2": "2E",
-    "datetime": "2014-07-01T17:00:00+01:00"
+    "datetime": "2014-07-01T17:00:00+01:00",
+    "score1": "",
+    "score2": ""
   },
   {
     "match_n": "56",
@@ -605,17 +614,9 @@ var matches = [
     "team1": "1H",
     "dash": "- ",
     "team2": "2G",
-    "datetime": "2014-07-01T21:00:00+01:00"
-  },
-  {
-    "match_n": "58",
-    "weird_timezone": "05/07/14 00:00",
-    "location": "Rio De Janeiro ",
-    "group_or_stage": "Quarter-finals",
-    "team1": "W53",
-    "dash": "- ",
-    "team2": "W54",
-    "datetime": "2014-07-04T17:00:00+01:00"
+    "datetime": "2014-07-01T21:00:00+01:00",
+    "score1": "",
+    "score2": ""
   },
   {
     "match_n": "57",
@@ -623,19 +624,21 @@ var matches = [
     "location": "Fortaleza ",
     "group_or_stage": "Quarter-finals",
     "team1": "W49",
-    "dash": "- ",
     "team2": "W50",
-    "datetime": "2014-07-04T21:00:00+01:00"
+    "datetime": "2014-07-04T21:00:00+01:00",
+    "score1": "",
+    "score2": ""
   },
   {
-    "match_n": "60",
-    "weird_timezone": "06/07/14 00:00",
-    "location": "Brasilia ",
+    "match_n": "58",
+    "weird_timezone": "05/07/14 00:00",
+    "location": "Rio De Janeiro ",
     "group_or_stage": "Quarter-finals",
-    "team1": "W55",
-    "dash": "- ",
-    "team2": "W56",
-    "datetime": "2014-07-05T17:00:00+01:00"
+    "team1": "W53",
+    "team2": "W54",
+    "datetime": "2014-07-04T17:00:00+01:00",
+    "score1": "",
+    "score2": ""
   },
   {
     "match_n": "59",
@@ -645,7 +648,21 @@ var matches = [
     "team1": "W51",
     "dash": "- ",
     "team2": "W52",
-    "datetime": "2014-07-05T21:00:00+01:00"
+    "datetime": "2014-07-05T21:00:00+01:00",
+    "score1": "",
+    "score2": ""
+  },
+  {
+    "match_n": "60",
+    "weird_timezone": "06/07/14 00:00",
+    "location": "Brasilia ",
+    "group_or_stage": "Quarter-finals",
+    "team1": "W55",
+    "dash": "- ",
+    "team2": "W56",
+    "datetime": "2014-07-05T17:00:00+01:00",
+    "score1": "",
+    "score2": ""
   },
   {
     "match_n": "61",
@@ -655,7 +672,9 @@ var matches = [
     "team1": "W57",
     "dash": "- ",
     "team2": "W58",
-    "datetime": "2014-07-08T21:00:00+01:00"
+    "datetime": "2014-07-08T21:00:00+01:00",
+    "score1": "",
+    "score2": ""
   },
   {
     "match_n": "62",
@@ -665,7 +684,9 @@ var matches = [
     "team1": "W59",
     "dash": "- ",
     "team2": "W60",
-    "datetime": "2014-07-09T21:00:00+01:00"
+    "datetime": "2014-07-09T21:00:00+01:00",
+    "score1": "",
+    "score2": ""
   },
   {
     "match_n": "63",
@@ -675,7 +696,9 @@ var matches = [
     "team1": "L61",
     "dash": "- ",
     "team2": "L62",
-    "datetime": "2014-07-12T21:00:00+01:00"
+    "datetime": "2014-07-12T21:00:00+01:00",
+    "score1": "",
+    "score2": ""
   },
   {
     "match_n": "64",
@@ -685,6 +708,8 @@ var matches = [
     "team1": "W61",
     "dash": "- ",
     "team2": "W62",
-    "datetime": "2014-07-13T20:00:00+01:00"
+    "datetime": "2014-07-13T20:00:00+01:00",
+    "score1": "",
+    "score2": ""
   }
 ]
