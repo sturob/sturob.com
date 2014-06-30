@@ -583,8 +583,8 @@ var matches = [
     "team1": "1E",
     "team2": "2F",
     "datetime": "2014-06-30T17:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "2",
+    "score2": "0"
   },
   {
     "match_n": "54",
@@ -594,8 +594,8 @@ var matches = [
     "team1": "1G",
     "team2": "2H",
     "datetime": "2014-06-30T21:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "2",
+    "score2": "1"
   },
   {
     "match_n": "55",
