@@ -605,8 +605,8 @@ var matches = [
     "team1": "1F",
     "team2": "2E",
     "datetime": "2014-07-01T17:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "1",
+    "score2": "0"
   },
   {
     "match_n": "56",
@@ -617,8 +617,8 @@ var matches = [
     "dash": "- ",
     "team2": "2G",
     "datetime": "2014-07-01T21:00:00+01:00",
-    "score1": "",
-    "score2": ""
+    "score1": "2",
+    "score2": "1"
   },
   {
     "match_n": "57",
