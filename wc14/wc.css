@@ -173,9 +173,11 @@ circle#Goal-3, circle#Goal-2, circle#Goal-1 {
 }
 
 path#Oval-V, path#Oval-H {
-/* 	fill: #3c3c3c; */
-	fill: #000;
-	opacity: 0.2;
+/* fill: #3c3c3c; */
+	
+fill: #000;
+	
+opacity: 0.35;
 	stroke-width: 0;
 }
 
@@ -226,8 +228,19 @@ circle#Goal-1[sketch\:nil] {
 .datetime[sketch\:expired] polygon {
 	visibility: hidden;
 }
-.datetime[sketch\:expired] path {
+
+#When-01.datetime[sketch\:expired] path,
+#When-12.datetime[sketch\:expired] path,
+#When-23.datetime[sketch\:expired] path,
+#When-03.datetime[sketch\:expired] path {
 	fill: #222 !important;
+}
+
+#When-01.datetime[sketch\:expired] #Oval-Pointer path,
+#When-12.datetime[sketch\:expired] #Oval-Pointer path,
+#When-23.datetime[sketch\:expired] #Oval-Pointer path,
+#When-03.datetime[sketch\:expired] #Oval-Pointer path {
+	fill: #111 !important;
 }
 
 #When-0123.datetime[sketch\:expired] path {
