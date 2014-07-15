@@ -109,6 +109,11 @@ svg {
 	height: 100%;
 }
 
+.results {
+	letter-spacing: -.3px;
+	-webkit-font-smoothing: antialiased;
+}
+
 #Flag-0 rect,
 #Flag-1 rect,
 #Flag-2 rect,
@@ -172,12 +177,9 @@ circle#Goal-3, circle#Goal-2, circle#Goal-1 {
 /* 	stroke-width: .4 !important; */
 }
 
-path#Oval-V, path#Oval-H {
-/* fill: #3c3c3c; */
-	
-fill: #000;
-	
-opacity: 0.35;
+path#Oval-V, path#Oval-H {	
+	fill: #000;
+	opacity: 0.35;
 	stroke-width: 0;
 }
 
@@ -191,8 +193,9 @@ circle#Goal-1[sketch\:scored] {
 
 circle#Goal-1[sketch\:nil] {
 	visibility: visible;
-	fill: #222;
+	fill: #000;
 }
+
 
 /* Match SOON */
 
@@ -207,9 +210,10 @@ circle#Goal-1[sketch\:nil] {
 #When-03.datetime[sketch\:soon] #Oval-Pointer > *,
 #When-0123.datetime[sketch\:soon] #Oval-Pointer > * {
 	fill: #aaa;
-}
+} 
 
 /* Match NOW */
+
 
 .datetime[sketch\:current] #Oval-Pointer > * {
 	fill: white;
@@ -222,6 +226,60 @@ circle#Goal-1[sketch\:nil] {
 #Team-A, #Team-B {
 	fill: transparent;
 }
+
+
+/* RESULTS */
+
+.results *[sketch\:converted] {
+	fill: #fff !important;
+	opacity: 1;
+	visibility: visible !important; 
+}
+
+.results *[sketch\:missed] {
+	visibility: visible !important;
+	fill: #444 !important;
+}
+
+.dark .results *[sketch\:converted] {
+	fill: #333 !important;
+}
+.dark .results *[sketch\:missed] {
+	fill: #bbb !important;
+}
+
+
+.results circle {
+/* 	visibility: visible !important; */
+}
+
+body.dark .results tspan {
+	fill: #ddd;
+}
+
+.results #score-1,
+.results #score-0 {
+/* 	font-size: 10px; */
+}
+
+.results rect#box-0,
+.results rect#box-1 {
+	fill: #000;
+	opacity: 0.9;
+}
+
+body.dark .results rect#box-0,
+body.dark .results rect#box-1 {
+	fill: #fff;
+	opacity: 0.9;
+}
+
+body.dark .results text#score-1 tspan,
+body.dark .results text#score-0 tspan {
+	fill: black;
+}
+
+
 
 /* Match OVER */
 
@@ -250,6 +308,7 @@ circle#Goal-1[sketch\:nil] {
 .datetime[sketch\:expired] > text {
 	opacity: .2;
 }
+
 .datetime[sketch\:expired] path {
 /* 	stroke-width: 0px !important; */
 }
@@ -293,7 +352,8 @@ path#Line-4,
 path#Line-3, 
 path#Line-2, 
 path#Line-1 {
-	stroke: #444;
+/* 	stroke: #44; */
+	stroke-width: 0.5;
 }
 
 polygon { 
@@ -303,7 +363,7 @@ polygon {
 /* Dark Mode */
 
 body.dark {
-	background: black;
+	background: #111;
 }
 
 body.dark p {
@@ -314,7 +374,7 @@ body.dark #ui label {
 	color: #888;
 		background: #222;
 }
-
+	
 body.dark h1 {
 	color: #aaa;
 }
@@ -381,5 +441,5 @@ body.dark path#Line-4,
 body.dark path#Line-3, 
 body.dark path#Line-2, 
 body.dark path#Line-1 {
-	stroke: #666;
+	stroke: #eee;
 }
