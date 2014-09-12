@@ -6,6 +6,11 @@
 
 /* HTML */
 
+/*
+#3F58C0;
+#418A05;
+#C0021B;
+*/
 body {
 	background: #fff;
 	position: relative;
@@ -238,22 +243,42 @@ circle#Goal-1[sketch\:nil] {
 
 .results *[sketch\:missed] {
 	visibility: visible !important;
-	fill: #444 !important;
+	fill: #aaa !important;
 }
 
+
 .dark .results *[sketch\:converted] {
-	fill: #333 !important;
-}
-.dark .results *[sketch\:missed] {
 	fill: #bbb !important;
 }
+.dark .results *[sketch\:missed] {
+	fill: #333 !important;
+}
+
+
+#Results-AB *[sketch\:converted] {
+	fill: #3F58C0 !important;
+}
+
+#Results-DC *[sketch\:converted] {
+	fill: #3F58C0 !important;
+}
+
+#Results-BA-DC *[sketch\:converted] {
+	fill: #418A05  !important;
+}
+
+#Results-BA-DC-FE-HG *[sketch\:converted] {
+	fill: #C0021B !important;
+}
+
 
 
 .results circle {
 /* 	visibility: visible !important; */
 }
 
-body.dark .results tspan {
+body.dark .results #team-0 tspan,
+body.dark .results #team-1 tspan {
 	fill: #ddd;
 }
 
@@ -264,20 +289,68 @@ body.dark .results tspan {
 
 .results rect#box-0,
 .results rect#box-1 {
-	fill: #000;
-	opacity: 0.9;
+	display: none;
 }
 
 body.dark .results rect#box-0,
-body.dark .results rect#box-1 {
-	fill: #fff;
-	opacity: 0.9;
+body.dark .results rect#box-1 {	
+}
+
+#Score-Slot {
+	fill: none !important;
+	display: none;
 }
 
 body.dark .results text#score-1 tspan,
 body.dark .results text#score-0 tspan {
-	fill: black;
+	/*fill: black;*/
+	/*fill: #418A05;*/
+
+	/* #3F58C0 */
+	/* #C0021B */
 }
+
+
+#Results-AB #score-0 > tspan,
+#Results-AB #score-1 > tspan,
+#Results-BA #score-0 > tspan,
+#Results-BA #score-1 > tspan,
+#Results-CD #score-0 > tspan,
+#Results-CD #score-1 > tspan,
+#Results-DC #score-0 > tspan,
+#Results-DC #score-1 > tspan,
+#Results-EF #score-0 > tspan,
+#Results-EF #score-1 > tspan,
+#Results-FE #score-0 > tspan,
+#Results-FE #score-1 > tspan,
+#Results-GH #score-0 > tspan,
+#Results-GH #score-1 > tspan,
+#Results-HG #score-0 > tspan,
+#Results-HG #score-1 > tspan {
+	fill: #3F58C0;
+}
+
+
+#Results-AB-CD #score-0 > tspan,
+#Results-AB-CD #score-1 > tspan,
+#Results-BA-DC #score-0 > tspan,
+#Results-BA-DC #score-1 > tspan,
+#Results-EF-GH #score-0 > tspan,
+#Results-EF-GH #score-1 > tspan,
+#Results-FE-HG #score-0 > tspan,
+#Results-FE-HG #score-1 > tspan
+{
+	fill: #418A05;
+}
+
+#Results-AB-CD-EF-GH #score-0 > tspan,
+#Results-AB-CD-EF-GH #score-1 > tspan,
+#Results-BA-DC-FE-HG #score-0 > tspan,
+#Results-BA-DC-FE-HG #score-1 > tspan
+{
+	fill: #C0021B;
+}
+
 
 
 
