@@ -215,7 +215,6 @@ section#about {
   -webkit-border-radius: 8px;
   border-radius: 8px;
   background: white;
-  left: -48px;
   font-family: Helvetica Neue, Helvetica, Sans-Serif;
   color: #555;
 }
@@ -299,11 +298,13 @@ section#projects a {
 }
 section#projects h1 {
   text-transform: uppercase;
-  top: 0;
+  margin-top: 32px;
   left: 0;
-  font-size: 18px;
+  font-size: 11px;
   font-weight: normal;
   color: #000;
+  text-align: center;
+  color: #888;
 }
 section#projects section#work_links {
   width: 720px;
@@ -366,6 +367,18 @@ img#typekit-badge-hlx2kdo {
 }
 img#typekit-badge-hlx2kdo:hover {
   opacity: 1;
+}
+#mail-me {
+  margin: 72px auto 0 auto;
+  text-align: center;
+}
+#mail-me a {
+  background: #6464e6;
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 16px;
+  color: white;
+  padding: 2px 4px;
 }
 footer {
   text-align: center;
