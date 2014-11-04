@@ -71,6 +71,11 @@
       setTimeout( function(){ (++BOTH == 4) && boom(); }, 500 );
       setTimeout( boom, 5000 ); // if things are taking too long, just do it
       
+      setTimeout(function() {
+        $('#typekitjs').next('img').hide()
+      }, 100);
+      
+
       $('section#projects img').imagesLoaded(function() {
         (++BOTH == 4) && boom();
       });
@@ -162,13 +167,6 @@
 
 <script id="typekitjs" type="text/javascript" src="http://use.typekit.com/hlx2kdo.js"></script>
 <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-
-<script>
-  setTimeout(function() {
-    $('#typekitjs').next('img').hide()
-  }, 100)
-  
-</script>
 
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"> </script> 
 <script type="text/javascript"> 
