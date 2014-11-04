@@ -180,7 +180,7 @@ select {
 /* close commented backslash hack */
 body {
   background: #141414;
-  font-family: "dejarip-1", "dejarip-2", sans-serif;
+  font-family: sans-serif;
   font-size: 13px;
 }
 /*body{font:13px/1.5 'Helvetica Neue',Arial,'Liberation Sans',FreeSans,sans-serif}*/
@@ -258,7 +258,6 @@ section#more_info {
   position: absolute;
   /*  left: 90%;*/
 
-  font-family: "dejarip-1", "dejarip-2", sans-serif;
   right: -96px;
   top: 8px;
   line-height: 2em;
@@ -284,7 +283,8 @@ section#more_info a:hover {
 section#projects {
   width: 100%;
   background: #333;
-  margin-top: 72px;
+  margin-top: 64px;
+  padding-top: 36px;
   background: -webkit-gradient(linear, left top, left bottom, from(#000000), to(#111111));
   background: -moz-linear-gradient(-90deg, #000000, #111111);
   height: 0;
@@ -298,11 +298,12 @@ section#projects a {
 }
 section#projects h1 {
   text-transform: uppercase;
-  margin-top: 32px;
-  left: 0;
-  font-size: 11px;
+  top: 50%;
+  left: -20px;
+  font-size: 12px;
+  transform: rotate(270deg);
   font-weight: normal;
-  color: #000;
+  position: absolute;
   text-align: center;
   color: #888;
 }
@@ -369,8 +370,9 @@ img#typekit-badge-hlx2kdo:hover {
   opacity: 1;
 }
 #mail-me {
-  margin: 72px auto 0 auto;
+  margin: 36px auto 0 auto;
   text-align: center;
+  font-family: "dejarip-1", "dejarip-2", sans-serif;
 }
 #mail-me a {
   background: #6464e6;
