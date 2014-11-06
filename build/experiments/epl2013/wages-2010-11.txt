@@ -1,0 +1,21 @@
+Club	Total Wages Paid 2010/11	League Position
+Chelsea	£189.5m	2
+Manchester City	£174m	3
+Manchester United	£152.9m	1
+Liverpool	£134.8m	6
+Arsenal	£124.4m	4
+Tottenham	£91.1m	5
+Aston Villa	£83.4m	9
+Sunderland	£60.9m	10
+Everton	£58m	7
+Fulham	£57.7m	8
+Bolton	£56.1m	14
+West Ham	£55.7m	20
+Newcastle	£53.6m	12
+Blackburn	£49.9m	15
+Stoke	£47.1m	13
+Wigan	£39.9m	16
+Wolves	37.9m	17
+West Brom	£37.4m	11
+Blackpool	£13.6m	19
+Birmingham	No accounts	18

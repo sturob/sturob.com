@@ -1,0 +1,134 @@
+@import "../../../../base/less/_reset";
+@import "../../../../base/less/_utils";
+
+
+body {
+	font-family: Geneva, Serif;
+	background: #FFF;
+}
+
+
+svg {
+	// background: #505050;
+  // background: #bbb;
+
+  rect {
+    fill: black;
+    opacity: 1;
+  }
+
+  text.year {
+  	font-size: 10px;
+  	opacity: 1;
+  	letter-spacing: -1px;
+  }
+
+  path.domain {
+  	stroke-width: 1px;
+  	fill: none;
+  }
+
+  path.line.selected {
+  	opacity: 1;
+  	stroke-width: 1px;
+  }
+
+	path.line {
+
+  	stroke-linecap: round;
+		opacity: .15;
+		fill: none;
+
+		// stroke-dashoffset: 25;
+		position: relative;
+		stroke-width: 1px;
+		// opacity: 0.1;
+	  stroke: black;
+	  // fill: black;/
+	  // -webkit-filter: drop-shadow( 5px 5px 5px #000 );
+	          // filter: drop-shadow( -5px -5px 5px #000 ); /* Same syntax as box-shadow */
+	}
+
+	path.line-2 {
+		stroke: black;
+		shape-rendering: crispEdges;
+
+		// stroke-dasharray: 1, 1;
+		fill: none;
+		stroke-width: 1px;
+	}
+
+	path.line-winners {
+		stroke: white;
+		stroke-width: 10px;
+		fill: red;
+	}
+
+
+	.guidelines {
+		line {
+			shape-rendering: crispEdges;
+			stroke: white;
+			stroke-width: 1;
+			opacity: 0.25;
+		}
+		
+	}
+
+	path:hover {
+		stroke-width: 4px;
+		position: relative;
+		opacity: 1;
+	}
+
+	text.team-name {
+		fill: #fff;
+		// text-shadow: 1px 1px 1px #000;
+		// opacity: 0.5;
+		font-size: 10px;
+		letter-spacing: 1px;
+		// font-weight: bold;
+		background: #FFF;
+	}
+
+	.axis {
+		font-size: 10px;
+		font-weight: normal;
+		stroke-width: 0.5px;
+		stroke: #333;
+	}
+}
+
+
+div#teams {
+	font-size: 12px;
+	line-height: 2em;
+	margin: 0 36px;
+	
+	b {
+		cursor: pointer;
+		.rounded(2px);
+		font-weight: normal;
+		margin-right: 1px;
+		background: #e0e0e0;
+		padding: 2px 4px;
+	}
+
+	b.selected {
+		background: #333;
+		color: #fff;
+	}
+}
+
+
+div.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  min-width: 160px;                  
+  // height: 28px;                 
+  padding: 4px;             
+  font: 12px sans-serif;        
+  background: white;   
+  border: 0px;      
+  pointer-events: none;         
+}
