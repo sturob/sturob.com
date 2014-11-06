@@ -2,46 +2,17 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-  <title>sturob &middot; purveyor of fine interactions</title>
+  <title>sturob &middot; Purveyor of Fine Interactions</title>
  
   <link rel="icon" href="favicon.ico" type="image/ico">
 
-  <link id="main_styles" rel="stylesheet" href="less/main.css" type="text/css">
+  <link id="main_styles" rel="stylesheet" href="assets/css/main.css" type="text/css">
 
-  <script type="text/javascript">
-    var hostname = window.location.hostname;
-    if (hostname == 'localhost' || hostname == 'c9.io') {
-      var l = document.getElementById('main_styles');
-      l.rel = 'stylesheet/less';
-      l.href = 'less/main.less';
-    }
-  </script>
-
-  <script type="text/javascript" src="js/head.min.js"></script>
+  <script type="text/javascript" src="assets/js/lib/head.min.js"></script>
 
   <script type="text/javascript">
   // http://pinterest.com/sturob/feed.rss
   // http://feeds.pinboard.in/rss/u:sturob/
-
-  /*
-    function parseRSS(url, callback) {
-      $.ajax({
-        url: document.location.protocol + '//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(url),
-        dataType: 'json',
-        success: function(data) { callback(data.responseData.feed) }
-      });
-    }
-  */
-
-    //$.getJSON('http://whateverorigin.org/get?url=' + encodeURIComponent('http://pinterest.com/sturob/feed.rss') + '&callback=?', function(data){ $.parseXML(data) });
-
-    /*
-    var feeds = [
-      { url: '', itemMapper: function(){} }
-    ];
-    */
-
-
 
     var BOTH = 1;
     window.addEventListener('blur', function(){ BOTH-- }, false);
@@ -63,18 +34,17 @@
       });
     }
     
-    head.js( "js/jquery-1.6.min.js", 
-             "js/jquery-helpers.js", 
-             "js/jquery.effects.min.js", 
-             "js/less.min.js", 
-             "base/js/lib/underscore.js", function() {
+    head.js( "assets/js/lib/jquery-1.6.min.js", 
+             "assets/js/lib/jquery-helpers.js", 
+             "assets/js/lib/jquery.effects.min.js", 
+             "assets/js/lib/less.min.js", 
+             "assets/js/lib/underscore.js", function() {
       setTimeout( function(){ (++BOTH == 4) && boom(); }, 500 );
       setTimeout( boom, 5000 ); // if things are taking too long, just do it
       
       setTimeout(function() {
         $('#typekitjs').next('img').hide()
-      }, 100);
-      
+      }, 1000);
 
       $('section#projects img').imagesLoaded(function() {
         (++BOTH == 4) && boom();
@@ -99,12 +69,12 @@
   <header></header>
   
   <section id="about">
-    <img id="stu" src="images/me-boat.jpg">
+    <img id="stu" src="assets/images/me-boat.jpg">
     
     <div id="me">
       <p>Hello there, my name is Stuart Robinson.</p>
         
-      <p>I'm a London based software designer/coder specialising in <b>Service Design</b>, <b>Prototyping</b>, <b>HTML5</b> and <b>Information Visualisation</b>.</p>
+      <p>I'm a London based software designer/coder specialising in <b>Service Design</b>, <b>Mobile App Prototyping</b>, <b>HTML5</b> and <b>Information Visualisation</b>.</p>
       
       <p>
         I convert rough ideas or foggy requirements into beautiful, highly usable interfaces.
@@ -133,7 +103,7 @@
     <section id="work_links">
       <div class="grid_4">
         <a href="http://thebackofyourhand.com">
-          <div class="fake-screenshot"><img height="150" width="150" src="images/tboyh.png"></div>
+          <div class="fake-screenshot"><img height="150" width="150" src="assets/images/tboyh.png"></div>
           <h2>The Back of Your Hand</h2>
           <p>Visualising the social life of cities</p>
         </a>
@@ -141,7 +111,7 @@
 
       <div class="grid_4">
         <a href="http://useitorlose.it">
-          <div class="fake-screenshot"><img height="150" width="150" src="images/uioli.jpg"></div>
+          <div class="fake-screenshot"><img height="150" width="150" src="assets/images/uioli.jpg"></div>
           <h2>Use it or Lose it</h2>
           <p>Own fewer but better things</p>
         </a>
@@ -149,7 +119,7 @@
 
       <div class="grid_4">
         <a href="http://flippingtypical.com">
-          <div class="fake-screenshot"><img height="150" width="150" src="images/flippingtypical.png"></div>
+          <div class="fake-screenshot"><img height="150" width="150" src="assets/images/flippingtypical.png"></div>
           <h2>Flipping Typical</h2>
           <p>Preview text in all your popular fonts</p>
         </a>

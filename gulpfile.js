@@ -20,15 +20,15 @@ gulp.task('default', function() {
 });
 
 gulp.task('less', function () {
-	gulp.src('app/css/*.css')
+	gulp.src('app/assets/less/*.less')
 	    .pipe( plumber() )
 	    .pipe( less() )
-	    .pipe( gulp.dest('build/css') )
+	    .pipe( gulp.dest('build/assets/css') )
 	    .pipe( livereload(lrServer) );
 });
 
 gulp.task('html', function () {
-	gulp.src( './app/html/**/*.html' )
+	gulp.src( './app/*.html' ) // TODO fix for elsewhere experiments tools wc14 tmp 
 	    .pipe( htmlhint() )
 	    .pipe( htmlhint.reporter() )
 	    .pipe( gulp.dest( './build' ) )
@@ -36,22 +36,22 @@ gulp.task('html', function () {
 });
 
 
-gulp.task('fonts', function () {
-	gulp.src('./app/fonts/**').pipe( gulp.dest('./build/fonts') )
-	    .pipe( livereload(lrServer) );
-});
+// gulp.task('fonts', function () {
+// 	gulp.src('./app/fonts/**').pipe( gulp.dest('./build/fonts') )
+// 	    .pipe( livereload(lrServer) );
+// });
 
 gulp.task('images', function () {
-	gulp.src('./app/images/**').pipe( gulp.dest('./build/images') )
+	gulp.src('./app/assets/images/**').pipe( gulp.dest('./build/assets/images') )
 	    .pipe( livereload(lrServer) );
 });
 
 gulp.task('js', function () {
-	gulp.src('./app/js/*.js').pipe( gulp.dest('./build/js') )
+	gulp.src('./app/assets/js/**').pipe( gulp.dest('./build/assets/js') )
 	    .pipe( livereload(lrServer) );
 });
 
-gulp.task('build', [ 'less', 'fonts', 'images', 'html', 'js' ]);
+gulp.task('build', [ 'less', /*'fonts',*/ 'images', 'html', 'js' ]);
 gulp.task('server', httpserver);
 
 gulp.task('watch', [ 'build' ], function () {
@@ -59,13 +59,15 @@ gulp.task('watch', [ 'build' ], function () {
 	lrServer.listen(35729, function (err) {
 		if (err) return console.log(err);
 
-		gulp.watch('./app/css/**/*', [ 'less' ]);
-		gulp.watch('./app/js/*.js', [ 'js' ]);
-		gulp.watch('./app/images/**/*', [ 'images' ]);
-		gulp.watch('./app/html/*/*').on('change', function (file) {
-			var dest = file.path.split('/').slice(-2)[0];
-			gulp.src( file.path ).pipe( gulp.dest( './build/' + dest ) )
-			    .pipe( livereload( lrServer ) );
+		gulp.watch('./app/assets/css/**/*', [ 'less' ]);
+		gulp.watch('./app/assets/js/*.js', [ 'js' ]);
+		gulp.watch('./app/assets/images/**/*', [ 'images' ]);
+
+		gulp.watch('./app/*.html').on('change', function (file) {
+			console.log('refreshing ' + file.path);
+			gulp.src( file.path )
+			    .pipe( gulp.dest( './build/' ) )
+			    .pipe( livereload( lrServer ) )
 		});
 	});
 });
