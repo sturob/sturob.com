@@ -1,0 +1,518 @@
+
+* {
+	margin: 0;
+	font-family: Helvetica, Verdana, Sans-Serif;
+}
+
+/* HTML */
+
+/*
+#3F58C0;
+#418A05;
+#C0021B;
+*/
+body {
+	background: #fff;
+	position: relative;
+}
+
+#fakezoom {
+	width: 330px;
+	height: 660px;
+	position: absolute;
+	opacity: 1;
+	left: 154px;
+	top: 130px;
+	z-index: 1;
+}
+
+#wc.zoomed {
+	width: auto;
+}
+
+#wc {
+	position: relative;
+	margin: 0 auto;
+ 	width: 640px; 
+}
+
+#wc:hover {
+	cursor: -webkit-zoom-in;
+	cursor: zoom-in;
+}
+
+#wc.zoomed:hover {
+	cursor: -webkit-zoom-out; 
+	cursor: zoom-out;
+}
+
+
+div#header {
+	z-index: 1;
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	width: 50%;
+	line-height: 0.9em;
+}
+
+h1 {
+	padding: 0;
+	font-size: 14px;
+}
+
+#header a {
+	font-size: 11px;
+	color: #3F58C0;
+	text-decoration: none;
+}
+
+#header:hover {
+	cursor: default;
+}
+
+
+p {
+	margin-top: 24px;
+	font-size: 12px;
+	margin-bottom: 8px;
+}
+
+
+#ui:hover {
+	cursor: default;
+}
+
+#ui {
+	width: 140px;
+	z-index: 10;
+	position: absolute;
+	text-align: right;
+	top: 14px;
+	right: 8px;
+	font-size: 11px;
+	color: #555;
+}
+
+#ui label {
+	background: #f7f7f7;
+	padding: 6px 8px;
+}
+
+#ui input {
+	position: relative;
+	top: 1px;
+}
+
+option {
+	font-size: 11px;
+}
+
+/* SVG */
+
+svg {
+	height: 100%;
+}
+
+.results {
+	letter-spacing: -.3px;
+	-webkit-font-smoothing: antialiased;
+}
+
+#Flag-0 rect,
+#Flag-1 rect,
+#Flag-2 rect,
+#Flag-3 rect {
+	opacity: 0;
+}
+
+#Big-G {
+  fill: #444;
+}
+
+image {
+	opacity: 0.85;
+}
+
+#Team-0, #Team-1, #Team-2, #Team-3 {
+	-webkit-font-smoothing: antialiased;
+}
+
+#Big-Letters > * {
+	fill: #444;
+}
+
+#Group-A .datetime text, #Group-B .datetime text, #Group-C .datetime text, #Group-D .datetime text,
+#Group-E .datetime text, #Group-F .datetime text, #Group-G .datetime text, #Group-H .datetime text {
+	fill: #bbb;
+}
+
+.datetime text {
+	opacity: 0.9;
+}
+
+#When-01.datetime path, #When-12.datetime path,
+#When-23.datetime path, #When-03.datetime path,
+#When-0123.datetime path {
+	stroke-width: 0;
+}
+
+circle#Goal-7, circle#Goal-6, circle#Goal-5, circle#Goal-4,
+circle#Goal-3, circle#Goal-2, circle#Goal-1 {
+	visibility: hidden;
+}
+
+.datetime #Oval-Pointer polygon {
+	fill: black; 
+}
+
+#Group-A .datetime > path,
+#Group-B .datetime > path,
+#Group-C .datetime > path,
+#Group-D .datetime > path,
+#Group-E .datetime > path,
+#Group-F .datetime > path,
+#Group-G .datetime > path,
+#Group-H .datetime > path
+{
+/* 	fill: #3c3c3c !important; */
+	fill: #2a2a2a !important;
+
+/* 	stroke: #44f !important; */
+/* 	stroke-width: .4 !important; */
+}
+
+path#Oval-V, path#Oval-H {	
+	fill: #000;
+	opacity: 0.35;
+	stroke-width: 0;
+}
+
+
+circle#Goal-7[sketch\:scored], circle#Goal-6[sketch\:scored], circle#Goal-5[sketch\:scored],
+circle#Goal-4[sketch\:scored], circle#Goal-3[sketch\:scored], circle#Goal-2[sketch\:scored],
+circle#Goal-1[sketch\:scored] {
+	visibility: visible;
+	fill: #d0d0d0;
+}
+
+circle#Goal-1[sketch\:nil] {
+	visibility: visible;
+	fill: #000;
+}
+
+
+/* Match SOON */
+
+.datetime[sketch\:soon] text {
+	opacity: 1;
+	fill: #111 !important;
+}
+
+#When-01.datetime[sketch\:soon] #Oval-Pointer > *,
+#When-12.datetime[sketch\:soon] #Oval-Pointer > *,
+#When-23.datetime[sketch\:soon] #Oval-Pointer > *,
+#When-03.datetime[sketch\:soon] #Oval-Pointer > *,
+#When-0123.datetime[sketch\:soon] #Oval-Pointer > * {
+	fill: #aaa;
+} 
+
+/* Match NOW */
+
+
+.datetime[sketch\:current] #Oval-Pointer > * {
+	fill: white;
+}
+
+.datetime[sketch\:current] text {
+	fill: #111 !important;
+}
+
+#Team-A, #Team-B {
+	fill: transparent;
+}
+
+
+/* RESULTS */
+
+.results *[sketch\:converted] {
+	fill: #fff !important;
+	opacity: 1;
+	visibility: visible !important; 
+}
+
+.results *[sketch\:missed] {
+	visibility: visible !important;
+	fill: #aaa !important;
+}
+
+
+.dark .results *[sketch\:converted] {
+	fill: #bbb !important;
+}
+.dark .results *[sketch\:missed] {
+	fill: #333 !important;
+}
+
+
+#Results-AB *[sketch\:converted] {
+	fill: #3F58C0 !important;
+}
+
+#Results-DC *[sketch\:converted] {
+	fill: #3F58C0 !important;
+}
+
+#Results-BA-DC *[sketch\:converted] {
+	fill: #418A05  !important;
+}
+
+#Results-BA-DC-FE-HG *[sketch\:converted] {
+	fill: #C0021B !important;
+}
+
+
+
+.results circle {
+/* 	visibility: visible !important; */
+}
+
+body.dark .results #team-0 tspan,
+body.dark .results #team-1 tspan {
+	fill: #ddd;
+}
+
+.results #score-1,
+.results #score-0 {
+/* 	font-size: 10px; */
+}
+
+.results rect#box-0,
+.results rect#box-1 {
+	display: none;
+}
+
+body.dark .results rect#box-0,
+body.dark .results rect#box-1 {	
+}
+
+#Score-Slot {
+	fill: none !important;
+	display: none;
+}
+
+body.dark .results text#score-1 tspan,
+body.dark .results text#score-0 tspan {
+	/*fill: black;*/
+	/*fill: #418A05;*/
+
+	/* #3F58C0 */
+	/* #C0021B */
+}
+
+
+#Results-AB #score-0 > tspan,
+#Results-AB #score-1 > tspan,
+#Results-BA #score-0 > tspan,
+#Results-BA #score-1 > tspan,
+#Results-CD #score-0 > tspan,
+#Results-CD #score-1 > tspan,
+#Results-DC #score-0 > tspan,
+#Results-DC #score-1 > tspan,
+#Results-EF #score-0 > tspan,
+#Results-EF #score-1 > tspan,
+#Results-FE #score-0 > tspan,
+#Results-FE #score-1 > tspan,
+#Results-GH #score-0 > tspan,
+#Results-GH #score-1 > tspan,
+#Results-HG #score-0 > tspan,
+#Results-HG #score-1 > tspan {
+	fill: #3F58C0;
+}
+
+
+#Results-AB-CD #score-0 > tspan,
+#Results-AB-CD #score-1 > tspan,
+#Results-BA-DC #score-0 > tspan,
+#Results-BA-DC #score-1 > tspan,
+#Results-EF-GH #score-0 > tspan,
+#Results-EF-GH #score-1 > tspan,
+#Results-FE-HG #score-0 > tspan,
+#Results-FE-HG #score-1 > tspan
+{
+	fill: #418A05;
+}
+
+#Results-AB-CD-EF-GH #score-0 > tspan,
+#Results-AB-CD-EF-GH #score-1 > tspan,
+#Results-BA-DC-FE-HG #score-0 > tspan,
+#Results-BA-DC-FE-HG #score-1 > tspan
+{
+	fill: #C0021B;
+}
+
+
+
+
+/* Match OVER */
+
+.datetime[sketch\:expired] polygon {
+	visibility: hidden;
+}
+
+#When-01.datetime[sketch\:expired] path,
+#When-12.datetime[sketch\:expired] path,
+#When-23.datetime[sketch\:expired] path,
+#When-03.datetime[sketch\:expired] path {
+	fill: #222 !important;
+}
+
+#When-01.datetime[sketch\:expired] #Oval-Pointer path,
+#When-12.datetime[sketch\:expired] #Oval-Pointer path,
+#When-23.datetime[sketch\:expired] #Oval-Pointer path,
+#When-03.datetime[sketch\:expired] #Oval-Pointer path {
+	fill: #111 !important;
+}
+
+#When-0123.datetime[sketch\:expired] path {
+	fill: none !important;
+}
+
+.datetime[sketch\:expired] > text {
+	opacity: .2;
+}
+
+.datetime[sketch\:expired] path {
+/* 	stroke-width: 0px !important; */
+}
+
+#AB-Linetext text[sketch\:filled],
+#CD-Linetext text[sketch\:filled],
+#EF-Linetext text[sketch\:filled],
+#GH-Linetext text[sketch\:filled],
+#BA-Linetext text[sketch\:filled],
+#DC-Linetext text[sketch\:filled],
+#FE-Linetext text[sketch\:filled],
+#HG-Linetext text[sketch\:filled] {
+	fill: #111;
+	letter-spacing: -0.2px;
+}
+
+#Team-A tspan[sketch\:filled], #Team-B tspan[sketch\:filled] {
+	fill: #111;
+}
+
+
+path#Line-21,
+path#Line-20,
+path#Line-19, 
+path#Line-18,
+path#Line-17,
+path#Line-16, 
+path#Line-15,
+path#Line-14,
+path#Line-13, 
+path#Line-12, 
+path#Line-11,
+path#Line-10, 
+path#Line-9, 
+path#Line-8, 
+path#Line-7, 
+path#Line-6, 
+path#Line-5, 
+path#Line,
+path#Line-4, 
+path#Line-3, 
+path#Line-2, 
+path#Line-1 {
+/* 	stroke: #44; */
+	stroke-width: 0.5;
+}
+
+polygon { 
+	/*fill: #444;*/
+}
+
+/* Dark Mode */
+
+body.dark {
+	background: #111;
+}
+
+body.dark p {
+	color: #999;
+}
+
+body.dark #ui label {
+	color: #888;
+		background: #222;
+}
+	
+body.dark h1 {
+	color: #aaa;
+}
+
+body.dark #AB-Linetext text[sketch\:filled],
+body.dark #CD-Linetext text[sketch\:filled],
+body.dark #EF-Linetext text[sketch\:filled],
+body.dark #GH-Linetext text[sketch\:filled],
+body.dark #BA-Linetext text[sketch\:filled],
+body.dark #DC-Linetext text[sketch\:filled],
+body.dark #FE-Linetext text[sketch\:filled],
+body.dark #HG-Linetext text[sketch\:filled] {
+	fill: #ddd;
+}
+
+body.dark #Team-A tspan[sketch\:filled], body.dark #Team-B tspan[sketch\:filled] {
+	fill: #ddd;
+}
+
+body.dark #Calendar rect#Rectangle-57 {
+	fill: black;
+}
+
+body.dark #Key > Rect {
+	fill: #222;
+}
+
+body.dark #Key text  {
+	fill: #bbb;	
+}
+
+body.dark g#Page-1 > #Rectangle-1 {
+	fill-opacity: 1;
+	fill: #111;
+}
+
+body.dark #Big-G {
+	fill: #333;	
+}
+
+body.dark polygon {
+	fill: #666;
+}
+
+body.dark path#Line-21,
+body.dark path#Line-20,
+body.dark path#Line-19, 
+body.dark path#Line-18,
+body.dark path#Line-17,
+body.dark path#Line-16, 
+body.dark path#Line-15,
+body.dark path#Line-14,
+body.dark path#Line-13, 
+body.dark path#Line-12, 
+body.dark path#Line-11,
+body.dark path#Line-10, 
+body.dark path#Line-9, 
+body.dark path#Line-8, 
+body.dark path#Line-7, 
+body.dark path#Line-6, 
+body.dark path#Line-5, 
+body.dark path#Line,
+body.dark path#Line-4, 
+body.dark path#Line-3, 
+body.dark path#Line-2, 
+body.dark path#Line-1 {
+	stroke: #eee;
+}
