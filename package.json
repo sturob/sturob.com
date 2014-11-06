@@ -11,6 +11,7 @@
     "browserify": "^3.32.0",
     "gulp-browserify": "^0.4.6",
     "gulp-htmlhint": "0.0.9",
-    "gulp-plumber": "^0.6.4"
+    "gulp-plumber": "^0.6.4",
+    "gulp-gh-pages": "^0.4.0"
   }
 }
