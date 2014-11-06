@@ -5,7 +5,9 @@ Hosted on github pages.
 
 ## How to deploy
 
+	git subtree push --prefix build origin gh-pages
 
+[more info](http://stephenplusplus.github.io/yeoman.io/deployment.html)
 
 ## Structure
 
@@ -19,3 +21,4 @@ Hosted on github pages.
 
 ## Todo
 
+tidy up gulp to use exclude
