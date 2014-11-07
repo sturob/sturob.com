@@ -16,6 +16,8 @@ Hosted on github pages.
 
 ## Changelog
 
+* added icons from http://www.entypo.com/characters/
+
 * 2014-10-05 - Moved to gulp build process
 
 

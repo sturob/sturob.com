@@ -8,8 +8,6 @@ body {
   font-size: 13px;
 }
 
-/*body{font:13px/1.5 'Helvetica Neue',Arial,'Liberation Sans',FreeSans,sans-serif}*/
-
 a {
   color: #224;
   text-decoration: none;
@@ -242,5 +240,45 @@ footer {
 
 section#pulled {
   clear: left;
+}
+
+
+
+@media all and (max-width: 1024px) {
+
+  body {
+    // color: red;
+    // background: #939;
+  }
+
+  #projects h1 {
+    display: none;
+  }
+
+  section#about {
+    width: 320px;
+    
+    img#stu {
+      width: 100px;
+      height: 100px;
+      display: block;
+      margin: 0px auto 0;
+      // position: absolute;
+      z-index: 0;
+      padding-top: 20px;
+      // opacity: 0.5;
+      // top: 100px;
+      float: none;
+    }
+
+    p {
+      // margin-left: 100px;
+    }
+
+    div#me:before {
+      display: none;
+    }
+  }
+
 }
 
