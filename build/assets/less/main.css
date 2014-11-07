@@ -1,0 +1,396 @@
+/* Css Reset by Eric Meyer */
+/* 
+html5doctor.com Reset Stylesheet
+v1.6.1
+Last Updated: 2010-09-17
+Author: Richard Clark - http://richclarkdesign.com 
+Twitter: @rich_clark
+*/
+html,
+body,
+div,
+span,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+abbr,
+address,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+samp,
+small,
+strong,
+sub,
+sup,
+var,
+b,
+i,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+body {
+  line-height: 1;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+nav ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+a {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
+}
+/* change colours to suit your needs */
+ins {
+  background-color: #ff9;
+  color: #000;
+  text-decoration: none;
+}
+/* change colours to suit your needs */
+mark {
+  background-color: #ff9;
+  color: #000;
+  font-style: italic;
+  font-weight: bold;
+}
+del {
+  text-decoration: line-through;
+}
+abbr[title],
+dfn[title] {
+  border-bottom: 1px dotted;
+  cursor: help;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+/* change border colour to suit your needs */
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #cccccc;
+  margin: 1em 0;
+  padding: 0;
+}
+input,
+select {
+  vertical-align: middle;
+}
+/* clearfix */
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+.clearfix {
+  display: inline-block;
+}
+/* start commented backslash hack */
+* html .clearfix {
+  height: 1%;
+}
+.clearfix {
+  display: block;
+}
+/* close commented backslash hack */
+body {
+  background: #141414;
+  font-family: sans-serif;
+  font-size: 13px;
+}
+/*body{font:13px/1.5 'Helvetica Neue',Arial,'Liberation Sans',FreeSans,sans-serif}*/
+a {
+  color: #224;
+  text-decoration: none;
+}
+p {
+  line-height: 1.8em;
+  margin-bottom: 0.8em;
+}
+header {
+  background: -webkit-gradient(linear, left top, left bottom, from(#444444), to(#333333));
+  background: -moz-linear-gradient(-90deg, #444444, #333333);
+  text-align: center;
+  color: #ddd;
+  display: none;
+}
+section {
+  display: block;
+  width: 960px;
+  margin: 0 auto;
+}
+html.mozilla section#about div#me {
+  padding-top: 15px;
+}
+section#about {
+  margin-top: 64px;
+  width: 720px;
+  position: relative;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  background: white;
+  font-family: Helvetica Neue, Helvetica, Sans-Serif;
+  color: #555;
+}
+section#about a {
+  background: #ddd;
+  padding: 0 2px;
+}
+section#about b {
+  color: #333;
+}
+section#about img#stu {
+  height: 147px;
+  position: relative;
+  left: -1px;
+  -moz-border-radius: 8px 0 0 8px;
+  -webkit-border-radius: 8px 0 0 8px;
+  border-radius: 8px 0 0 8px;
+  float: left;
+  display: block;
+  margin-right: 24px;
+}
+section#about div#me:before {
+  content: "";
+  /*    float:left;*/
+
+  position: absolute;
+  top: 86px;
+  left: 140px;
+  width: 0;
+  height: 0;
+  border-color: transparent #fff transparent transparent;
+  border-style: solid;
+  border-width: 6px 6px 6px 0;
+}
+section#about div#me {
+  padding: 18px 24px 6px 24px;
+}
+section#more_info {
+  width: 72px;
+  text-align: left;
+  position: absolute;
+  /*  left: 90%;*/
+
+  right: -96px;
+  top: 8px;
+  line-height: 2em;
+  display: block !important;
+  margin: 0 auto;
+  padding-top: 0px;
+  opacity: 0;
+}
+section#more_info a {
+  margin: 0 8px;
+  /*    display: block;*/
+
+  color: #888;
+  background: none;
+  padding: 2px 4px 2px;
+  /*    text-decoration: underline;*/
+
+}
+section#more_info a:hover {
+  color: #444;
+  background: #bbb;
+}
+section#projects {
+  width: 100%;
+  background: #333;
+  margin-top: 64px;
+  padding-top: 36px;
+  background: -webkit-gradient(linear, left top, left bottom, from(#000000), to(#111111));
+  background: -moz-linear-gradient(-90deg, #000000, #111111);
+  height: 0;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  overflow: hidden;
+  position: relative;
+}
+section#projects a {
+  display: block;
+}
+section#projects h1 {
+  text-transform: uppercase;
+  top: 50%;
+  left: -20px;
+  font-size: 12px;
+  transform: rotate(270deg);
+  font-weight: normal;
+  position: absolute;
+  text-align: center;
+  color: #888;
+}
+section#projects section#work_links {
+  width: 720px;
+  margin: 36px auto 0;
+  /*    width: 100%;*/
+
+}
+section#projects section#work_links > div {
+  margin: 0 0 0 0;
+  text-align: center;
+  width: 240px;
+  float: left;
+  position: relative;
+  /*      margin-top: 8px;*/
+
+}
+section#projects section#work_links > div h2 {
+  /*      color: #ee0;*/
+
+  margin-top: 8px;
+  margin-bottom: 4px;
+  color: #eee;
+  font-weight: normal;
+  font-size: 18px;
+}
+section#projects section#work_links > div span.with {
+  color: #666;
+  display: none;
+}
+section#projects section#work_links > div small {
+  display: none;
+  font-size: 8px;
+  -moz-border-radius: 24px;
+  -webkit-border-radius: 24px;
+  border-radius: 24px;
+  position: absolute;
+  right: 18px;
+  top: -18px;
+  color: #888;
+  background: #000;
+  width: 36px;
+  padding: 12px 0;
+  /*      height: 36px;*/
+
+}
+section#projects section#work_links > div img {
+  width: 150px;
+  height: 150px;
+}
+section#projects section#work_links a {
+  color: #666;
+  text-decoration: none;
+}
+section#projects section#work_links a:hover img {
+  -webkit-box-shadow: 0px 0px 16px white;
+  -moz-box-shadow: 0px 0px 16px white;
+}
+img#typekit-badge-hlx2kdo {
+  opacity: 0.2;
+}
+img#typekit-badge-hlx2kdo:hover {
+  opacity: 1;
+}
+#mail-me {
+  margin: 36px auto 0 auto;
+  text-align: center;
+  font-family: "dejarip-1", "dejarip-2", sans-serif;
+}
+#mail-me a {
+  background: #6464e6;
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 16px;
+  color: white;
+  padding: 4px 10px;
+}
+footer {
+  text-align: center;
+  color: #444;
+  position: relative;
+  padding-top: 72px;
+  padding-bottom: 32px;
+  clear: both;
+  margin: 0;
+}
+section#pulled {
+  clear: left;
+}
