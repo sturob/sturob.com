@@ -183,7 +183,6 @@ body {
   font-family: sans-serif;
   font-size: 13px;
 }
-/*body{font:13px/1.5 'Helvetica Neue',Arial,'Liberation Sans',FreeSans,sans-serif}*/
 a {
   color: #224;
   text-decoration: none;
@@ -385,4 +384,24 @@ footer {
 }
 section#pulled {
   clear: left;
+}
+@media all and (max-width: 1024px) {
+  #projects h1 {
+    display: none;
+  }
+  section#about {
+    width: 320px;
+  }
+  section#about img#stu {
+    width: 100px;
+    height: 100px;
+    display: block;
+    margin: 0px auto 0;
+    z-index: 0;
+    padding-top: 20px;
+    float: none;
+  }
+  section#about div#me:before {
+    display: none;
+  }
 }
