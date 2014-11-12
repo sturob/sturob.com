@@ -3,71 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
   <title>sturob &middot; Purveyor of Fine Interactions</title>
- 
   <link rel="icon" href="favicon.ico" type="image/ico">
-
-  <link id="main_styles" rel="stylesheet" href="assets/css/main.css" type="text/css">
-
+  <link rel="stylesheet" href="assets/css/main.css" type="text/css">
   <script type="text/javascript" src="assets/js/lib/head.min.js"></script>
-
-  <script type="text/javascript">
-  // http://pinterest.com/sturob/feed.rss
-  // http://feeds.pinboard.in/rss/u:sturob/
-
-    var BOTH = 1;
-    window.addEventListener('blur', function(){ BOTH-- }, false);
-
-    function boom() {
-      $('section#projects').animate( { height: 310 }, 600, 'easeInOutQuad', function() {
-        $('section#projects div.grid_4, footer').each( function (n,v) { 
-          setTimeout(
-            function() { 
-              $(v).animate({ opacity: 1 }, 200, 'easeInOutQuad', function() {
-                if (n == 3) {
-                  $('#more_info').delay(400).animate({ opacity: 1 }, 400, 'easeInOutQuad');
-                }
-              })
-            },
-            (n * 500) + 250
-          );
-        });
-      });
-    }
-    
-    head.js( "assets/js/lib/jquery-1.6.min.js", 
-             "assets/js/lib/jquery-helpers.js", 
-             "assets/js/lib/jquery.effects.min.js", 
-             "assets/js/lib/less.min.js", 
-             "assets/js/lib/underscore.js", function() {
-      setTimeout( function(){ (++BOTH == 4) && boom(); }, 500 );
-      setTimeout( boom, 5000 ); // if things are taking too long, just do it
-      
-      setTimeout(function() {
-        $('#typekitjs').next('img').hide()
-      }, 1000);
-
-      $('section#projects img').imagesLoaded(function() {
-        (++BOTH == 4) && boom();
-      });
-      $('footer').css({ opacity: 0 });
-      $('section#projects div.grid_4').css({ opacity: 0} );
-      $(window).focus(function() {
-        (++BOTH == 4) && boom();
-      });
-      $(function() {
-        (++BOTH == 4) && boom();
-        window.onkeyup = function(e) {
-          if (e.keyCode == 27) less.watchMode = ! less.watchMode;
-          window.status = 'less refresh ' + (less.watchMode ? 'on' : 'off');
-        };
-      });
-    });
-  </script>
 </head>
 
 <body>
-  <header></header>
-  
   <section id="about">
     <!-- <img id="stu" src="assets/images/me-boat.jpg"> -->
     
@@ -80,8 +21,6 @@
       </p>
     </div>
 
-    
-
     <section id="more_info">
       <a href="http://twitter.com/sturob">Thoughts</a>
       <!-- <a href="http://www.google.com/reader/shared/04064256531898542584">Sources</a> -->
@@ -89,7 +28,6 @@
       <a href="http://www.flickr.com/photos/stu/">Photos</a>
       <a href="http://pinboard.in/u:sturob">Tools</a> 
     </section>
-
   </section>
   
   <div id="mail-me">
@@ -131,16 +69,25 @@
   
   <footer style="clear: both">&copy; 2006-14 Stuart Robinson</footer>
 
+  <script src="assets/js/lib/jquery-1.6.min.js"></script>
+  <script src="assets/js/lib/jquery-helpers.js"></script>
+  <script src="assets/js/lib/jquery.effects.min.js"></script>
+  <script src="assets/js/lib/underscore.js"></script>
+
+  <script src="assets/js/index.js"></script>
+
+  <script id="typekitjs" type="text/javascript" src="http://use.typekit.com/hlx2kdo.js"></script>
+
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+  <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"> </script> 
+
+  <script type="text/javascript"> 
+    _uacct = "UA-1333551-1";
+    urchinTracker();
+  </script>
+
 </body>
 </html>
 
-<script id="typekitjs" type="text/javascript" src="http://use.typekit.com/hlx2kdo.js"></script>
 
-<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-
-<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"> </script> 
-
-<script type="text/javascript"> 
-  _uacct = "UA-1333551-1";
-  urchinTracker();
-</script>
