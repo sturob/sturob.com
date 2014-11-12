@@ -235,18 +235,6 @@ section#about img#stu {
   display: block;
   margin-right: 24px;
 }
-section#about div#me:before {
-  content: "";
-  /*    float:left;*/
-  position: absolute;
-  top: 86px;
-  left: 140px;
-  width: 0;
-  height: 0;
-  border-color: transparent #fff transparent transparent;
-  border-style: solid;
-  border-width: 6px 6px 6px 0;
-}
 section#about div#me {
   padding: 18px 24px 6px 24px;
 }
