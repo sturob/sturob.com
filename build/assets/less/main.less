@@ -1,11 +1,44 @@
 @import "reset";
 
+
+// http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
+html {
+	box-sizing: border-box;
+}
+*, *:before, *:after {
+	box-sizing: inherit;
+}
+
+
+// fonts
+
+@font-face {
+  font-family: Prociono;
+  src: url('assets/fonts/Prociono-Regular.eot'); /* IE9 Compat Modes */
+  src: url('assets/fonts/Prociono-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('assets/fonts/Prociono-Regular.woff') format('woff'), /* Modern Browsers */
+       url('assets/fonts/Prociono-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+       url('assets/fonts/Prociono-Regular.svg#svgFontName') format('svg'); /* Legacy iOS */
+}
+
+
+body {
+//   font-family: Prociono; 
+}
+
+
+
 body {
 	background: #141414;
 	// font-family: "dejarip-1", "dejarip-2", sans-serif;
-	font-family:  sans-serif;
-	font-size: 13px;
+	// font-family:  sans-serif;
+	font-size: 14px;
 }
+
+
+
+
+
 
 a {
 	color: #224;
@@ -42,7 +75,7 @@ section#about {
 	.rounded(8px);
 	background: white;
 	// left: -48px;
-	font-family: Helvetica Neue, Helvetica, Sans-Serif;
+	// font-family: Helvetica Neue, Helvetica, Sans-Serif;
 
 	color: #555;
 	
