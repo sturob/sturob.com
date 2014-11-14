@@ -190,6 +190,9 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+body * {
+  max-height: 1000000em;
+}
 @font-face {
   font-family: Prociono;
   src: url('../fonts/Prociono-Regular.eot');
