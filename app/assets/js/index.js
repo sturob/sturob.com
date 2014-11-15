@@ -1,8 +1,7 @@
 
-
 function setPositions(r, g, b) {
 	function rule (repeat, path, file, x, y) {
-		return "url('" + path + file + "') " + x + ' ' + y + ' ' + repeat
+		return "url('" + path + file + "') " + x + 'px ' + y + 'px ' + repeat
 	}
 
 	var rules = {
@@ -17,12 +16,46 @@ function setPositions(r, g, b) {
 			rules.r( r[0], r[1] ),
 			rules.g( g[0], g[1] ),
 			rules.b( b[0], b[1] )
-		].join(', ')
+		].join(', ');
+
+
+	a.style.backgroundSize = '100px'
 }
 
-setPositions(['4px', '7px'], ['-4px', '1px'], ['2px', '-7px'])
+setPositions([4, 7], [-4, 1], [2, -7])
 
-// window.title = 'hello'
+var h = window.innerHeight;
+var w = window.innerWidth;
+
+var scaleX = d3.scale.linear()
+var scaleY = d3.scale.linear()
+
+scaleX.domain([ 0, w ])
+scaleX.range([ -50, 200 ])
+
+scaleY.domain([ 0, h ])
+scaleY.range([ -50, 200 ])
+
+// function cycle (n, by) {
+// 	return (n + by) % 10
+// }
+
+window.onmousemove = _.throttle(function (ev) {
+	var x = ev.clientX;
+	var y = ev.clientY;
+
+	var rx = scaleX(x);
+	var ry = scaleY(y);
+
+	var gx = scaleX(x) * 1.4;
+	var gy = scaleY(y)* 1.4;
+
+	var bx = scaleX(x) * 0.5;
+	var by = scaleY(y) * 0.5;
+
+	setPositions([rx, ry], [gx, gy], [bx, by]);
+}, 1000/60)
+
 
 
 function curry(func,args,space) {

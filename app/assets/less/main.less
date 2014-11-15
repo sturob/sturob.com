@@ -3,6 +3,7 @@
 // http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
 html {
 	box-sizing: border-box;
+	overflow: hidden;
 }
 
 *, *:before, *:after {
@@ -81,36 +82,20 @@ a:hover {
 	background-blend-mode: multiply;
 	
 	div {
-		width: 400px;
-		height: 400px;
+		// width: 400px;
+		// height: 400px;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		position: absolute;
-		right: 40px;
-		bottom: 40px;
-		// background-color: #FF0;
+		// right: -80px;
+		// bottom: -80px;
 		background-blend-mode: lighten;
 		mix-blend-mode: lighten;
-		border-radius: 64px;
 	}
 
-	#a {
-		// background-size: 100px;
-		// background-image: url("../images/me-red.png"),
-		//                   url("../images/me-green.png"),
-		//                   url("../images/me-blue.png");
-		// background-position: -2px -4px, px -2px, -4px 1px;
-		// background-color: rgba(255, 0, 0, 1);
-		right: 65.5px;
-	}
-	#b {
-		// background-image: url(;
-		// background-color: rgba(0, 255, 0, 1);
-		bottom: 61.5px;
-	}
-	#c {
-		// background-color: rgba(0, 0, 255, 1);
-		// background-image: url("../images/me-blue.png");
-		right: 32px;
-	}
+
 }
 
 
