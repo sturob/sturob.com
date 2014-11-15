@@ -26,7 +26,7 @@ function setPositions(r, g, b) {
 	// a.style.backgroundSize = '200px'
 }
 
-setPositions([4, 7], [-4, 1], [2, -7])
+// setPositions([4, 7], [-4, 1], [2, -7])
 
 var h = window.innerHeight;
 var w = window.innerWidth;
@@ -35,7 +35,7 @@ var scaleX = d3.scale.linear()
 var scaleY = d3.scale.linear()
 
 scaleX.domain([ 0, w ])
-scaleX.range([ w/4 - 100, w/2 + w/4 - 100])
+scaleX.range([ w/4 - 100, w/2 + w/4 - 100 ])
 
 scaleY.domain([ 0, h ])
 scaleY.range([ 0, h * 0.75 ])
@@ -58,8 +58,12 @@ window.onmousemove = _.throttle(function (ev) {
 	var by = scaleY(y) * 0.8;
 
 	setPositions([rx, ry], [gx, gy], [bx, by]);
-}, 1000/60)
+}, 1000/30)
 
+window.onmousemove({
+	clientX: 10,
+	clientY: 10
+})
 
 
 function curry(func,args,space) {
