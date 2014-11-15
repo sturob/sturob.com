@@ -4,13 +4,17 @@ function setPositions(r, g, b) {
 		return "url('" + path + file + "') " + x + 'px ' + y + 'px ' + repeat
 	}
 
-	var rules = {
-		base: curry(rule, [ 'no-repeat', 'assets/images/' ])
+	// function colorRule (color, x, y) {
+	// 	return 'ba'
+	// }
+
+	var rules = { // universal parameters
+		universal: curry(rule, [ 'no-repeat', 'assets/images/' ])
 	}
 
-	rules.r = curry( rules.base, [ 'me-red.png' ] )
-	rules.g = curry( rules.base, [ 'me-green.png' ] )
-	rules.b = curry( rules.base, [ 'me-blue.png' ] )
+	rules.r = curry( rules.universal, [ 'circle-red.png' ] )
+	rules.g = curry( rules.universal, [ 'circle-green.png' ] )
+	rules.b = curry( rules.universal, [ 'circle-blue.png' ] )
 
 	a.style.background = [
 			rules.r( r[0], r[1] ),
@@ -19,7 +23,7 @@ function setPositions(r, g, b) {
 		].join(', ');
 
 
-	a.style.backgroundSize = '100px'
+	// a.style.backgroundSize = '200px'
 }
 
 setPositions([4, 7], [-4, 1], [2, -7])
@@ -31,10 +35,10 @@ var scaleX = d3.scale.linear()
 var scaleY = d3.scale.linear()
 
 scaleX.domain([ 0, w ])
-scaleX.range([ -50, 200 ])
+scaleX.range([ w/4 - 100, w/2 + w/4 - 100])
 
 scaleY.domain([ 0, h ])
-scaleY.range([ -50, 200 ])
+scaleY.range([ 0, h * 0.75 ])
 
 // function cycle (n, by) {
 // 	return (n + by) % 10
@@ -44,14 +48,14 @@ window.onmousemove = _.throttle(function (ev) {
 	var x = ev.clientX;
 	var y = ev.clientY;
 
-	var rx = scaleX(x);
-	var ry = scaleY(y);
+	var rx = scaleX(x) * 1.1;
+	var ry = scaleY(y) * 1.1;
 
-	var gx = scaleX(x) * 1.4;
-	var gy = scaleY(y)* 1.4;
+	var gx = scaleX(x) * 0.8;
+	var gy = scaleY(y) * 1;
 
-	var bx = scaleX(x) * 0.5;
-	var by = scaleY(y) * 0.5;
+	var bx = scaleX(x);
+	var by = scaleY(y) * 0.8;
 
 	setPositions([rx, ry], [gx, gy], [bx, by]);
 }, 1000/60)
