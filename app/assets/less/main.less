@@ -36,16 +36,11 @@ body {
 	color: #222;
 	background: #fff;
 	font-size: 16px;
-
 }
 
 section {
 	max-width: 480px;
 	padding: 16px;
-	// margin: 0 auto;
-	
-	// position: relative;
-	// top: 50%;
 }
 
 p {
@@ -59,7 +54,6 @@ p:last-child {
 
 b {
 	font-weight: normal;
-	// background: #2d2;
 	padding: 0 1px;
 	background: #f0f0f0;
 	// border-bottom: 1px dotted black;
@@ -75,325 +69,56 @@ a:hover {
 }
 
 
-footer {
-	display: none;
-	text-align: center;
-	// color: #888;
-	position: relative;
-	padding-top: 72px;
-	// padding-bottom: 32px;
-	// clear: both;
-	margin: 0;
-}
-
-
 #stu {
 	position: fixed;
-	width: 100px;
+	width: 00px;
 	z-index: -1;
 	right: 0;
-	// opacity: 0.4;
 	bottom: 0;
+}
+
+#weird {
+	background-blend-mode: multiply;
+	
+	div {
+		width: 400px;
+		height: 400px;
+		position: absolute;
+		right: 40px;
+		bottom: 40px;
+		// background-color: #FF0;
+		background-blend-mode: lighten;
+		mix-blend-mode: lighten;
+		border-radius: 64px;
+	}
+
+	#a {
+		// background-size: 100px;
+		// background-image: url("../images/me-red.png"),
+		//                   url("../images/me-green.png"),
+		//                   url("../images/me-blue.png");
+		// background-position: -2px -4px, px -2px, -4px 1px;
+		// background-color: rgba(255, 0, 0, 1);
+		right: 65.5px;
+	}
+	#b {
+		// background-image: url(;
+		// background-color: rgba(0, 255, 0, 1);
+		bottom: 61.5px;
+	}
+	#c {
+		// background-color: rgba(0, 0, 255, 1);
+		// background-image: url("../images/me-blue.png");
+		right: 32px;
+	}
 }
 
 
 #projects {
 	line-height: 1.8em;
-	// color: #666;
+
 	a {
 		margin-right: 4px;
 	}
 }
-
-
-// section#projects {
-// 	max-width: 100%;
-// 	background: #000;
-	
-// 	a {
-// 		color: #fff;
-// 		// background: #FFF;
-// 	}
-
-// 	h1 {
-// 		font-weight: normal;
-// 		// outline: 1px solid red;
-// 		color: #eee;
-// 	}
-// }
-
-
-// .grid a {
-// 	// color: #224;
-// 	text-decoration: none;
-// 	// background: #f0f0f0;
-// 	// outline: 1px dotted #eee;
-// 	display: inline-block;
-// 	margin: 0 0 1em 0;
-// 	color: #000;
-	
-// 	b {
-// 		color: #22d;
-// 	}
-
-// 	img {
-// 			// display: inline-block;
-// 	}
-// }
-
-
-
-
-// p {
-// 	line-height: 1.8em;
-// 	margin-bottom: 0.8em;
-// }
-
-// html.mozilla section#about div#me {
-// 	padding-top: 15px;
-// }
-
-// section#about {
-// 	margin-top: 64px;
-// 	width: 720px;
-// 	position: relative;
-// 	.rounded(8px);
-// 	background: white;
-// 	// left: -48px;
-// 	// font-family: Helvetica Neue, Helvetica, Sans-Serif;
-
-// 	color: #555;
-	
-// 	a {
-// 		background: #ddd;
-// 		padding: 0 2px;
-// 	}
-	
-// 	b {
-// 		color: #333;
-// 	}
-	
-// 	img#stu {
-// 		height: 147px;
-// 		position: relative;
-// 		left: -1px;
-// 		.rounded_corners(8px,0,0,8px);
-		
-// 		float: left; 
-// 		display: block;
-// 		margin-right: 24px;
-// 	}
-	
-// //   div#me:before {
-// //     content:"";
-// // /*    float:left;*/
-// //   	position:absolute;
-// //   	top: 86px;
-// //   	left:140px;
-// //   	width:0;
-// //   	height:0;
-// //   	border-color:transparent #fff transparent transparent;
-// //   	border-style:solid;
-// //   	border-width:6px 6px 6px 0;		
-// //   }
-	
-// }
-
-// section#more_info {
-// 	width: 72px;
-// 	text-align: left;
-// 	position: absolute;
-// /*  left: 90%;*/
-
-
-// 	right: -96px;
-// 	top: 8px;
-
-// 	line-height: 2em;
-// 	display: block !important;
-// 	margin: 0 auto;
-// 	padding-top: 0px;
-// 	opacity: 0;
-	
-// 	a {
-// 		margin: 0 8px;
-// /*    display: block;*/
-// 		color: #888;
-// 		background: none;
-// 		padding: 2px 4px 2px;
-// /*    text-decoration: underline;*/
-// 	}
-	
-// 	a:hover {
-// 		color: #444;
-// 		background: #bbb;
-// 	}
-// }
-
-// section#projects {
-// 	width: 100%;
-// 	background: #333;
-// 	margin-top: 64px;
-// 	padding-top: 36px;
-// 	.grad_linear(#000, #111);
-// 	height: 0;
-// 	border-top: 1px solid #333;
-// 	border-bottom: 1px solid #333;
-// 	overflow: hidden;
-// 	position: relative;
-// 	a {
-// 		display: block;
-
-// 	}
-	
-// 	h1 {
-// 		text-transform: uppercase;
-// 		top: 50%;
-// 		left: -20px;
-// 		font-size: 12px;
-// 		transform: rotate(270deg);
-// 		font-weight: normal;
-// 		position: absolute;
-// 		text-align: center;
-// 		color: #888;
-// 	}
-	
-// 	section#work_links {
-// 		width: 720px;
-// 		margin: 36px auto 0;
-//     width: 100%;
-
-	
-// 		> div {
-// 			margin: 0 0 0 0;
-// 			text-align: center;
-// 			width: 240px;
-// 			float: left;
-// 			position: relative;
-// /*      margin-top: 8px;*/
-		
-// 			h2 {
-// 	/*      color: #ee0;*/
-// 				margin-top: 8px;
-// 				margin-bottom: 4px;
-// 				color: #eee;
-// 				font-weight: normal;
-// 				font-size: 18px;
-// 			}
-// 			span.with {
-// 				color: #666;
-// 				display: none;
-// 			}
-		
-// 			small {
-// 				display: none;
-// 				font-size: 8px;
-// 				.rounded(24px);
-// 				position: absolute;
-// 				right: 18px;
-// 				top: -18px;
-// 				color: #888;
-// 				background: #000;
-// 				width: 36px;
-// 				padding: 12px 0;
-// 	/*      height: 36px;*/
-			
-// 			}
-// 			img {
-// 				width: 150px;
-// 				height: 150px;
-// 			}
-// 		}
-	
-// 		a { 
-// 			color: #666;
-// 			text-decoration: none;
-// 		}
-	
-// 		a:hover {
-// 			img {
-// 				-webkit-box-shadow: 0px 0px 16px white;
-// 				-moz-box-shadow: 0px 0px 16px white;
-// 			}
-// 		}
-// 	}
-// }
-
-// img#typekit-badge-hlx2kdo {
-// 	opacity: 0.2;
-// }
-
-// img#typekit-badge-hlx2kdo:hover {
-// 	opacity: 1;
-// }
-
-// #mail-me {
-// 	margin: 36px auto 0 auto;
-// 	text-align: center;
-// 	font-family: "dejarip-1", "dejarip-2", sans-serif;
-	
-// 	a {
-// 		background: rgb(100, 100, 230);
-// 		font-weight: bold;
-// 		letter-spacing: 1px;
-// 		font-size: 16px;
-// 		color: white;
-// 		padding: 4px 10px;
-// 	}
-// }
-
-// footer {
-// 	text-align: center;
-// 	color: #444;
-// 	position: relative;
-// 	padding-top: 72px;
-// 	padding-bottom: 32px;
-// 	clear: both;
-// 	margin: 0;
-// }
-
-// section#pulled {
-// 	clear: left;
-// }
-
-
-
-
-// @media all and (max-width: 1024px) {
-
-// 	body {
-// 		// color: red;
-// 		// background: #939;
-// 	}
-
-// 	#projects h1 {
-// 		display: none;
-// 	}
-
-// 	section#about {
-// 		width: 320px;
-		
-// 		img#stu {
-// 			width: 100px;
-// 			height: 100px;
-// 			display: block;
-// 			margin: 0px auto 0;
-// 			// position: absolute;
-// 			z-index: 0;
-// 			padding-top: 20px;
-// 			// opacity: 0.5;
-// 			// top: 100px;
-// 			float: none;
-// 		}
-
-// 		p {
-// 			// margin-left: 100px;
-// 		}
-
-// 		div#me:before {
-// 			display: none;
-// 		}
-// 	}
-
-// }
 
