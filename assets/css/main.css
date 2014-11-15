@@ -232,19 +232,34 @@ a {
 a:hover {
   text-decoration: underline;
 }
-footer {
-  display: none;
-  text-align: center;
-  position: relative;
-  padding-top: 72px;
-  margin: 0;
-}
 #stu {
   position: fixed;
-  width: 100px;
+  width: 00px;
   z-index: -1;
   right: 0;
   bottom: 0;
+}
+#weird {
+  background-blend-mode: multiply;
+}
+#weird div {
+  width: 400px;
+  height: 400px;
+  position: absolute;
+  right: 40px;
+  bottom: 40px;
+  background-blend-mode: lighten;
+  mix-blend-mode: lighten;
+  border-radius: 64px;
+}
+#weird #a {
+  right: 65.5px;
+}
+#weird #b {
+  bottom: 61.5px;
+}
+#weird #c {
+  right: 32px;
 }
 #projects {
   line-height: 1.8em;
