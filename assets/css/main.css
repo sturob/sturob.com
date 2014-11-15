@@ -180,6 +180,7 @@ select {
 /* close commented backslash hack */
 html {
   box-sizing: border-box;
+  overflow: hidden;
 }
 *,
 *:before,
@@ -212,6 +213,7 @@ body {
 section {
   max-width: 480px;
   padding: 16px;
+  background-color: rgba(255, 255, 255, 0.85);
 }
 p {
   line-height: 1.5em;
@@ -224,6 +226,7 @@ b {
   font-weight: normal;
   padding: 0 1px;
   background: #f0f0f0;
+  border-bottom: 1px solid black;
 }
 a {
   text-decoration: none;
@@ -243,23 +246,14 @@ a:hover {
   background-blend-mode: multiply;
 }
 #weird div {
-  width: 400px;
-  height: 400px;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   position: absolute;
-  right: 40px;
-  bottom: 40px;
   background-blend-mode: lighten;
   mix-blend-mode: lighten;
-  border-radius: 64px;
-}
-#weird #a {
-  right: 65.5px;
-}
-#weird #b {
-  bottom: 61.5px;
-}
-#weird #c {
-  right: 32px;
 }
 #projects {
   line-height: 1.8em;

@@ -3,6 +3,7 @@
 // http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
 html {
 	box-sizing: border-box;
+	overflow: hidden;
 }
 
 *, *:before, *:after {
@@ -41,9 +42,11 @@ body {
 section {
 	max-width: 480px;
 	padding: 16px;
+	background-color: rgba(255,255,255,0.85)
 }
 
 p {
+	
 	line-height: 1.5em;
 	margin: 0 0 0.75em 0;
 }
@@ -53,10 +56,11 @@ p:last-child {
 }
 
 b {
+	// color: none;
 	font-weight: normal;
 	padding: 0 1px;
 	background: #f0f0f0;
-	// border-bottom: 1px dotted black;
+	border-bottom: 1px solid black;
 }
 
 a {
@@ -78,32 +82,25 @@ a:hover {
 }
 
 #weird {
- div {
-		width: 100px;
-		height: 100px;
+
+	background-blend-mode: multiply;
+	
+	div {
+		z-index: -1;
+		// width: 400px;
+		// height: 400px;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		position: absolute;
-		right: 40px;
-		bottom: 40px;
-		// background-blend-mode: darken;
-		mix-blend-mode: darken;
-		border-radius: 64px;
+		// right: -80px;
+		// bottom: -80px;
+		background-blend-mode: lighten;
+		mix-blend-mode: lighten;
 	}
 
-	#a {
-		background-color: rgba(255, 0, 0, 1);
-		right: 60px;
-		bottom: 50px;
-	}
-	#b {
-		background-color: rgba(0, 255, 0, 1);
-		right: 24px;
-		bottom: 50px;
-	}
-	#c {
-		background-color: rgba(0, 0, 255, 1);
-		right: 42px;
-		bottom: 20px;
-	}
+
 }
 
 
