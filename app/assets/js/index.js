@@ -1,27 +1,38 @@
-
-function setPositions(r, g, b) {
-	function rule (repeat, path, file, x, y) {
-		return "url('" + path + file + "') " + x + 'px ' + y + 'px ' + repeat
-	}
-
-	var rules = { // universal parameters
-		universal: curry(rule, [ 'no-repeat', 'assets/images/' ])
-	}
-
-	rules.r = curry( rules.universal, [ 'circle-red.png' ] )
-	rules.g = curry( rules.universal, [ 'circle-green.png' ] )
-	rules.b = curry( rules.universal, [ 'circle-blue.png' ] )
-
-	a.style.background = [
-			rules.r( r[0], r[1] ),
-			rules.g( g[0], g[1] ),
-			rules.b( b[0], b[1] )
-		].join(', ');
-	// a.style.backgroundSize = '200px'
-}
-
 var h = window.innerHeight;
 var w = window.innerWidth;
+var canvas = document.getElementById('bg');
+canvas.width = w;
+canvas.height = h;
+var context = canvas.getContext('2d');
+
+context.globalCompositeOperation = 'lighten';
+
+// replace with backbone + skip draw on no change
+var model = {
+	r: [200, 120, 80],
+	g: [190, 120, 80],
+	b: [195, 130, 80]
+}
+
+
+function draw() {
+	context.clearRect(0, 0, canvas.width, canvas.height);
+	context
+	  .prop({ fillStyle: '#00f' }).circle(model.r[0], model.r[1], model.r[2]).fill()
+	  .prop({ fillStyle: '#f00' }).circle(model.g[0], model.g[1], model.g[2]).fill()
+	  .prop({ fillStyle: '#0f0' }).circle(model.b[0], model.b[1], model.b[2]).fill()
+}
+
+	function animate() {
+		requestAnimationFrame( animate )
+		draw()
+	}
+ 
+animate()
+
+
+// data
+
 
 
 var scale = {
@@ -41,36 +52,42 @@ var scale = {
 	y: d3.scale.linear()
 }
 
-scale.x.domain([ 0, w ])
-scale.y.domain([ 0, h ])
+
+
+
 
 // fix this - it currently always returns true on desktop chrome
 // not what we want....
-if (window.DeviceOrientationEvent) {
-	// scale.x.domain([ -25, 25 ]) // // gamma -25 -> 25
-	// scale.y.domain([ 0, 50 ]) // beta 0 -> 50
+//window.DeviceOrientationEvent && 
+if (window.location.hash == '#gyro') {
+	// alert('ho')
+	scale.x.domain([ -25, 25 ]) // // gamma -25 -> 25
+	scale.y.domain([ 0, 50 ]) // beta 0 -> 50
+
+	gyro.frequency = 50;
+
+	setTimeout(function() {
+		gyro.startTracking(function(o){
+			if (o.gamma) {
+				updateModel({ clientX: o.gamma, clientY: o.beta })
+			} else {
+				gyro.stopTracking()
+				scale.x.range([ 0, w * 0.75 - 100 ])
+				scale.y.range([ 0, h * 0.75 - 100 ])
+			}
+		})
+	}, 2000)
+} else {
+	scale.x.domain([ 0, w ])
+	scale.y.domain([ 0, h ])
 }
-
-gyro.frequency = 50;
-
-setTimeout(function() {
-	gyro.startTracking(function(o){
-		if (o.gamma) {
-			updatePositions({ clientX: o.gamma, clientY: o.beta })
-		} else {
-			gyro.stopTracking()
-			scale.x.range([ 0, w * 0.75 - 100 ])
-			scale.y.range([ 0, h * 0.75 - 100 ])
-		}
-	})
-}, 2000)
-
 
 scale.x.range([ 0, w * 0.75 - 100 ])
 scale.y.range([ 0, h * 0.75 - 100 ])
 
 
-var updatePositions = function (ev) {
+
+var updateModel = function (ev) {
 	var x = ev.clientX;
 	var y = ev.clientY;
 
@@ -83,20 +100,22 @@ var updatePositions = function (ev) {
 	var bx = scale.x(x);
 	var by = scale.y(y) * 0.8;
 
-	setPositions([rx, ry], [gx, gy], [bx, by]);
+
+	model.r[0] = rx;
+	model.r[1] = ry;
+	model.g[0] = gx;
+	model.g[1] = gy;
+	model.b[0] = bx;
+	model.b[1] = by;
+	
 }
 
-window.onmousemove = _.throttle(updatePositions, 1000/30)
+window.onmousemove = _.throttle(updateModel, 1000/30)
 
 
-var tmpX = 100, tmpY = 100;
 
-// setInterval(function() {
-	window.onmousemove({
-		clientX: tmpX++,
-		clientY: tmpY++
-	})
-// }, 100)
+
+
 
 
 
