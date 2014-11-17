@@ -225,7 +225,6 @@ p:last-child {
 b {
   font-weight: normal;
   padding: 0 1px;
-  background: #f0f0f0;
   border-bottom: 1px solid black;
 }
 a {
@@ -237,13 +236,10 @@ a:hover {
 }
 #stu {
   position: fixed;
-  width: 00px;
+  width: 0px;
   z-index: -1;
   right: 0;
   bottom: 0;
-}
-#weird {
-  background-blend-mode: multiply;
 }
 #weird div {
   z-index: -1;
@@ -253,7 +249,6 @@ a:hover {
   right: 0;
   position: absolute;
   background-blend-mode: lighten;
-  mix-blend-mode: lighten;
 }
 #projects {
   line-height: 1.8em;

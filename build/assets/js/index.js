@@ -4,10 +4,6 @@ function setPositions(r, g, b) {
 		return "url('" + path + file + "') " + x + 'px ' + y + 'px ' + repeat
 	}
 
-	// function colorRule (color, x, y) {
-	// 	return 'ba'
-	// }
-
 	var rules = { // universal parameters
 		universal: curry(rule, [ 'no-repeat', 'assets/images/' ])
 	}
@@ -21,44 +17,87 @@ function setPositions(r, g, b) {
 			rules.g( g[0], g[1] ),
 			rules.b( b[0], b[1] )
 		].join(', ');
-
-
 	// a.style.backgroundSize = '200px'
 }
-
-setPositions([4, 7], [-4, 1], [2, -7])
 
 var h = window.innerHeight;
 var w = window.innerWidth;
 
-var scaleX = d3.scale.linear()
-var scaleY = d3.scale.linear()
 
-scaleX.domain([ 0, w ])
-scaleX.range([ w/4 - 100, w/2 + w/4 - 100])
+var scale = {
+	r: [
+		d3.scale.linear(),
+		d3.scale.linear()
+	],
+	g: [
+		d3.scale.linear(),
+		d3.scale.linear()
+	],
+	b: [
+		d3.scale.linear(),
+		d3.scale.linear()
+	], 
+	x: d3.scale.linear(),
+	y: d3.scale.linear()
+}
 
-scaleY.domain([ 0, h ])
-scaleY.range([ 0, h * 0.75 ])
+scale.x.domain([ 0, w ])
+scale.y.domain([ 0, h ])
 
-// function cycle (n, by) {
-// 	return (n + by) % 10
-// }
+// fix this - it currently always returns true on desktop chrome
+// not what we want....
+if (window.DeviceOrientationEvent) {
+	// scale.x.domain([ -25, 25 ]) // // gamma -25 -> 25
+	// scale.y.domain([ 0, 50 ]) // beta 0 -> 50
+}
 
-window.onmousemove = _.throttle(function (ev) {
+gyro.frequency = 50;
+
+setTimeout(function() {
+	gyro.startTracking(function(o){
+		if (o.gamma) {
+			updatePositions({ clientX: o.gamma, clientY: o.beta })
+		} else {
+			gyro.stopTracking()
+			scale.x.range([ 0, w * 0.75 - 100 ])
+			scale.y.range([ 0, h * 0.75 - 100 ])
+		}
+	})
+}, 2000)
+
+
+scale.x.range([ 0, w * 0.75 - 100 ])
+scale.y.range([ 0, h * 0.75 - 100 ])
+
+
+var updatePositions = function (ev) {
 	var x = ev.clientX;
 	var y = ev.clientY;
 
-	var rx = scaleX(x) * 1.1;
-	var ry = scaleY(y) * 1.1;
+	var rx = scale.x(x) * 1.1;
+	var ry = scale.y(y) * 1.1;
 
-	var gx = scaleX(x) * 0.8;
-	var gy = scaleY(y) * 1;
+	var gx = scale.x(x) * 0.8;
+	var gy = scale.y(y) * 1;
 
-	var bx = scaleX(x);
-	var by = scaleY(y) * 0.8;
+	var bx = scale.x(x);
+	var by = scale.y(y) * 0.8;
 
 	setPositions([rx, ry], [gx, gy], [bx, by]);
-}, 1000/60)
+}
+
+window.onmousemove = _.throttle(updatePositions, 1000/30)
+
+
+var tmpX = 100, tmpY = 100;
+
+// setInterval(function() {
+	window.onmousemove({
+		clientX: tmpX++,
+		clientY: tmpY++
+	})
+// }, 100)
+
 
 
 

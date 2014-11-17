@@ -54,8 +54,6 @@ if (window.DeviceOrientationEvent) {
 gyro.frequency = 50;
 
 setTimeout(function() {
-
-
 	gyro.startTracking(function(o){
 		if (o.gamma) {
 			updatePositions({ clientX: o.gamma, clientY: o.beta })
