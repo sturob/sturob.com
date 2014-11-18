@@ -11,9 +11,9 @@ context.globalCompositeOperation = 'lighten';
 var inputs = { }
 
 var dots = {
-	r: [200, 120, 25],
-	g: [190, 120, 25],
-	b: [195, 130, 25]
+	r: [200, 120, 15],
+	g: [190, 120, 15],
+	b: [195, 130, 15]
 }
 
 
@@ -71,7 +71,6 @@ var xdom = [ 10, w ];
 var ydom = [ 0, h ];
 
 
-
 // scale.x.range([ 0, w ])
 // scale.y.range([ 0, h ])
 
@@ -79,8 +78,6 @@ var ydom = [ 0, h ];
 // not what we want....
 //window.DeviceOrientationEvent && 
 if (window.location.hash == '#gyro') {
-	// alert('ho')
-
 	xdom = [ -20, 20 ];
 	ydom = [ 10, 40 ];
 
@@ -135,7 +132,15 @@ var updateModel = function (ev) {
 	}
 }
 
-window.onmousemove = _.throttle(updateModel, 1000/60)
+window.onmousemove = _.throttle(function (ev) {
+	inputs.x = ev.clientX;
+	inputs.y = ev.clientY;
+}, 1000/60)
+
+setInterval(function() {
+	// get mouse pos
+	updateModel({ clientX: inputs.x, clientY: inputs.y });
+}, 1000/60)
 
 
 
