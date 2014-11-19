@@ -70,10 +70,10 @@ var dots = {
 		       (x2 + 5 > x1) && (x2 < x1)
 	},
 	near: function(a, b, c) {
-		return dots.close( a[0], b[0] ) &&
-		       dots.close( a[0], c[0] ) &&
-		       dots.close( a[1], b[1] ) &&
-		       dots.close( a[1], c[1] )
+		return dots.close( a.x, b.x ) &&
+		       dots.close( a.x, c.x ) &&
+		       dots.close( a.y, b.y ) &&
+		       dots.close( a.y, c.y )
 	}
 }
 
