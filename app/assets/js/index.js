@@ -8,7 +8,14 @@ var context = canvas.getContext('2d');
 context.globalCompositeOperation = 'lighten';
 
 // replace with backbone + skip draw on no change
-var inputs = { }
+var inputs = {
+	set: function(a, b) {
+		this.a = this.aDom(a)
+		this.b = this.bDom(b)
+	},
+	aDom: curry(range, [0, w]),
+	bDom: curry(range, [0, h])
+};
 
 var dots = {
 	r: [200, 120, 15],
@@ -22,7 +29,7 @@ function close(x1, x2) {
 	       (x2 + 5 > x1) && (x2 < x1)
 }
 
-function near(a,b,c) {
+function near(a, b, c) {
 	return close( a[0], b[0] ) &&
 	       close( a[0], c[0] ) &&
 	       close( a[1], b[1] ) &&
@@ -30,7 +37,6 @@ function near(a,b,c) {
 }
 
 function draw() {
-
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context
 	  .prop({ fillStyle: '#fcc' }).circle(dots.r[0], dots.r[1], dots.r[2]).fill()
@@ -47,50 +53,24 @@ animate()
 
 // data
 
-var scale = {
-	r: [
-		d3.scale.linear(),
-		d3.scale.linear()
-	],
-	g: [
-		d3.scale.linear(),
-		d3.scale.linear()
-	],
-	b: [
-		d3.scale.linear(),
-		d3.scale.linear()
-	]
-}
+var scale = { r:[],  g:[],  b:[] };
 
-
-var xdom = [ 10, w ];
-var ydom = [ 0, h ];
-
-
-// scale.x.range([ 0, w ])
-// scale.y.range([ 0, h ])
 
 // fix this - it currently always returns true on desktop chrome
 // not what we want....
 //window.DeviceOrientationEvent && 
 if (window.location.hash == '#gyro') {
-	xdom = [ -20, 20 ];
-	ydom = [ 10, 40 ];
+	inputs.xDom = curry(range, [-20, 20]);
+	inputs.yDom = curry(range, [ 10, 40]);
 
 	gyro.frequency = 1000/60;
 
 	setTimeout(function() {
 		gyro.startTracking(function(o){
 			if (o.gamma) {
-				updateModel({ 
-					clientX: o.gamma,
-					clientY: o.beta
-				})
+				inputs.set( o.gamma, o.beta )
 			} else if (o.y) {
-				updateModel({ 
-					clientX: o.gamma,
-					clientY: o.beta
-				})
+				inputs.set( o.y, o.z )
 			} else {
 				gyro.stopTracking()
 			}
@@ -100,21 +80,19 @@ if (window.location.hash == '#gyro') {
 }
 
 
-scale.r[0].domain( xdom ).range([ w * 0.84,  w * 0.9 ])
-scale.r[1].domain( ydom ).range([ h * 0.8,   h * 0.85 ])
-
-scale.g[0].domain( xdom ).range([ w * 0.72,  w * .92 ])
-scale.g[1].domain( ydom ).range([ h * 0.8,  h * 0.82  ])
-
-scale.b[0].domain( xdom ).range([ w * 0.82,  w * 0.9 ])
-scale.b[1].domain( ydom ).range([ h * 0.8,   h * 0.91 ])
+scale.r[0] = curry(lerp, [ w * 0.84, w * 0.90 ])
+scale.r[1] = curry(lerp, [ h * 0.80, h * 0.85 ])
+scale.g[0] = curry(lerp, [ w * 0.72, w * 0.92 ])
+scale.g[1] = curry(lerp, [ h * 0.80, h * 0.82 ])
+scale.b[0] = curry(lerp, [ w * 0.82, w * 0.90 ])
+scale.b[1] = curry(lerp, [ h * 0.80, h * 0.91 ])
 
 
 var change = 1;
 
-var updateModel = function (ev) {
-	var x = ev.clientX;
-	var y = ev.clientY;
+var updateModel = function () {
+	var x = inputs.a;
+	var y = inputs.b;
 
 	dots.r[0] = scale.r[0](x);
 	dots.r[1] = scale.r[1](y);
@@ -129,17 +107,10 @@ var updateModel = function (ev) {
 		dots.b[2] += change;
 
 		if (dots.r[2] > 200) {
-			change = -1 // change //* 2;
+			change = -1;
 		} if (dots.r[2] < 10) {
-			change = 1//change //* -2;
+			change = 1;
 		}
-
-		// if (change > 100) {
-		// 	change = 1;
-		// 	if (dots.r[2] > 200) {
-		// 		change = -1;
-		// 	}
-		// }
 
 	}
 }
@@ -151,10 +122,21 @@ window.onmousemove = _.throttle(function (ev) {
 
 setInterval(function() {
 	// get mouse pos
-	updateModel({ clientX: inputs.x, clientY: inputs.y });
+	inputs.set( inputs.x, inputs.y );
+	updateModel();
 }, 1000/60)
 
 
+
+
+
+function range(min, max, value) {
+	return (value - min) / (max - min)
+}
+
+function lerp(v0, v1, t) {
+	return v0*(1-t)+v1*t
+}
 
 
 function curry(func,args,space) {
