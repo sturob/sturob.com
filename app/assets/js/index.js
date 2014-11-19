@@ -14,27 +14,71 @@ var inputs = {
 		this.b = this.bDom(b)
 	},
 	aDom: curry(range, [0, w]),
-	bDom: curry(range, [0, h])
+	bDom: curry(range, [0, h]),
+	x: 0,
+	y: 0
 };
+
+var change = 1;
 
 var dots = {
 	r: [200, 120, 15],
 	g: [190, 120, 15],
-	b: [195, 130, 15]
+	b: [195, 130, 15],
+	collision: function() {
+		return dots.near(dots.r, dots.g, dots.b)
+	},
+	update: function () {
+		var x = inputs.a;
+		var y = inputs.b;
+
+		dots.r[0] = scale.r[0](x);
+		dots.r[1] = scale.r[1](y);
+		dots.g[0] = scale.g[0](x);
+		dots.g[1] = scale.g[1](y);
+		dots.b[0] = scale.b[0](x);
+		dots.b[1] = scale.b[1](y);
+		
+		if (dots.collision()) {
+			dots.r[2] += change;
+			dots.g[2] += change;
+			dots.b[2] += change;
+
+			if (dots.r[2] > 200) {
+				change = -1;
+			} if (dots.r[2] < 10) {
+				change = 1;
+			}
+		}
+	},
+	close: function(x1, x2) {
+		return (x1 + 5 > x2) && (x1 < x2) ||
+		       (x2 + 5 > x1) && (x2 < x1)
+	},
+	near: function(a, b, c) {
+		return dots.close( a[0], b[0] ) &&
+		       dots.close( a[0], c[0] ) &&
+		       dots.close( a[1], b[1] ) &&
+		       dots.close( a[1], c[1] )
+	}
 }
 
+var scale = { 
+	r:[
+		curry(lerp, [ w * 0.84, w * 0.90 ]),
+		curry(lerp, [ h * 0.80, h * 0.85 ])
+	],
+	g:[
+		curry(lerp, [ w * 0.72, w * 0.92 ]),
+		curry(lerp, [ h * 0.80, h * 0.82 ])
+	],
+	b:[
+		curry(lerp, [ w * 0.82, w * 0.90 ]),
+		curry(lerp, [ h * 0.80, h * 0.91 ])
+	]
+};
 
-function close(x1, x2) {
-	return (x1 + 5 > x2) && (x1 < x2) ||
-	       (x2 + 5 > x1) && (x2 < x1)
-}
 
-function near(a, b, c) {
-	return close( a[0], b[0] ) &&
-	       close( a[0], c[0] ) &&
-	       close( a[1], b[1] ) &&
-	       close( a[1], c[1] )
-}
 
 function draw() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
@@ -51,17 +95,15 @@ function animate() {
 
 animate()
 
-// data
 
-var scale = { r:[],  g:[],  b:[] };
-
+// inputs
 
 // fix this - it currently always returns true on desktop chrome
 // not what we want....
 //window.DeviceOrientationEvent && 
 if (window.location.hash == '#gyro') {
-	inputs.xDom = curry(range, [-20, 20]);
-	inputs.yDom = curry(range, [ 10, 40]);
+	inputs.aDom = curry(range, [-20, 20]);
+	inputs.bDom = curry(range, [ 10, 40]);
 
 	gyro.frequency = 1000/60;
 
@@ -69,6 +111,7 @@ if (window.location.hash == '#gyro') {
 		gyro.startTracking(function(o){
 			if (o.gamma) {
 				inputs.set( o.gamma, o.beta )
+				// alert(inputs.a)
 			} else if (o.y) {
 				inputs.set( o.y, o.z )
 			} else {
@@ -80,41 +123,6 @@ if (window.location.hash == '#gyro') {
 }
 
 
-scale.r[0] = curry(lerp, [ w * 0.84, w * 0.90 ])
-scale.r[1] = curry(lerp, [ h * 0.80, h * 0.85 ])
-scale.g[0] = curry(lerp, [ w * 0.72, w * 0.92 ])
-scale.g[1] = curry(lerp, [ h * 0.80, h * 0.82 ])
-scale.b[0] = curry(lerp, [ w * 0.82, w * 0.90 ])
-scale.b[1] = curry(lerp, [ h * 0.80, h * 0.91 ])
-
-
-var change = 1;
-
-var updateModel = function () {
-	var x = inputs.a;
-	var y = inputs.b;
-
-	dots.r[0] = scale.r[0](x);
-	dots.r[1] = scale.r[1](y);
-	dots.g[0] = scale.g[0](x);
-	dots.g[1] = scale.g[1](y);
-	dots.b[0] = scale.b[0](x);
-	dots.b[1] = scale.b[1](y);
-	
-	if (near(dots.r, dots.g, dots.b)) {
-		dots.r[2] += change;
-		dots.g[2] += change;
-		dots.b[2] += change;
-
-		if (dots.r[2] > 200) {
-			change = -1;
-		} if (dots.r[2] < 10) {
-			change = 1;
-		}
-
-	}
-}
-
 window.onmousemove = _.throttle(function (ev) {
 	inputs.x = ev.clientX;
 	inputs.y = ev.clientY;
@@ -123,11 +131,11 @@ window.onmousemove = _.throttle(function (ev) {
 setInterval(function() {
 	// get mouse pos
 	inputs.set( inputs.x, inputs.y );
-	updateModel();
+	dots.update();
 }, 1000/60)
 
 
-
+// libs
 
 
 function range(min, max, value) {
@@ -137,7 +145,6 @@ function range(min, max, value) {
 function lerp(v0, v1, t) {
 	return v0*(1-t)+v1*t
 }
-
 
 function curry(func,args,space) {
 	var n  = func.length - args.length; //arguments still to come
