@@ -95,47 +95,55 @@ function animate() {
 animate()
 
 
-// inputs
+
+var useGyro = false;
 
 // fix this - it currently always returns true on desktop chrome
 // not what we want....
 //window.DeviceOrientationEvent && 
-if (window.location.hash == '#gyro') {
-	inputs.aDom = curry(range, [-20, 20]);
-	inputs.bDom = curry(range, [ 10, 40]);
 
-	gyro.frequency = 1000/60;
+gyro.frequency = 1000/60;
 
-	setTimeout(function() {
-		gyro.startTracking(function(o){
-			if (o.gamma) {
-				inputs.set( o.gamma, o.beta )
-				// alert(inputs.a)
-			} else if (o.y) {
-				inputs.set( o.y, o.z )
+setTimeout(function() {
+	gyro.startTracking(function (o) {
+		if (! useGyro) {
+			console.log('initialising for gyro')
+			if (o.gamma) { // FIXME exact zero would fail
+				inputs.aDom = curry(range, [-20, 20]);
+				inputs.bDom = curry(range, [ 10, 40]);
+				useGyro = true;
+			} else if (o.y) {			
 			} else {
 				gyro.stopTracking()
 			}
-		})
-	}, 2000)
-} else {
-}
+		}
 
+		if (o.gamma) { // FIXME exact zero would fail
+			inputs.set( o.gamma, o.beta );
+		} else if (o.y) {
+		} else {
+		}
+	})
+}, 2000)
 
-window.onmousemove = _.throttle(function (ev) {
+window.onmousemove = function (ev) {
 	inputs.x = ev.clientX;
 	inputs.y = ev.clientY;
-}, 1000/60)
+};
+
 
 setInterval(function() {
-	// get mouse pos
-	inputs.set( inputs.x, inputs.y );
+	if (! useGyro) inputs.set( inputs.x, inputs.y );
 	dots.update();
 }, 1000/60)
 
 
 // libs
 
+
+
+
+// range(-20, 20, -4)
 
 function range(min, max, value) {
 	return (value - min) / (max - min)
