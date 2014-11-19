@@ -30,8 +30,16 @@ function Dot (size, scaleX, scaleY) {
 	return this;
 }
 Dot.prototype.reposition = function(x, y) { // [0-1,0-1]
-	this.x = this.scaleX(x)
-	this.y = this.scaleY(y)
+	this.x = Math.round( this.scaleX(x) )
+	this.y = Math.round( this.scaleY(y) )
+}
+Dot.prototype.savePosition = function(x, y) { // [0-1,0-1]
+	this.savedX = this.x;
+	this.savedY = this.y;
+	this.savedSize = this.size;
+}
+Dot.prototype.hasMoved = function(x, y) { // [0-1,0-1]
+	return ! (this.savedX == this.x && this.savedY == this.y && this.savedSize == this.size);
 }
 
 var dots = {
@@ -80,11 +88,16 @@ var dots = {
 
 
 function draw() {
-	context.clearRect(0, 0, canvas.width, canvas.height);
-	context
-	  .prop({ fillStyle: '#fcc' }).circle(dots.r.x, dots.r.y, dots.r.size).fill()
-	  .prop({ fillStyle: '#cfc' }).circle(dots.g.x, dots.g.y, dots.g.size).fill()
-	  .prop({ fillStyle: '#ccf' }).circle(dots.b.x, dots.b.y, dots.b.size).fill()
+	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved()) {
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		context
+		  .prop({ fillStyle: '#fcc' }).circle(dots.r.x, dots.r.y, dots.r.size).fill()
+		  .prop({ fillStyle: '#cfc' }).circle(dots.g.x, dots.g.y, dots.g.size).fill()
+		  .prop({ fillStyle: '#ccf' }).circle(dots.b.x, dots.b.y, dots.b.size).fill()
+		dots.r.savePosition();
+		dots.g.savePosition();
+		dots.b.savePosition();
+	}
 }
 
 function animate() {
