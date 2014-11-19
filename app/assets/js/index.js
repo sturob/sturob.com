@@ -21,10 +21,27 @@ var inputs = {
 
 var change = 1;
 
+function Dot (size, scaleX, scaleY) {
+	this.size = size;
+	this.scaleX = scaleX;
+	this.scaleY = scaleY;
+	this.x = 0;
+	this.y = 0;
+	return this;
+}
+Dot.prototype.reposition = function(x, y) { // [0-1,0-1]
+	this.x = this.scaleX(x)
+	this.y = this.scaleY(y)
+}
+
 var dots = {
-	r: [200, 120, 15],
-	g: [190, 120, 15],
-	b: [195, 130, 15],
+	r: new Dot( 15, curry(lerp, [ w * 0.84, w * 0.90 ]),
+	                curry(lerp, [ h * 0.80, h * 0.85 ])  ),
+	g: new Dot( 15, curry(lerp, [ w * 0.72, w * 0.92 ]),
+	                curry(lerp, [ h * 0.80, h * 0.82 ])  ),
+	b: new Dot( 15, curry(lerp, [ w * 0.82, w * 0.90 ]),
+	                curry(lerp, [ h * 0.80, h * 0.91 ])  ),
+
 	collision: function() {
 		return dots.near(dots.r, dots.g, dots.b)
 	},
@@ -32,21 +49,18 @@ var dots = {
 		var x = inputs.a;
 		var y = inputs.b;
 
-		dots.r[0] = scale.r[0](x);
-		dots.r[1] = scale.r[1](y);
-		dots.g[0] = scale.g[0](x);
-		dots.g[1] = scale.g[1](y);
-		dots.b[0] = scale.b[0](x);
-		dots.b[1] = scale.b[1](y);
+		dots.r.reposition(x, y)
+		dots.g.reposition(x, y)
+		dots.b.reposition(x, y)
 		
 		if (dots.collision()) {
-			dots.r[2] += change;
-			dots.g[2] += change;
-			dots.b[2] += change;
+			dots.r.size += change;
+			dots.g.size += change;
+			dots.b.size += change;
 
-			if (dots.r[2] > 200) {
+			if (dots.r.size > 200) {
 				change = -1;
-			} if (dots.r[2] < 10) {
+			} if (dots.r.size < 10) {
 				change = 1;
 			}
 		}
@@ -63,29 +77,14 @@ var dots = {
 	}
 }
 
-var scale = { 
-	r:[
-		curry(lerp, [ w * 0.84, w * 0.90 ]),
-		curry(lerp, [ h * 0.80, h * 0.85 ])
-	],
-	g:[
-		curry(lerp, [ w * 0.72, w * 0.92 ]),
-		curry(lerp, [ h * 0.80, h * 0.82 ])
-	],
-	b:[
-		curry(lerp, [ w * 0.82, w * 0.90 ]),
-		curry(lerp, [ h * 0.80, h * 0.91 ])
-	]
-};
-
 
 
 function draw() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context
-	  .prop({ fillStyle: '#fcc' }).circle(dots.r[0], dots.r[1], dots.r[2]).fill()
-	  .prop({ fillStyle: '#cfc' }).circle(dots.g[0], dots.g[1], dots.g[2]).fill()
-	  .prop({ fillStyle: '#ccf' }).circle(dots.b[0], dots.b[1], dots.b[2]).fill()
+	  .prop({ fillStyle: '#fcc' }).circle(dots.r.x, dots.r.y, dots.r.size).fill()
+	  .prop({ fillStyle: '#cfc' }).circle(dots.g.x, dots.g.y, dots.g.size).fill()
+	  .prop({ fillStyle: '#ccf' }).circle(dots.b.x, dots.b.y, dots.b.size).fill()
 }
 
 function animate() {
