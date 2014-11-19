@@ -17,16 +17,12 @@ var dots = {
 }
 
 
-var round = Math.round;
-
-
 function close(x1, x2) {
 	return (x1 + 5 > x2) && (x1 < x2) ||
 	       (x2 + 5 > x1) && (x2 < x1)
 }
 
 function near(a,b,c) {
-
 	return close( a[0], b[0] ) &&
 	       close( a[0], c[0] ) &&
 	       close( a[1], b[1] ) &&
@@ -114,6 +110,8 @@ scale.b[0].domain( xdom ).range([ w * 0.82,  w * 0.9 ])
 scale.b[1].domain( ydom ).range([ h * 0.8,   h * 0.91 ])
 
 
+var change = 1;
+
 var updateModel = function (ev) {
 	var x = ev.clientX;
 	var y = ev.clientY;
@@ -126,9 +124,23 @@ var updateModel = function (ev) {
 	dots.b[1] = scale.b[1](y);
 	
 	if (near(dots.r, dots.g, dots.b)) {
-		dots.r[2]++;
-		dots.g[2]++;
-		dots.b[2]++;
+		dots.r[2] += change;
+		dots.g[2] += change;
+		dots.b[2] += change;
+
+		if (dots.r[2] > 200) {
+			change = -1 // change //* 2;
+		} if (dots.r[2] < 10) {
+			change = 1//change //* -2;
+		}
+
+		// if (change > 100) {
+		// 	change = 1;
+		// 	if (dots.r[2] > 200) {
+		// 		change = -1;
+		// 	}
+		// }
+
 	}
 }
 
