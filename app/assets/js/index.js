@@ -25,7 +25,7 @@ var inputs = {
 
 
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
-var dotSizeRange = [ 30, 120 ];
+var dotSizeRange = [ 5, 120 ];
 var dotGrowthSpeed = 0.02;
 
 function Dot (scaleX, scaleY) {
@@ -62,12 +62,12 @@ _.extend( Dot.prototype, {
 
 
 var dots = {
-	r: new Dot( curry(lerp, [ w * 0.64, w * 0.70 ]),
-	            curry(lerp, [ h * 0.60, h * 0.65 ])  ),
-	g: new Dot( curry(lerp, [ w * 0.72, w * 0.72 ]),
-	            curry(lerp, [ h * 0.60, h * 0.62 ])  ),
-	b: new Dot( curry(lerp, [ w * 0.62, w * 0.70 ]),
-	            curry(lerp, [ h * 0.60, h * 0.71 ])  ),
+	r: new Dot( curry(lerp, [ w * 0.64, w * 0.80 ]),
+	            curry(lerp, [ h * 0.70, h * 0.75 ])  ),
+	g: new Dot( curry(lerp, [ w * 0.70, w * 0.73 ]),
+	            curry(lerp, [ h * 0.60, h * 0.76 ])  ),
+	b: new Dot( curry(lerp, [ w * 0.80, w * 0.60 ]),
+	            curry(lerp, [ h * 0.92, h * 0.71 ])  ),
 
 	collision: function() {
 		return dots.near(dots.r, dots.g, dots.b)
@@ -175,6 +175,7 @@ function lerp(v0, v1, t) {
 	return v0*(1-t)+v1*t
 }
 
+// http://www.crockford.com/javascript/www_svendtofte_com/code/curried_javascript/index.html
 function curry(func,args,space) {
 	var n  = func.length - args.length; //arguments still to come
 	var sa = Array.prototype.slice.apply(args); // saved accumulator array
