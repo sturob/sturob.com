@@ -90,7 +90,6 @@ var dots = {
 			dots.b.bumpSize()
 		}
 	},
-	
 	near: function(a, b, c) {
 		return within(10, a.x, b.x ) && within(10, a.x, c.x ) &&
 		       within(10, a.y, b.y ) && within(10, a.y, c.y )
