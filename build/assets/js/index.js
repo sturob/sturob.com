@@ -1,106 +1,186 @@
-
-function setPositions(r, g, b) {
-	function rule (repeat, path, file, x, y) {
-		return "url('" + path + file + "') " + x + 'px ' + y + 'px ' + repeat
-	}
-
-	var rules = { // universal parameters
-		universal: curry(rule, [ 'no-repeat', 'assets/images/' ])
-	}
-
-	rules.r = curry( rules.universal, [ 'circle-red.png' ] )
-	rules.g = curry( rules.universal, [ 'circle-green.png' ] )
-	rules.b = curry( rules.universal, [ 'circle-blue.png' ] )
-
-	a.style.background = [
-			rules.r( r[0], r[1] ),
-			rules.g( g[0], g[1] ),
-			rules.b( b[0], b[1] )
-		].join(', ');
-	// a.style.backgroundSize = '200px'
-}
+// (function () {
 
 var h = window.innerHeight;
 var w = window.innerWidth;
+var canvas = document.getElementById('bg');
+canvas.width = w;
+canvas.height = h;
+var context = canvas.getContext('2d');
+
+context.globalCompositeOperation = 'screen'
+// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn 
+// hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity
+
+// replace with backbone + skip draw on no change
+var inputs = {
+	set: function(a, b) {
+		this.a = this.aRanger(a);
+		this.b = this.bRanger(b);
+	},
+	aRanger: curry(range, [0, w]),
+	bRanger: curry(range, [0, h]),
+	mouseX: 0,
+	mouseY: 0
+};
 
 
-var scale = {
-	r: [
-		d3.scale.linear(),
-		d3.scale.linear()
-	],
-	g: [
-		d3.scale.linear(),
-		d3.scale.linear()
-	],
-	b: [
-		d3.scale.linear(),
-		d3.scale.linear()
-	], 
-	x: d3.scale.linear(),
-	y: d3.scale.linear()
+// var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
+var dotSizeRange = [ 5, 120 ];
+var dotGrowthSpeed = 0.01;
+
+function Dot (scaleX, scaleY) {
+	_.extend(this, {
+		changeSizeBy: dotGrowthSpeed,
+		size:0, scaleX:scaleX, scaleY:scaleY, x:0, y:0,
+	})
+	this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], this.size);
+	return this;
+}
+_.extend( Dot.prototype, {
+	bumpSize: function() {
+		if (this.size > 1) {
+			this.changeSizeBy = -dotGrowthSpeed;
+		} else if (this.size < 0) {
+			this.changeSizeBy = dotGrowthSpeed;
+		}
+		this.size += this.changeSizeBy;
+		this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Quadratic.InOut(this.size) );
+	},
+	reposition: function(x, y) { // [0-1, 0-1]
+		this.x = Math.round( this.scaleX(x) )
+		this.y = Math.round( this.scaleY(y) )
+	},
+	savePosition: function() {
+		this.savedX = this.x;
+		this.savedY = this.y;
+		this.savedSize = this.size;
+	},
+	hasMoved: function(x, y) {
+
+		var stationary = (within(1, this.savedX, this.x) && 
+		                  within(1, this.savedY, this.y) &&
+		                  within(0.01, this.savedSize, this.size))
+		return ! stationary;
+	}
+})
+
+
+var dots = {
+	r: new Dot( curry(lerp, [ w * 0.64, w * 0.80 ]),
+	            curry(lerp, [ h * 0.70, h * 0.75 ])  ),
+	g: new Dot( curry(lerp, [ w * 0.70, w * 0.73 ]),
+	            curry(lerp, [ h * 0.60, h * 0.76 ])  ),
+	b: new Dot( curry(lerp, [ w * 0.78, w * 0.64 ]),
+	            curry(lerp, [ h * 0.90, h * 0.73 ])  ),
+
+	collision: function() {
+		return dots.near(dots.r, dots.g, dots.b)
+	},
+	update: function () {
+		var x = inputs.a;
+		var y = inputs.b;
+
+		dots.r.reposition(x, y)
+		dots.g.reposition(x, y)
+		dots.b.reposition(x, y)
+		
+		if (dots.collision()) {
+			dots.r.bumpSize()
+			dots.g.bumpSize()
+			dots.b.bumpSize()
+		}
+	},
+	
+	near: function(a, b, c) {
+		return within(10, a.x, b.x ) && within(10, a.x, c.x ) &&
+		       within(10, a.y, b.y ) && within(10, a.y, c.y )
+	}
 }
 
-scale.x.domain([ 0, w ])
-scale.y.domain([ 0, h ])
 
-// fix this - it currently always returns true on desktop chrome
-// not what we want....
-if (window.DeviceOrientationEvent) {
-	// scale.x.domain([ -25, 25 ]) // // gamma -25 -> 25
-	// scale.y.domain([ 0, 50 ]) // beta 0 -> 50
+
+function draw() {
+	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved()) {
+		context.clearRect(0, 0, canvas.width, canvas.height)
+		context
+		  .prop({ fillStyle: '#f88' }).circle(dots.r.x, dots.r.y, dots.r.pxSize).fill()
+		  .prop({ fillStyle: '#8f8' }).circle(dots.g.x, dots.g.y, dots.g.pxSize).fill()
+		  .prop({ fillStyle: '#88f' }).circle(dots.b.x, dots.b.y, dots.b.pxSize).fill()
+		dots.r.savePosition()
+		dots.g.savePosition()
+		dots.b.savePosition()
+	}
 }
 
-gyro.frequency = 50;
+function animate() {
+	requestAnimationFrame( animate )
+	draw()
+}
 
-setTimeout(function() {
-	gyro.startTracking(function(o){
-		if (o.gamma) {
-			updatePositions({ clientX: o.gamma, clientY: o.beta })
-		} else {
-			gyro.stopTracking()
-			scale.x.range([ 0, w * 0.75 - 100 ])
-			scale.y.range([ 0, h * 0.75 - 100 ])
+animate()
+
+///
+
+var receivingDeviceMovement = false;  // window.DeviceOrientationEvent lies
+
+gyro.frequency = 1000/60;
+
+function setupGyro() {
+	gyro.startTracking( function (o) {
+		if (! receivingDeviceMovement) {
+			if (o.gamma != null) {
+				inputs.aRanger = curry( range, [-20, 20] )
+				inputs.bRanger = curry( range, [ 10, 40] )
+				receivingDeviceMovement = true;
+			} else if (o.y != null) {
+				inputs.aRanger = curry( range, [  2.5, -2.5 ] )
+				inputs.bRanger = curry( range, [ 2,  8 ] )
+				receivingDeviceMovement = true;
+			} else { // getting null values for motion - screw you guys...
+				gyro.stopTracking()
+			}
+		}
+
+		if (o.gamma) { // FIXME exact zero would fail
+			inputs.set( o.gamma, o.beta );
+		} else if (o.x) {
+			inputs.set( o.x, o.y );
 		}
 	})
-}, 2000)
-
-
-scale.x.range([ 0, w * 0.75 - 100 ])
-scale.y.range([ 0, h * 0.75 - 100 ])
-
-
-var updatePositions = function (ev) {
-	var x = ev.clientX;
-	var y = ev.clientY;
-
-	var rx = scale.x(x) * 1.1;
-	var ry = scale.y(y) * 1.1;
-
-	var gx = scale.x(x) * 0.8;
-	var gy = scale.y(y) * 1;
-
-	var bx = scale.x(x);
-	var by = scale.y(y) * 0.8;
-
-	setPositions([rx, ry], [gx, gy], [bx, by]);
 }
 
-window.onmousemove = _.throttle(updatePositions, 1000/30)
+setTimeout( setupGyro, 500 ); // magic number to wait for the gyro/accel to activate
+
+window.onmousemove = function (ev) {
+	inputs.mouseX = ev.clientX;
+	inputs.mouseY = ev.clientY;
+};
+
+setInterval(function() {
+	if (! receivingDeviceMovement) { // use mouse
+		inputs.set( inputs.mouseX, inputs.mouseY );
+	}
+	dots.update();
+}, 1000/60)
 
 
-var tmpX = 100, tmpY = 100;
+// libs
 
-// setInterval(function() {
-	window.onmousemove({
-		clientX: tmpX++,
-		clientY: tmpY++
-	})
-// }, 100)
+function within (margin, x1, x2) {
+	if (x1 == x2) return true;
+	return (x1 + margin > x2) && (x1 < x2) ||
+	       (x2 + margin > x1) && (x2 < x1)
+}
 
+function range(min, max, value) {
+	return (value - min) / (max - min)
+}
 
+function lerp(v0, v1, t) {
+	return v0*(1-t)+v1*t
+}
 
-
+// http://www.crockford.com/javascript/www_svendtofte_com/code/curried_javascript/index.html
 function curry(func,args,space) {
 	var n  = func.length - args.length; //arguments still to come
 	var sa = Array.prototype.slice.apply(args); // saved accumulator array
@@ -125,3 +205,5 @@ function curry(func,args,space) {
 	}
 	return accumulator([],sa,n);
 }
+
+// })();
