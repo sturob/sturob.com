@@ -1,3 +1,5 @@
+// (function () {
+
 var h = window.innerHeight;
 var w = window.innerWidth;
 var canvas = document.getElementById('bg');
@@ -10,39 +12,46 @@ context.globalCompositeOperation = 'lighten';
 // replace with backbone + skip draw on no change
 var inputs = {
 	set: function(a, b) {
-		this.a = this.aDom(a)
-		this.b = this.bDom(b)
+		this.a = this.aRanger(a);
+		this.b = this.bRanger(b);
 	},
-	aDom: curry(range, [0, w]),
-	bDom: curry(range, [0, h]),
-	x: 0,
-	y: 0
+	aRanger: curry(range, [0, w]),
+	bRanger: curry(range, [0, h]),
+	mouseX: 0,
+	mouseY: 0
 };
 
-var change = 1;
 
 function Dot (size, scaleX, scaleY) {
-	this.size = size;
-	this.scaleX = scaleX;
-	this.scaleY = scaleY;
-	this.x = 0;
-	this.y = 0;
+	_.extend(this, {
+		size:size, scaleX:scaleX, scaleY:scaleY, x:0, y:0,
+	})
 	return this;
 }
-Dot.prototype.reposition = function(x, y) { // [0-1,0-1]
-	this.x = Math.round( this.scaleX(x) )
-	this.y = Math.round( this.scaleY(y) )
-}
-Dot.prototype.savePosition = function(x, y) { // [0-1,0-1]
-	this.savedX = this.x;
-	this.savedY = this.y;
-	this.savedSize = this.size;
-}
-Dot.prototype.hasMoved = function(x, y) { // [0-1,0-1]
-	return ! (this.savedX == this.x && this.savedY == this.y && this.savedSize == this.size);
-}
+_.extend( Dot.prototype, {
+	setSize: function(n) {
+		this.size = range(0, 200, n)
+	},
+	scaledSize: function() {
+		return lerp(0, 200, this.size)
+	},
+	reposition: function(x, y) { // [0-1, 0-1]
+		this.x = Math.round( this.scaleX(x) )
+		this.y = Math.round( this.scaleY(y) )
+	},
+	savePosition: function(x, y) { // (0-1, 0-1)
+		this.savedX = this.x;
+		this.savedY = this.y;
+		this.savedSize = this.size;
+	},
+	hasMoved: function(x, y) { // (0-1, 0-1) 
+		return ! (this.savedX == this.x && this.savedY == this.y && this.savedSize == this.size);
+	}
+})
+
 
 var dots = {
+	changeSizeBy: 1,
 	r: new Dot( 15, curry(lerp, [ w * 0.84, w * 0.90 ]),
 	                curry(lerp, [ h * 0.80, h * 0.85 ])  ),
 	g: new Dot( 15, curry(lerp, [ w * 0.72, w * 0.92 ]),
@@ -62,14 +71,14 @@ var dots = {
 		dots.b.reposition(x, y)
 		
 		if (dots.collision()) {
-			dots.r.size += change;
-			dots.g.size += change;
-			dots.b.size += change;
+			dots.r.size += this.changeSizeBy;
+			dots.g.size += this.changeSizeBy;
+			dots.b.size += this.changeSizeBy;
 
 			if (dots.r.size > 200) {
-				change = -1;
+				this.changeSizeBy = -1;
 			} if (dots.r.size < 10) {
-				change = 1;
+				this.changeSizeBy = 1;
 			}
 		}
 	},
@@ -108,25 +117,20 @@ function animate() {
 animate()
 
 
-
-var useGyro = false;
-
-// fix this - it currently always returns true on desktop chrome
-// not what we want....
-//window.DeviceOrientationEvent && 
+var receivingDeviceMovement = false;  // window.DeviceOrientationEvent lies
 
 gyro.frequency = 1000/60;
 
-setTimeout(function() {
-	gyro.startTracking(function (o) {
-		if (! useGyro) {
-			console.log('initialising for gyro')
+function setupGyro() {
+	gyro.startTracking( function (o) {
+		if (! receivingDeviceMovement) {
 			if (o.gamma) { // FIXME exact zero would fail
-				inputs.aDom = curry(range, [-20, 20]);
-				inputs.bDom = curry(range, [ 10, 40]);
-				useGyro = true;
-			} else if (o.y) {			
-			} else {
+				inputs.aRanger = curry( range, [-20, 20] )
+				inputs.bRanger = curry( range, [ 10, 40] )
+				receivingDeviceMovement = true;
+			} else if (o.y) {
+
+			} else { // getting null values for motion - screw you guys...
 				gyro.stopTracking()
 			}
 		}
@@ -134,29 +138,28 @@ setTimeout(function() {
 		if (o.gamma) { // FIXME exact zero would fail
 			inputs.set( o.gamma, o.beta );
 		} else if (o.y) {
-		} else {
+			// TODO accelerometer support
 		}
 	})
-}, 2000)
+}
+
+setTimeout( setupGyro, 50 ); // magic number to wait for the gyro to activate
+
 
 window.onmousemove = function (ev) {
-	inputs.x = ev.clientX;
-	inputs.y = ev.clientY;
+	inputs.mouseX = ev.clientX;
+	inputs.mouseY = ev.clientY;
 };
 
-
 setInterval(function() {
-	if (! useGyro) inputs.set( inputs.x, inputs.y );
+	if (! receivingDeviceMovement) { // use mouse
+		inputs.set( inputs.mouseX, inputs.mouseY );
+	}
 	dots.update();
 }, 1000/60)
 
 
 // libs
-
-
-
-
-// range(-20, 20, -4)
 
 function range(min, max, value) {
 	return (value - min) / (max - min)
@@ -190,3 +193,6 @@ function curry(func,args,space) {
 	}
 	return accumulator([],sa,n);
 }
+
+
+// })();
