@@ -42,7 +42,7 @@ body {
 section {
 	max-width: 480px;
 	padding: 16px;
-	background-color: rgba(255,255,255,0.85)
+	// background-color: rgba(255,255,255,0.85)
 }
 
 p {
@@ -75,15 +75,21 @@ a:hover {
 
 #stu {
 	position: fixed;
-	width: 0px;
-	z-index: -1;
+	width: 60px;
+	z-index: 1;
 	right: 0;
 	bottom: 0;
 }
 
+canvas {
+	position: absolute;
+	top: 0; bottom: 0; right: 0; left: 0;
+	z-index: -1;
+}
+
 #weird {
 
-	background-blend-mode: multiply;
+	// background-blend-mode: multiply;
 	
 	div {
 		// border: 1px solid red;
