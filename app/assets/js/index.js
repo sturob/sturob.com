@@ -22,6 +22,7 @@ var inputs = {
 };
 
 
+// var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
 var dotSizeRange = [ 30, 120 ];
 var dotGrowthSpeed = 0.02;
 
@@ -99,14 +100,14 @@ var dots = {
 
 function draw() {
 	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved()) {
-		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.clearRect(0, 0, canvas.width, canvas.height)
 		context
 		  .prop({ fillStyle: '#fcc' }).circle(dots.r.x, dots.r.y, dots.r.pxSize).fill()
 		  .prop({ fillStyle: '#cfc' }).circle(dots.g.x, dots.g.y, dots.g.pxSize).fill()
 		  .prop({ fillStyle: '#ccf' }).circle(dots.b.x, dots.b.y, dots.b.pxSize).fill()
-		dots.r.savePosition();
-		dots.g.savePosition();
-		dots.b.savePosition();
+		dots.r.savePosition()
+		dots.g.savePosition()
+		dots.b.savePosition()
 	}
 }
 
@@ -119,6 +120,18 @@ animate()
 
 
 // inputs
+
+function xyzToRoll(x, y, z) {
+	return (Math.atan2(x, Math.sqrt(y * y + z * z)) * 180.0) / Math.PI;
+}
+
+function xyzToPitch (x, y, z) {
+	var pitch = (Math.atan2(-y, z) * 180.0) / Math.PI;
+	pitch = (pitch >= 0) ? (180 - pitch) : (-pitch - 180);
+	return pitch;
+}
+
+
 
 var receivingDeviceMovement = false;  // window.DeviceOrientationEvent lies
 
@@ -133,6 +146,9 @@ function setupGyro() {
 				receivingDeviceMovement = true;
 			} else if (o.y) {
 
+				inputs.aRanger = curry( range, [  2.5, -2.5 ] ) // y 
+				inputs.bRanger = curry( range, [ 2,  8 ] ) // x
+				receivingDeviceMovement = true;
 			} else { // getting null values for motion - screw you guys...
 				gyro.stopTracking()
 			}
@@ -140,13 +156,13 @@ function setupGyro() {
 
 		if (o.gamma) { // FIXME exact zero would fail
 			inputs.set( o.gamma, o.beta );
-		} else if (o.y) {
-			// TODO accelerometer support
+		} else if (o.x) {
+			inputs.set( o.x, o.y );
 		}
 	})
 }
 
-setTimeout( setupGyro, 50 ); // magic number to wait for the gyro to activate
+setTimeout( setupGyro, 500 ); // magic number to wait for the gyro/accel to activate
 
 window.onmousemove = function (ev) {
 	inputs.mouseX = ev.clientX;
