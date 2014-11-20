@@ -7,7 +7,9 @@ canvas.width = w;
 canvas.height = h;
 var context = canvas.getContext('2d');
 
-context.globalCompositeOperation = 'lighten';
+context.globalCompositeOperation = 'screen'
+// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn 
+// hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity
 
 // replace with backbone + skip draw on no change
 var inputs = {
@@ -102,9 +104,9 @@ function draw() {
 	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved()) {
 		context.clearRect(0, 0, canvas.width, canvas.height)
 		context
-		  .prop({ fillStyle: '#fcc' }).circle(dots.r.x, dots.r.y, dots.r.pxSize).fill()
-		  .prop({ fillStyle: '#cfc' }).circle(dots.g.x, dots.g.y, dots.g.pxSize).fill()
-		  .prop({ fillStyle: '#ccf' }).circle(dots.b.x, dots.b.y, dots.b.pxSize).fill()
+		  .prop({ fillStyle: '#f88' }).circle(dots.r.x, dots.r.y, dots.r.pxSize).fill()
+		  .prop({ fillStyle: '#8f8' }).circle(dots.g.x, dots.g.y, dots.g.pxSize).fill()
+		  .prop({ fillStyle: '#88f' }).circle(dots.b.x, dots.b.y, dots.b.pxSize).fill()
 		dots.r.savePosition()
 		dots.g.savePosition()
 		dots.b.savePosition()
@@ -118,20 +120,7 @@ function animate() {
 
 animate()
 
-
-// inputs
-
-function xyzToRoll(x, y, z) {
-	return (Math.atan2(x, Math.sqrt(y * y + z * z)) * 180.0) / Math.PI;
-}
-
-function xyzToPitch (x, y, z) {
-	var pitch = (Math.atan2(-y, z) * 180.0) / Math.PI;
-	pitch = (pitch >= 0) ? (180 - pitch) : (-pitch - 180);
-	return pitch;
-}
-
-
+///
 
 var receivingDeviceMovement = false;  // window.DeviceOrientationEvent lies
 
@@ -140,14 +129,13 @@ gyro.frequency = 1000/60;
 function setupGyro() {
 	gyro.startTracking( function (o) {
 		if (! receivingDeviceMovement) {
-			if (o.gamma) { // FIXME exact zero would fail
+			if (o.gamma != null) {
 				inputs.aRanger = curry( range, [-20, 20] )
 				inputs.bRanger = curry( range, [ 10, 40] )
 				receivingDeviceMovement = true;
-			} else if (o.y) {
-
-				inputs.aRanger = curry( range, [  2.5, -2.5 ] ) // y 
-				inputs.bRanger = curry( range, [ 2,  8 ] ) // x
+			} else if (o.y != null) {
+				inputs.aRanger = curry( range, [  2.5, -2.5 ] )
+				inputs.bRanger = curry( range, [ 2,  8 ] )
 				receivingDeviceMovement = true;
 			} else { // getting null values for motion - screw you guys...
 				gyro.stopTracking()
@@ -211,6 +199,5 @@ function curry(func,args,space) {
 	}
 	return accumulator([],sa,n);
 }
-
 
 // })();
