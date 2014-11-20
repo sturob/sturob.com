@@ -21,23 +21,24 @@ var inputs = {
 	mouseY: 0
 };
 
-var dotSizeRange = [ 20, 200 ];
+
+var dotSizeRange = [ 30, 120 ];
+var dotGrowthSpeed = 0.02;
 
 function Dot (scaleX, scaleY) {
 	_.extend(this, {
-		changeSizeBy: 0.004,
+		changeSizeBy: dotGrowthSpeed,
 		size:0, scaleX:scaleX, scaleY:scaleY, x:0, y:0,
 	})
-	this.pxSize = 
-		lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Elastic.In(this.size) );
+	this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], this.size);
 	return this;
 }
 _.extend( Dot.prototype, {
 	bumpSize: function() {
 		if (this.size > 1) {
-			this.changeSizeBy = -0.004;
+			this.changeSizeBy = -dotGrowthSpeed;
 		} else if (this.size < 0) {
-			this.changeSizeBy = 0.004;
+			this.changeSizeBy = dotGrowthSpeed;
 		}
 		this.size += this.changeSizeBy;
 		this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Quadratic.InOut(this.size) );
@@ -58,13 +59,12 @@ _.extend( Dot.prototype, {
 
 
 var dots = {
-	
-	r: new Dot( curry(lerp, [ w * 0.84, w * 0.90 ]),
-	            curry(lerp, [ h * 0.80, h * 0.85 ])  ),
-	g: new Dot( curry(lerp, [ w * 0.72, w * 0.92 ]),
-	            curry(lerp, [ h * 0.80, h * 0.82 ])  ),
-	b: new Dot( curry(lerp, [ w * 0.82, w * 0.90 ]),
-	            curry(lerp, [ h * 0.80, h * 0.91 ])  ),
+	r: new Dot( curry(lerp, [ w * 0.64, w * 0.70 ]),
+	            curry(lerp, [ h * 0.60, h * 0.65 ])  ),
+	g: new Dot( curry(lerp, [ w * 0.72, w * 0.72 ]),
+	            curry(lerp, [ h * 0.60, h * 0.62 ])  ),
+	b: new Dot( curry(lerp, [ w * 0.62, w * 0.70 ]),
+	            curry(lerp, [ h * 0.60, h * 0.71 ])  ),
 
 	collision: function() {
 		return dots.near(dots.r, dots.g, dots.b)
@@ -84,8 +84,8 @@ var dots = {
 		}
 	},
 	close: function(x1, x2) {
-		return (x1 + 5 > x2) && (x1 < x2) ||
-		       (x2 + 5 > x1) && (x2 < x1)
+		return (x1 + 8 > x2) && (x1 < x2) ||
+		       (x2 + 8 > x1) && (x2 < x1)
 	},
 	near: function(a, b, c) {
 		return dots.close( a.x, b.x ) &&
