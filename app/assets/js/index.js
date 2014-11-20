@@ -21,19 +21,26 @@ var inputs = {
 	mouseY: 0
 };
 
+var dotSizeRange = [ 20, 200 ];
 
-function Dot (size, scaleX, scaleY) {
+function Dot (scaleX, scaleY) {
 	_.extend(this, {
-		size:size, scaleX:scaleX, scaleY:scaleY, x:0, y:0,
+		changeSizeBy: 0.004,
+		size:0, scaleX:scaleX, scaleY:scaleY, x:0, y:0,
 	})
+	this.pxSize = 
+		lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Elastic.In(this.size) );
 	return this;
 }
 _.extend( Dot.prototype, {
-	setSize: function(n) {
-		this.size = range(0, 200, n)
-	},
-	scaledSize: function() {
-		return lerp(0, 200, this.size)
+	bumpSize: function() {
+		if (this.size > 1) {
+			this.changeSizeBy = -0.004;
+		} else if (this.size < 0) {
+			this.changeSizeBy = 0.004;
+		}
+		this.size += this.changeSizeBy;
+		this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Quadratic.InOut(this.size) );
 	},
 	reposition: function(x, y) { // [0-1, 0-1]
 		this.x = Math.round( this.scaleX(x) )
@@ -51,13 +58,13 @@ _.extend( Dot.prototype, {
 
 
 var dots = {
-	changeSizeBy: 1,
-	r: new Dot( 15, curry(lerp, [ w * 0.84, w * 0.90 ]),
-	                curry(lerp, [ h * 0.80, h * 0.85 ])  ),
-	g: new Dot( 15, curry(lerp, [ w * 0.72, w * 0.92 ]),
-	                curry(lerp, [ h * 0.80, h * 0.82 ])  ),
-	b: new Dot( 15, curry(lerp, [ w * 0.82, w * 0.90 ]),
-	                curry(lerp, [ h * 0.80, h * 0.91 ])  ),
+	
+	r: new Dot( curry(lerp, [ w * 0.84, w * 0.90 ]),
+	            curry(lerp, [ h * 0.80, h * 0.85 ])  ),
+	g: new Dot( curry(lerp, [ w * 0.72, w * 0.92 ]),
+	            curry(lerp, [ h * 0.80, h * 0.82 ])  ),
+	b: new Dot( curry(lerp, [ w * 0.82, w * 0.90 ]),
+	            curry(lerp, [ h * 0.80, h * 0.91 ])  ),
 
 	collision: function() {
 		return dots.near(dots.r, dots.g, dots.b)
@@ -71,15 +78,9 @@ var dots = {
 		dots.b.reposition(x, y)
 		
 		if (dots.collision()) {
-			dots.r.size += this.changeSizeBy;
-			dots.g.size += this.changeSizeBy;
-			dots.b.size += this.changeSizeBy;
-
-			if (dots.r.size > 200) {
-				this.changeSizeBy = -1;
-			} if (dots.r.size < 10) {
-				this.changeSizeBy = 1;
-			}
+			dots.r.bumpSize()
+			dots.g.bumpSize()
+			dots.b.bumpSize()
 		}
 	},
 	close: function(x1, x2) {
@@ -100,9 +101,9 @@ function draw() {
 	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved()) {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		context
-		  .prop({ fillStyle: '#fcc' }).circle(dots.r.x, dots.r.y, dots.r.size).fill()
-		  .prop({ fillStyle: '#cfc' }).circle(dots.g.x, dots.g.y, dots.g.size).fill()
-		  .prop({ fillStyle: '#ccf' }).circle(dots.b.x, dots.b.y, dots.b.size).fill()
+		  .prop({ fillStyle: '#fcc' }).circle(dots.r.x, dots.r.y, dots.r.pxSize).fill()
+		  .prop({ fillStyle: '#cfc' }).circle(dots.g.x, dots.g.y, dots.g.pxSize).fill()
+		  .prop({ fillStyle: '#ccf' }).circle(dots.b.x, dots.b.y, dots.b.pxSize).fill()
 		dots.r.savePosition();
 		dots.g.savePosition();
 		dots.b.savePosition();
@@ -116,6 +117,8 @@ function animate() {
 
 animate()
 
+
+// inputs
 
 var receivingDeviceMovement = false;  // window.DeviceOrientationEvent lies
 
@@ -144,7 +147,6 @@ function setupGyro() {
 }
 
 setTimeout( setupGyro, 50 ); // magic number to wait for the gyro to activate
-
 
 window.onmousemove = function (ev) {
 	inputs.mouseX = ev.clientX;
