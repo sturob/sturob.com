@@ -26,7 +26,7 @@ var inputs = {
 
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
 var dotSizeRange = [ 5, 120 ];
-var dotGrowthSpeed = 0.02;
+var dotGrowthSpeed = 0.01;
 
 function Dot (scaleX, scaleY) {
 	_.extend(this, {
@@ -50,13 +50,17 @@ _.extend( Dot.prototype, {
 		this.x = Math.round( this.scaleX(x) )
 		this.y = Math.round( this.scaleY(y) )
 	},
-	savePosition: function(x, y) { // (0-1, 0-1)
+	savePosition: function() {
 		this.savedX = this.x;
 		this.savedY = this.y;
 		this.savedSize = this.size;
 	},
-	hasMoved: function(x, y) { // (0-1, 0-1) 
-		return ! (this.savedX == this.x && this.savedY == this.y && this.savedSize == this.size);
+	hasMoved: function(x, y) {
+
+		var stationary = (within(1, this.savedX, this.x) && 
+		                  within(1, this.savedY, this.y) &&
+		                  within(0.01, this.savedSize, this.size))
+		return ! stationary;
 	}
 })
 
@@ -66,8 +70,8 @@ var dots = {
 	            curry(lerp, [ h * 0.70, h * 0.75 ])  ),
 	g: new Dot( curry(lerp, [ w * 0.70, w * 0.73 ]),
 	            curry(lerp, [ h * 0.60, h * 0.76 ])  ),
-	b: new Dot( curry(lerp, [ w * 0.80, w * 0.60 ]),
-	            curry(lerp, [ h * 0.92, h * 0.71 ])  ),
+	b: new Dot( curry(lerp, [ w * 0.78, w * 0.64 ]),
+	            curry(lerp, [ h * 0.90, h * 0.73 ])  ),
 
 	collision: function() {
 		return dots.near(dots.r, dots.g, dots.b)
@@ -86,15 +90,10 @@ var dots = {
 			dots.b.bumpSize()
 		}
 	},
-	close: function(x1, x2) {
-		return (x1 + 8 > x2) && (x1 < x2) ||
-		       (x2 + 8 > x1) && (x2 < x1)
-	},
+	
 	near: function(a, b, c) {
-		return dots.close( a.x, b.x ) &&
-		       dots.close( a.x, c.x ) &&
-		       dots.close( a.y, b.y ) &&
-		       dots.close( a.y, c.y )
+		return within(10, a.x, b.x ) && within(10, a.x, c.x ) &&
+		       within(10, a.y, b.y ) && within(10, a.y, c.y )
 	}
 }
 
@@ -166,6 +165,12 @@ setInterval(function() {
 
 
 // libs
+
+function within (margin, x1, x2) {
+	if (x1 == x2) return true;
+	return (x1 + margin > x2) && (x1 < x2) ||
+	       (x2 + margin > x1) && (x2 < x1)
+}
 
 function range(min, max, value) {
 	return (value - min) / (max - min)
