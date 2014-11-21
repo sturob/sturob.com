@@ -1,21 +1,9 @@
 var TWEEN     = require('tween.js');
 var _         = require('underscore');
 var autoscale = require('canvas-autoscale');
-
 var canvas = document.getElementById('bg');
 
-window.myResize = autoscale(canvas) //, window, {scale: 4 /*window.devicePixelRatio*/ });
-myResize();
-window.onresize = myResize;
-
-var w = canvas.width;
-var h = canvas.height;
-
-var context = canvas.getContext('2d');
-
-context.globalCompositeOperation = 'screen'
-// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn
-// hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity
+var id = function(a) { return a }
 
 // replace with backbone + skip draw on no change
 var inputs = {
@@ -23,11 +11,36 @@ var inputs = {
 		this.a = this.aRanger(a);
 		this.b = this.bRanger(b);
 	},
-	aRanger: curry(range, [0, w]),
-	bRanger: curry(range, [0, h]),
+	aRanger: id,
+	bRanger: id,
 	mouseX: 0,
 	mouseY: 0
 };
+
+var w = canvas.width;
+var h = canvas.height;
+
+var postCanvasSetup = function () {
+	w = canvas.width;
+	h = canvas.height;
+
+	inputs.aRanger = curry( range, [0, canvas.width] )
+	inputs.bRanger = curry( range, [0, canvas.height] )
+};
+
+
+window.myResize = _.compose( autoscale(canvas), postCanvasSetup );
+myResize();
+window.onresize = myResize;
+
+
+
+var context = canvas.getContext('2d');
+context.globalCompositeOperation = 'screen';
+// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn
+// hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity
+
+
 
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
 var dotSizeRange = [ 15 * window.devicePixelRatio , 120 * window.devicePixelRatio ];
