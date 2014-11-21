@@ -1,8 +1,7 @@
-// (function () {
-
-var tween     = require('tween.js');
+var TWEEN     = require('tween.js');
 var _         = require('underscore');
 var autoscale = require('canvas-autoscale');
+
 
 var h = window.innerHeight;
 var w = window.innerWidth;
@@ -27,7 +26,8 @@ var inputs = {
 	mouseY: 0
 };
 
-
+// debugger;
+// console.log('oh hello 2');
 
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
 var dotSizeRange = [ 5, 120 ];
@@ -209,5 +209,3 @@ function curry(func,args,space) {
 	}
 	return accumulator([],sa,n);
 }
-
-// })();
