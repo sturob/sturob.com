@@ -2,12 +2,15 @@ var TWEEN     = require('tween.js');
 var _         = require('underscore');
 var autoscale = require('canvas-autoscale');
 
-
-var h = window.innerHeight;
-var w = window.innerWidth;
 var canvas = document.getElementById('bg');
-canvas.width = w;
-canvas.height = h;
+
+window.myResize = autoscale(canvas) //, window, {scale: 4 /*window.devicePixelRatio*/ });
+myResize();
+window.onresize = myResize;
+
+var w = canvas.width;
+var h = canvas.height;
+
 var context = canvas.getContext('2d');
 
 context.globalCompositeOperation = 'screen'
@@ -26,11 +29,8 @@ var inputs = {
 	mouseY: 0
 };
 
-// debugger;
-// console.log('oh hello 2');
-
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
-var dotSizeRange = [ 5, 120 ];
+var dotSizeRange = [ 15 * window.devicePixelRatio , 120 * window.devicePixelRatio ];
 var dotGrowthSpeed = 0.01;
 
 function Dot (scaleX, scaleY) {
