@@ -2,21 +2,9 @@
 var TWEEN     = require('tween.js');
 var _         = require('underscore');
 var autoscale = require('canvas-autoscale');
-
 var canvas = document.getElementById('bg');
 
-window.myResize = autoscale(canvas) //, window, {scale: 4 /*window.devicePixelRatio*/ });
-myResize();
-window.onresize = myResize;
-
-var w = canvas.width;
-var h = canvas.height;
-
-var context = canvas.getContext('2d');
-
-context.globalCompositeOperation = 'screen'
-// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn
-// hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity
+var id = function(a) { return a }
 
 // replace with backbone + skip draw on no change
 var inputs = {
@@ -24,14 +12,51 @@ var inputs = {
 		this.a = this.aRanger(a);
 		this.b = this.bRanger(b);
 	},
-	aRanger: curry(range, [0, w]),
-	bRanger: curry(range, [0, h]),
+	aRanger: id,
+	bRanger: id,
 	mouseX: 0,
 	mouseY: 0
 };
 
+var pixels = function(x) {
+	var ratio = window.devicePixelRatio || 1;
+	return ratio * x;
+}
+
+// window.addEventListener("orientationchange", function() {
+	// Announce the new orientation number
+	// alert(window.orientation);
+// }, false);
+
+window.context = canvas.getContext('2d');
+context.globalCompositeOperation = 'screen';
+// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn
+// hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity
+
+
+var w = canvas.width;
+var h = canvas.height;
+
+var postCanvasSetup = function () {
+	w = canvas.width;
+	h = canvas.height;
+
+	// alert(w + ' ' + h)
+
+	inputs.aRanger = curry( range, [0, canvas.width] )
+	inputs.bRanger = curry( range, [0, canvas.height] )
+	context.globalCompositeOperation = 'screen';
+};
+
+
+window.myResize = autoscale( canvas, {}, postCanvasSetup );
+myResize();
+window.onresize = myResize;
+
+
+
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
-var dotSizeRange = [ 15 * window.devicePixelRatio , 120 * window.devicePixelRatio ];
+var dotSizeRange = [ pixels(15), pixels(120) ];
 var dotGrowthSpeed = 0.01;
 
 function Dot (scaleX, scaleY) {
@@ -72,13 +97,12 @@ _.extend( Dot.prototype, {
 
 
 var dots = {
-	r: new Dot( curry(lerp, [ w * 0.64, w * 0.80 ]),
-	            curry(lerp, [ h * 0.70, h * 0.75 ])  ),
-	g: new Dot( curry(lerp, [ w * 0.70, w * 0.73 ]),
-	            curry(lerp, [ h * 0.60, h * 0.76 ])  ),
-	b: new Dot( curry(lerp, [ w * 0.78, w * 0.64 ]),
-	            curry(lerp, [ h * 0.90, h * 0.73 ])  ),
-
+	r: new Dot( function(n) { return lerp(w * 0.64, w * 0.80, n) },
+	            function(n) { return lerp(h * 0.70, h * 0.75, n) }),
+	g: new Dot( function(n) { return lerp(w * 0.70, w * 0.73, n) },
+	            function(n) { return lerp(h * 0.60, h * 0.76, n) }),
+	b: new Dot( function(n) { return lerp(w * 0.78, w * 0.64, n) },
+	            function(n) { return lerp(h * 0.90, h * 0.73, n) }),
 	collision: function() {
 		return dots.near(dots.r, dots.g, dots.b)
 	},
@@ -97,8 +121,8 @@ var dots = {
 		}
 	},
 	near: function(a, b, c) {
-		return within(10, a.x, b.x ) && within(10, a.x, c.x ) &&
-		       within(10, a.y, b.y ) && within(10, a.y, c.y )
+		return within(pixels(10), a.x, b.x ) && within(pixels(10), a.x, c.x ) &&
+		       within(pixels(10), a.y, b.y ) && within(pixels(10), a.y, c.y )
 	}
 }
 
