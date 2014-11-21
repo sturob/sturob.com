@@ -1,5 +1,9 @@
 // (function () {
 
+var tween     = require('tween.js');
+var _         = require('underscore');
+var autoscale = require('canvas-autoscale');
+
 var h = window.innerHeight;
 var w = window.innerWidth;
 var canvas = document.getElementById('bg');
@@ -8,7 +12,7 @@ canvas.height = h;
 var context = canvas.getContext('2d');
 
 context.globalCompositeOperation = 'screen'
-// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn 
+// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn
 // hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity
 
 // replace with backbone + skip draw on no change
@@ -22,6 +26,7 @@ var inputs = {
 	mouseX: 0,
 	mouseY: 0
 };
+
 
 
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
@@ -57,7 +62,7 @@ _.extend( Dot.prototype, {
 	},
 	hasMoved: function(x, y) {
 
-		var stationary = (within(1, this.savedX, this.x) && 
+		var stationary = (within(1, this.savedX, this.x) &&
 		                  within(1, this.savedY, this.y) &&
 		                  within(0.01, this.savedSize, this.size))
 		return ! stationary;
@@ -83,7 +88,7 @@ var dots = {
 		dots.r.reposition(x, y)
 		dots.g.reposition(x, y)
 		dots.b.reposition(x, y)
-		
+
 		if (dots.collision()) {
 			dots.r.bumpSize()
 			dots.g.bumpSize()

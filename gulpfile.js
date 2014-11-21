@@ -69,15 +69,16 @@ gulp.task('images', function () {
 });
 
 gulp.task('js', function () {
-	return gulp.src('./app/assets/js/**').pipe( gulp.dest('./build/assets/js') )
+	return gulp.src('./app/assets/js/lib/**').pipe( gulp.dest('./build/assets/js/lib') )
 		.pipe( reload({stream:true}));
 });
 
-gulp.task('build', [ 'base', 'less', 'images', 'html', 'newjs' ]);
+gulp.task('build', [ 'base', 'less', 'images', 'html', 'js', 'newjs' ]);
 
 gulp.task('watch', [ 'build', 'browser-sync' ], function () {
 	gulp.watch('./app/assets/less/*.less', [ 'less' ]);
 	gulp.watch('./app/assets/js/*.js', [ 'newjs' ]);
+	gulp.watch('./app/assets/js/lib/*.js', [ 'js' ]);
 	gulp.watch('./app/assets/images/**/*', [ 'images' ]);
 	gulp.watch('./app/*.html').on('change', function (file) {
 		console.log('refreshing ' + file.path);

@@ -16,6 +16,7 @@
     "gulp-livereload": "^1.2.0",
     "gulp-plumber": "^0.6.4",
     "tiny-lr": "0.0.5",
+    "tween.js": "^0.14.0",
     "vinyl-source-stream": "^1.0.0",
     "watchify": "^2.1.1"
   }
