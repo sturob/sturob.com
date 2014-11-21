@@ -17,6 +17,15 @@ var inputs = {
 	mouseY: 0
 };
 
+var pixels = function(x) {
+	var ratio = window.devicePixelRatio || 1;
+	return ratio * x;
+}
+
+// window.addEventListener("orientationchange", function() {
+	// Announce the new orientation number
+	// alert(window.orientation);
+// }, false);
 
 window.context = canvas.getContext('2d');
 context.globalCompositeOperation = 'screen';
@@ -31,6 +40,8 @@ var postCanvasSetup = function () {
 	w = canvas.width;
 	h = canvas.height;
 
+	// alert(w + ' ' + h)
+
 	inputs.aRanger = curry( range, [0, canvas.width] )
 	inputs.bRanger = curry( range, [0, canvas.height] )
 	context.globalCompositeOperation = 'screen';
@@ -44,7 +55,7 @@ window.onresize = myResize;
 
 
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
-var dotSizeRange = [ 15 * window.devicePixelRatio , 120 * window.devicePixelRatio ];
+var dotSizeRange = [ pixels(15), pixels(120) ];
 var dotGrowthSpeed = 0.01;
 
 function Dot (scaleX, scaleY) {
@@ -109,8 +120,8 @@ var dots = {
 		}
 	},
 	near: function(a, b, c) {
-		return within(10, a.x, b.x ) && within(10, a.x, c.x ) &&
-		       within(10, a.y, b.y ) && within(10, a.y, c.y )
+		return within(pixels(10), a.x, b.x ) && within(pixels(10), a.x, c.x ) &&
+		       within(pixels(10), a.y, b.y ) && within(pixels(10), a.y, c.y )
 	}
 }
 
