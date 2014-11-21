@@ -6,6 +6,33 @@ var htmlhint   = require('gulp-htmlhint');
 var browserSync = require('browser-sync');
 var reload      = browserSync.reload;
 
+var gutil = require('gulp-util');
+var source = require('vinyl-source-stream');
+var watchify = require('watchify');
+var browserify = require('browserify');
+
+gulp.task('newjs', function() {
+	var bundler = watchify(browserify('./app/assets/js/index.js', watchify.args))
+
+	// Optionally, you can apply transforms
+	// and other configuration options on the
+	// bundler just as you would with browserify
+	bundler.transform('brfs');
+
+	bundler.on('update', rebundle);
+
+	function rebundle() {
+		return bundler.bundle()
+		// log errors if they happen
+		.on('error', gutil.log.bind(gutil, 'Browserify Error'))
+		.pipe(source('bundle.js'))
+		.pipe(gulp.dest('./build/assets/js/'))
+		.pipe( reload({stream:true}));
+	}
+
+	return rebundle();
+});
+
 gulp.task('browser-sync', function() {
 	browserSync.init(['assets/css/*.css', 'assets/js/*.js', '*.html'], {
 		server: {
@@ -46,11 +73,11 @@ gulp.task('js', function () {
 		.pipe( reload({stream:true}));
 });
 
-gulp.task('build', [ 'base', 'less', 'images', 'html', 'js' ]);
+gulp.task('build', [ 'base', 'less', 'images', 'html', 'newjs' ]);
 
 gulp.task('watch', [ 'build', 'browser-sync' ], function () {
 	gulp.watch('./app/assets/less/*.less', [ 'less' ]);
-	gulp.watch('./app/assets/js/*.js', [ 'js' ]);
+	gulp.watch('./app/assets/js/*.js', [ 'newjs' ]);
 	gulp.watch('./app/assets/images/**/*', [ 'images' ]);
 	gulp.watch('./app/*.html').on('change', function (file) {
 		console.log('refreshing ' + file.path);

@@ -1,18 +1,22 @@
 {
   "devDependencies": {
-    "tiny-lr": "0.0.5",
-    "gulp": "^3.8.10",
-    "gulp-less": "^1.2.2",
-    "gulp-livereload": "^1.2.0",
-    "gulp-changed": "^0.2.1",
-    "gulp-concat": "^2.1.7",
+    "brfs": "^1.2.0",
+    "browser-sync": "^1.7.0",
+    "browserify": "^6.3.2",
+    "canvas-autoscale": "^2.0.0",
     "connect": "^2.14.1",
     "connect-livereload": "^0.3.2",
-    "browserify": "^3.32.0",
+    "gulp": "^3.8.10",
     "gulp-browserify": "^0.4.6",
-    "gulp-htmlhint": "0.0.9",
-    "gulp-plumber": "^0.6.4",
+    "gulp-changed": "^0.2.1",
+    "gulp-concat": "^2.1.7",
     "gulp-gh-pages": "^0.4.0",
-    "browser-sync": "^1.6.3"
+    "gulp-htmlhint": "0.0.9",
+    "gulp-less": "^1.2.2",
+    "gulp-livereload": "^1.2.0",
+    "gulp-plumber": "^0.6.4",
+    "tiny-lr": "0.0.5",
+    "vinyl-source-stream": "^1.0.0",
+    "watchify": "^2.1.1"
   }
 }
