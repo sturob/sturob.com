@@ -17,6 +17,13 @@ var inputs = {
 	mouseY: 0
 };
 
+
+window.context = canvas.getContext('2d');
+context.globalCompositeOperation = 'screen';
+// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn
+// hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity
+
+
 var w = canvas.width;
 var h = canvas.height;
 
@@ -26,19 +33,13 @@ var postCanvasSetup = function () {
 
 	inputs.aRanger = curry( range, [0, canvas.width] )
 	inputs.bRanger = curry( range, [0, canvas.height] )
+	context.globalCompositeOperation = 'screen';
 };
 
 
-window.myResize = _.compose( autoscale(canvas), postCanvasSetup );
+window.myResize = autoscale( canvas, {}, postCanvasSetup );
 myResize();
 window.onresize = myResize;
-
-
-
-var context = canvas.getContext('2d');
-context.globalCompositeOperation = 'screen';
-// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn
-// hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity
 
 
 
@@ -84,13 +85,12 @@ _.extend( Dot.prototype, {
 
 
 var dots = {
-	r: new Dot( curry(lerp, [ w * 0.64, w * 0.80 ]),
-	            curry(lerp, [ h * 0.70, h * 0.75 ])  ),
-	g: new Dot( curry(lerp, [ w * 0.70, w * 0.73 ]),
-	            curry(lerp, [ h * 0.60, h * 0.76 ])  ),
-	b: new Dot( curry(lerp, [ w * 0.78, w * 0.64 ]),
-	            curry(lerp, [ h * 0.90, h * 0.73 ])  ),
-
+	r: new Dot( function(n) { return lerp(w * 0.64, w * 0.80, n) },
+	            function(n) { return lerp(h * 0.70, h * 0.75, n) }),
+	g: new Dot( function(n) { return lerp(w * 0.70, w * 0.73, n) },
+	            function(n) { return lerp(h * 0.60, h * 0.76, n) }),
+	b: new Dot( function(n) { return lerp(w * 0.78, w * 0.64, n) },
+	            function(n) { return lerp(h * 0.90, h * 0.73, n) }),
 	collision: function() {
 		return dots.near(dots.r, dots.g, dots.b)
 	},
