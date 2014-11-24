@@ -1,13 +1,14 @@
 var TWEEN     = require('tween.js');
 var _         = require('underscore');
-var autoscale = require('canvas-autoscale');
+var fit = require('canvas-fit');
+
+
 var canvas = document.getElementById('bg');
 canvas.style.position = 'fixed'; // stop autoscale stomping position:fixed
 
 var id = function(a) { return a }
 
-// replace with backbone + skip draw on no change
-
+// replace with backbone?
 var inputs = {
 	set: function(a, b) {
 		this.a = this.aRanger(a);
@@ -19,15 +20,15 @@ var inputs = {
 	mouseY: 0
 };
 //
+
 var pixels = function(x) {
 	var ratio = window.devicePixelRatio || 1;
 	return ratio * x;
 }
 
-// window.addEventListener("orientationchange", function() {
-	// Announce the new orientation number
-	// alert(window.orientation);
-// }, false);
+window.addEventListener("orientationchange", function() {
+	Dimensions.set()
+}, false);
 
 window.context = canvas.getContext('2d');
 
@@ -44,27 +45,80 @@ var nextBlend = (function () {
 	}, 50);
 })();
 
-nextBlend();
 
+
+var Dimensions = {
+	set: function () {
+		var orientation = window.orientation || 0;
+
+		// if (orientation == 90 || orientation == 270) {
+			this.w = canvas.width;
+			this.h = canvas.height;
+		// }
+	}
+};
+
+Dimensions.set()
+
+
+var AccelOrGyro = {
+	receivingData: false, // window.DeviceOrientationEvent exists when no sensor
+	setAsAccel: function() {
+		inputs.aRanger = curry( range, [-20, 20] )
+		inputs.bRanger = curry( range, [ 10, 40] )
+		this.receivingData = true;
+	},
+	setAsGyro: function() {
+		inputs.aRanger = curry( range, [  2.5, -2.5 ] )
+		inputs.bRanger = curry( range, [ 2,  8 ] )
+		this.receivingData = true;
+	},
+	configureOnData: function (o) {
+		if (o.gamma != null) {
+			AccelOrGyro.setAsAccel()
+		} else if (o.y != null) {
+			AccelOrGyro.setAsGyro()
+		} else { // getting null values for motion - screw you guys...
+			gyro.stopTracking()
+		}
+	},
+	setup: function () {
+		gyro.frequency = 1000/60;
+		gyro.startTracking( function(o) {
+			if (! AccelOrGyro.receivingData) {
+				AccelOrGyro.configureOnData(o)
+			}
+			if (o.gamma) { // FIXME exact zero would fail
+				inputs.set( o.gamma, o.beta );
+			} else if (o.x) {
+				inputs.set( o.x, o.y );
+			}
+		})
+	}
+}
+
+// FIXME wait for onready() also ?
+setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
 
 var w = canvas.width;
 var h = canvas.height;
 
-var postCanvasSetup = function () {
+function postCanvasSetup (passedThru) {
 	w = canvas.width;
 	h = canvas.height;
 
-	// alert(w + ' ' + h)
+	if (! AccelOrGyro.receivingData) {
+		inputs.aRanger = curry( range, [0, w] )
+		inputs.bRanger = curry( range, [0, h] )
+	}
 
-	inputs.aRanger = curry( range, [0, canvas.width] )
-	inputs.bRanger = curry( range, [0, canvas.height] )
-	context.globalCompositeOperation = 'screen';
+	nextBlend();
 };
 
-
-window.myResize = autoscale( canvas, { auto: false }, postCanvasSetup );
+window.myResize = _.compose( fit(canvas, window, pixels(1)), postCanvasSetup )
 myResize();
-window.onresize = myResize;
+
+window.addEventListener('resize', myResize, false)
 
 
 
@@ -164,35 +218,7 @@ animate()
 
 ///
 
-var receivingDeviceMovement = false;  // window.DeviceOrientationEvent lies
 
-gyro.frequency = 1000/60;
-
-function setupGyro() {
-	gyro.startTracking( function (o) {
-		if (! receivingDeviceMovement) {
-			if (o.gamma != null) {
-				inputs.aRanger = curry( range, [-20, 20] )
-				inputs.bRanger = curry( range, [ 10, 40] )
-				receivingDeviceMovement = true;
-			} else if (o.y != null) {
-				inputs.aRanger = curry( range, [  2.5, -2.5 ] )
-				inputs.bRanger = curry( range, [ 2,  8 ] )
-				receivingDeviceMovement = true;
-			} else { // getting null values for motion - screw you guys...
-				gyro.stopTracking()
-			}
-		}
-
-		if (o.gamma) { // FIXME exact zero would fail
-			inputs.set( o.gamma, o.beta );
-		} else if (o.x) {
-			inputs.set( o.x, o.y );
-		}
-	})
-}
-
-setTimeout( setupGyro, 500 ); // magic number to wait for the gyro/accel to activate
 
 window.onmousemove = function (ev) {
 	inputs.mouseX = ev.clientX;
@@ -200,7 +226,7 @@ window.onmousemove = function (ev) {
 };
 
 setInterval(function() {
-	if (! receivingDeviceMovement) { // use mouse
+	if (! AccelOrGyro.receivingData) { // use mouse
 		inputs.set( inputs.mouseX, inputs.mouseY );
 	}
 	dots.update();
