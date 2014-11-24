@@ -10,10 +10,23 @@ var canvas = document.getElementById('bg');
 canvas.style.position = 'fixed'; // stop autoscale stomping position:fixed
 window.context = canvas.getContext('2d');
 
+
+
+var loadImage = function (src) {
+		var img = new Image();
+		img.src = src;
+		return img;
+}
+
+window.Images = {
+	r: loadImage('assets/images/me-red.png'),
+	g: loadImage('assets/images/me-green.png'),
+	b: loadImage('assets/images/me-blue.png')
+};
+
 // replace with backbone?
 var inputs = {
 	set: function(a, b) {
-		// var rotated =  false;
 		var angle = window.orientation;
 
 		if (! angle) { // no rotation (or not supported)
@@ -24,17 +37,12 @@ var inputs = {
 			this.a = this.aRanger(b);
 			this.b = this.bRanger(a);
 		}
-
 	},
 	aRanger: id,
 	bRanger: id,
 	mouseX: 0,
 	mouseY: 0
 };
-
-// window.addEventListener("orientationchange", function() {
-// 	Dimensions.set()
-// }, false);
 
 var AccelOrGyro = {
 	receivingData: false, // window.DeviceOrientationEvent exists when no sensor
@@ -126,9 +134,6 @@ window.addEventListener('resize', Dimensions.resize.bind(Dimensions), false)
 
 
 
-
-
-
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
 var dotSizeRange = [ pixels(15), pixels(120) ];
 var dotGrowthSpeed = 0.01;
@@ -206,9 +211,9 @@ function draw() {
 	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved()) {
 		context.clearRect(0, 0, canvas.width, canvas.height)
 		context
-		  .prop({ fillStyle: '#f88' }).circle(dots.r.x, dots.r.y, dots.r.pxSize).fill()
-		  .prop({ fillStyle: '#8f8' }).circle(dots.g.x, dots.g.y, dots.g.pxSize).fill()
-		  .prop({ fillStyle: '#88f' }).circle(dots.b.x, dots.b.y, dots.b.pxSize).fill()
+		  .prop({ fillStyle: '#f00' }).circle(dots.r.x, dots.r.y, dots.r.pxSize).fill()
+		  .prop({ fillStyle: '#0f0' }).circle(dots.g.x, dots.g.y, dots.g.pxSize).fill()
+		  .prop({ fillStyle: '#00f' }).circle(dots.b.x, dots.b.y, dots.b.pxSize).fill()
 		dots.r.savePosition()
 		dots.g.savePosition()
 		dots.b.savePosition()
@@ -222,21 +227,23 @@ function animate() {
 
 animate()
 
-///
 
 
+function watchMouse() {
+	window.onmousemove = function (ev) {
+		inputs.mouseX = ev.clientX;
+		inputs.mouseY = ev.clientY;
+	};
 
-window.onmousemove = function (ev) {
-	inputs.mouseX = ev.clientX;
-	inputs.mouseY = ev.clientY;
-};
+	setInterval(function() {
+		if (! AccelOrGyro.receivingData) { // use mouse
+			inputs.set( inputs.mouseX, inputs.mouseY );
+		}
+		dots.update();
+	}, 1000/60)
+}
 
-setInterval(function() {
-	if (! AccelOrGyro.receivingData) { // use mouse
-		inputs.set( inputs.mouseX, inputs.mouseY );
-	}
-	dots.update();
-}, 1000/60)
+watchMouse();
 
 
 // libs
