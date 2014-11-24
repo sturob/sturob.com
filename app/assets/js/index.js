@@ -91,6 +91,7 @@ var nextBlend = (function () {
 
 	return _.debounce(function () {
 		// console.log( blends[ blendN % blends.length ] )
+		sayWhat = ! sayWhat;
 		context.globalCompositeOperation = blends[ blendN++ % blends.length ];
 	}, 50);
 })();
@@ -205,15 +206,23 @@ var dots = {
 	}
 }
 
-
+window.sayWhat = true;
 
 function draw() {
 	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved()) {
 		context.clearRect(0, 0, canvas.width, canvas.height)
-		context
-		  .prop({ fillStyle: '#f00' }).circle(dots.r.x, dots.r.y, dots.r.pxSize).fill()
-		  .prop({ fillStyle: '#0f0' }).circle(dots.g.x, dots.g.y, dots.g.pxSize).fill()
-		  .prop({ fillStyle: '#00f' }).circle(dots.b.x, dots.b.y, dots.b.pxSize).fill()
+
+		if (sayWhat) {
+			context
+				.prop({ fillStyle: '#f00' }).circle(dots.r.x, dots.r.y, dots.r.pxSize).fill()
+				.prop({ fillStyle: '#0f0' }).circle(dots.g.x, dots.g.y, dots.g.pxSize).fill()
+				.prop({ fillStyle: '#00f' }).circle(dots.b.x, dots.b.y, dots.b.pxSize).fill()
+		} else {
+			context.drawImage(Images.r, dots.r.x, dots.r.y, dots.r.pxSize * 2, dots.r.pxSize * 2)
+			context.drawImage(Images.g, dots.g.x, dots.g.y, dots.g.pxSize * 2, dots.g.pxSize * 2)
+			context.drawImage(Images.b, dots.b.x, dots.b.y, dots.b.pxSize * 2, dots.b.pxSize * 2)
+		}
+
 		dots.r.savePosition()
 		dots.g.savePosition()
 		dots.b.savePosition()
