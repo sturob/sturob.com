@@ -13,8 +13,18 @@ window.context = canvas.getContext('2d');
 // replace with backbone?
 var inputs = {
 	set: function(a, b) {
-		this.a = this.aRanger(a);
-		this.b = this.bRanger(b);
+		// var rotated =  false;
+		var angle = window.orientation;
+
+		if (! angle) { // no rotation (or not supported)
+			this.a = this.aRanger(a);
+			this.b = this.bRanger(b);
+		} else {
+			debug.innerHTML = window.orientation;
+			this.a = this.aRanger(b);
+			this.b = this.bRanger(a);
+		}
+
 	},
 	aRanger: id,
 	bRanger: id,
@@ -86,10 +96,6 @@ var Dimensions = {
 		this.w = canvas.width;
 		this.h = canvas.height;
 
-		console.log(canvas)
-		console.log(this.w)
-		console.log(this.h)
-
 		if (! AccelOrGyro.receivingData) {
 			inputs.aRanger = curry( range, [0, this.w] )
 			inputs.bRanger = curry( range, [0, this.h] )
@@ -101,8 +107,8 @@ var Dimensions = {
 		var orientation = window.orientation || 0;
 
 		// if (orientation == 90 || orientation == 270) {
-			this.w = canvas.width;
-			this.h = canvas.height;
+			// this.w = canvas.width;
+			// this.h = canvas.height;
 		// }
 	}
 };
