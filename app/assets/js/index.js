@@ -2,7 +2,6 @@ var TWEEN     = require('tween.js');
 var _         = require('underscore');
 var autoscale = require('canvas-autoscale');
 var canvas = document.getElementById('bg');
-
 canvas.style.position = 'fixed'; // stop autoscale stomping position:fixed
 
 var id = function(a) { return a }
@@ -31,9 +30,19 @@ var pixels = function(x) {
 // }, false);
 
 window.context = canvas.getContext('2d');
-context.globalCompositeOperation = 'screen';
-// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn
-// hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity
+
+var blendN = 0;
+var blends = ('lighten|screen|normal|multiply|overlay|darken|color-dodge|' +
+'color-burn|hard-light|soft-light|difference|exclusion|hue|' +
+'saturation|color|luminosity').split('|')
+
+var nextBlend  = _.debounce( function () {
+
+	console.log( blends[ blendN % blends.length ] )
+	context.globalCompositeOperation = blends[ blendN++ % blends.length ];
+}, 50);
+
+nextBlend();
 
 
 var w = canvas.width;
@@ -75,6 +84,7 @@ _.extend( Dot.prototype, {
 			this.changeSizeBy = -dotGrowthSpeed;
 		} else if (this.size < 0) {
 			this.changeSizeBy = dotGrowthSpeed;
+			nextBlend();
 		}
 		this.size += this.changeSizeBy;
 		this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Quadratic.InOut(this.size) );
