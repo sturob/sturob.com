@@ -31,16 +31,18 @@ var pixels = function(x) {
 
 window.context = canvas.getContext('2d');
 
-var blendN = 0;
-var blends = ('lighten|screen|normal|multiply|overlay|darken|color-dodge|' +
-'color-burn|hard-light|soft-light|difference|exclusion|hue|' +
-'saturation|color|luminosity').split('|')
+var nextBlend = (function () {
+	var blendN = 0;
+	var blends = (
+		'lighten screen multiply overlay darken color-dodge color-burn hard-light ' +
+	 	'soft-light difference exclusion hue saturation color luminosity'
+	).split(' ')
 
-var nextBlend  = _.debounce( function () {
-
-	console.log( blends[ blendN % blends.length ] )
-	context.globalCompositeOperation = blends[ blendN++ % blends.length ];
-}, 50);
+	return _.debounce(function () {
+		// console.log( blends[ blendN % blends.length ] )
+		context.globalCompositeOperation = blends[ blendN++ % blends.length ];
+	}, 50);
+})();
 
 nextBlend();
 
