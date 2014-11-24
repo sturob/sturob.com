@@ -3,9 +3,12 @@ var _         = require('underscore');
 var autoscale = require('canvas-autoscale');
 var canvas = document.getElementById('bg');
 
+canvas.style.position = 'fixed'; // stop autoscale stomping position:fixed
+
 var id = function(a) { return a }
 
 // replace with backbone + skip draw on no change
+
 var inputs = {
 	set: function(a, b) {
 		this.a = this.aRanger(a);
@@ -16,7 +19,7 @@ var inputs = {
 	mouseX: 0,
 	mouseY: 0
 };
-
+//
 var pixels = function(x) {
 	var ratio = window.devicePixelRatio || 1;
 	return ratio * x;
@@ -48,7 +51,7 @@ var postCanvasSetup = function () {
 };
 
 
-window.myResize = autoscale( canvas, {}, postCanvasSetup );
+window.myResize = autoscale( canvas, { auto: false }, postCanvasSetup );
 myResize();
 window.onresize = myResize;
 

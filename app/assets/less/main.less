@@ -3,7 +3,6 @@
 // http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/
 html {
 	box-sizing: border-box;
-	overflow: hidden;
 }
 
 *, *:before, *:after {
@@ -30,6 +29,7 @@ body * { // avoid FontBoosting - patrickcatanzariti.com/2013/03/font-boosting
 }
 
 body {
+	// overflow-x: hidden;
   font-family: Prociono, serif; 
 }
 
@@ -37,6 +37,7 @@ body {
 	color: #222;
 	background: #fff;
 	font-size: 16px;
+	position: relative;
 }
 
 section {
@@ -46,7 +47,6 @@ section {
 }
 
 p {
-
 	line-height: 1.5em;
 	margin: 0 0 0.75em 0;
 }
@@ -75,6 +75,7 @@ a:hover {
 
 #stu {
 	// opacity: 0;
+	display: block;
 	position: fixed;
 	width: 100px;
 	height: 100px;
@@ -84,7 +85,7 @@ a:hover {
 }
 
 canvas {
-	position: absolute;
+	position: fixed;
 	top: 0; bottom: 0; right: 0; left: 0;
 	z-index: -1;
 }
