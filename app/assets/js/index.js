@@ -1,12 +1,14 @@
-var TWEEN     = require('tween.js');
-var _         = require('underscore');
-var fit = require('canvas-fit');
+var TWEEN = require('tween.js');
+var _     = require('underscore');
+var fit   = require('canvas-fit');
 
+var id = function(a) { return a };
+
+var pixels = function(x) { return (window.devicePixelRatio || 1) * x; }
 
 var canvas = document.getElementById('bg');
 canvas.style.position = 'fixed'; // stop autoscale stomping position:fixed
-
-var id = function(a) { return a }
+window.context = canvas.getContext('2d');
 
 // replace with backbone?
 var inputs = {
@@ -19,47 +21,11 @@ var inputs = {
 	mouseX: 0,
 	mouseY: 0
 };
-//
-
-var pixels = function(x) {
-	var ratio = window.devicePixelRatio || 1;
-	return ratio * x;
-}
-
-window.addEventListener("orientationchange", function() {
-	Dimensions.set()
-}, false);
-
-window.context = canvas.getContext('2d');
-
-var nextBlend = (function () {
-	var blendN = 0;
-	var blends = (
-		'lighten screen multiply overlay darken color-dodge color-burn hard-light ' +
-	 	'soft-light difference exclusion hue saturation color luminosity'
-	).split(' ')
-
-	return _.debounce(function () {
-		// console.log( blends[ blendN % blends.length ] )
-		context.globalCompositeOperation = blends[ blendN++ % blends.length ];
-	}, 50);
-})();
 
 
-
-var Dimensions = {
-	set: function () {
-		var orientation = window.orientation || 0;
-
-		// if (orientation == 90 || orientation == 270) {
-			this.w = canvas.width;
-			this.h = canvas.height;
-		// }
-	}
-};
-
-Dimensions.set()
-
+// window.addEventListener("orientationchange", function() {
+// 	Dimensions.set()
+// }, false);
 
 var AccelOrGyro = {
 	receivingData: false, // window.DeviceOrientationEvent exists when no sensor
@@ -100,25 +66,58 @@ var AccelOrGyro = {
 // FIXME wait for onready() also ?
 setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
 
-var w = canvas.width;
-var h = canvas.height;
 
-function postCanvasSetup (passedThru) {
-	w = canvas.width;
-	h = canvas.height;
 
-	if (! AccelOrGyro.receivingData) {
-		inputs.aRanger = curry( range, [0, w] )
-		inputs.bRanger = curry( range, [0, h] )
+var nextBlend = (function () {
+	var blendN = 0;
+	var blends = (
+		'lighten screen multiply overlay darken color-dodge color-burn hard-light ' +
+	 	'soft-light difference exclusion hue saturation color luminosity'
+	).split(' ')
+
+	return _.debounce(function () {
+		// console.log( blends[ blendN % blends.length ] )
+		context.globalCompositeOperation = blends[ blendN++ % blends.length ];
+	}, 50);
+})();
+
+
+var Dimensions = {
+	w: canvas.width,
+	h: canvas.height,
+
+	postCanvasSetup: function(passedThru) {
+		w = canvas.width;
+		h = canvas.height;
+
+		if (! AccelOrGyro.receivingData) {
+			inputs.aRanger = curry( range, [0, w] )
+			inputs.bRanger = curry( range, [0, h] )
+		}
+
+		nextBlend();
+	},
+	set: function () {
+		var orientation = window.orientation || 0;
+
+		// if (orientation == 90 || orientation == 270) {
+			this.w = canvas.width;
+			this.h = canvas.height;
+		// }
 	}
-
-	nextBlend();
 };
 
-window.myResize = _.compose( fit(canvas, window, pixels(1)), postCanvasSetup )
-myResize();
+Dimensions.resize = _.compose(
+	fit(canvas, window, pixels(1)),
+	Dimensions.postCanvasSetup.bind(Dimensions)
+);
 
-window.addEventListener('resize', myResize, false)
+Dimensions.resize()
+window.addEventListener('resize', Dimensions.resize.bind(Dimensions), false)
+
+
+
+
 
 
 
@@ -155,7 +154,6 @@ _.extend( Dot.prototype, {
 		this.savedSize = this.size;
 	},
 	hasMoved: function(x, y) {
-
 		var stationary = (within(1, this.savedX, this.x) &&
 		                  within(1, this.savedY, this.y) &&
 		                  within(0.01, this.savedSize, this.size))
