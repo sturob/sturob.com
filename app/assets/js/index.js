@@ -22,7 +22,6 @@ var inputs = {
 	mouseY: 0
 };
 
-
 // window.addEventListener("orientationchange", function() {
 // 	Dimensions.set()
 // }, false);
@@ -70,10 +69,7 @@ setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
 
 var nextBlend = (function () {
 	var blendN = 0;
-	var blends = (
-		'lighten screen multiply overlay darken color-dodge color-burn hard-light ' +
-	 	'soft-light difference exclusion hue saturation color luminosity'
-	).split(' ')
+	var blends = 'lighten screen multiply overlay darken color-dodge color-burn hard-light soft-light difference exclusion hue saturation color luminosity'.split(' ');
 
 	return _.debounce(function () {
 		// console.log( blends[ blendN % blends.length ] )
@@ -87,12 +83,16 @@ var Dimensions = {
 	h: canvas.height,
 
 	postCanvasSetup: function(passedThru) {
-		w = canvas.width;
-		h = canvas.height;
+		this.w = canvas.width;
+		this.h = canvas.height;
+
+		console.log(canvas)
+		console.log(this.w)
+		console.log(this.h)
 
 		if (! AccelOrGyro.receivingData) {
-			inputs.aRanger = curry( range, [0, w] )
-			inputs.bRanger = curry( range, [0, h] )
+			inputs.aRanger = curry( range, [0, this.w] )
+			inputs.bRanger = curry( range, [0, this.h] )
 		}
 
 		nextBlend();
@@ -109,7 +109,9 @@ var Dimensions = {
 
 Dimensions.resize = _.compose(
 	fit(canvas, window, pixels(1)),
-	Dimensions.postCanvasSetup.bind(Dimensions)
+	function(){
+		setTimeout(Dimensions.postCanvasSetup.bind(Dimensions), 10) // magic :/
+	}
 );
 
 Dimensions.resize()
@@ -163,12 +165,12 @@ _.extend( Dot.prototype, {
 
 
 var dots = {
-	r: new Dot( function(n) { return lerp(w * 0.64, w * 0.80, n) },
-	            function(n) { return lerp(h * 0.70, h * 0.75, n) }),
-	g: new Dot( function(n) { return lerp(w * 0.70, w * 0.73, n) },
-	            function(n) { return lerp(h * 0.60, h * 0.76, n) }),
-	b: new Dot( function(n) { return lerp(w * 0.78, w * 0.64, n) },
-	            function(n) { return lerp(h * 0.90, h * 0.73, n) }),
+	r: new Dot( function(n) { return lerp(Dimensions.w * 0.64, Dimensions.w * 0.80, n) },
+	            function(n) { return lerp(Dimensions.h * 0.70, Dimensions.h * 0.75, n) }),
+	g: new Dot( function(n) { return lerp(Dimensions.w * 0.70, Dimensions.w * 0.73, n) },
+	            function(n) { return lerp(Dimensions.h * 0.60, Dimensions.h * 0.76, n) }),
+	b: new Dot( function(n) { return lerp(Dimensions.w * 0.78, Dimensions.w * 0.64, n) },
+	            function(n) { return lerp(Dimensions.h * 0.90, Dimensions.h * 0.73, n) }),
 	collision: function() {
 		return dots.near(dots.r, dots.g, dots.b)
 	},
