@@ -1,6 +1,12 @@
 var TWEEN = require('tween.js');
 var _     = require('underscore');
 var fit   = require('canvas-fit');
+// var fastclick = require('fastclick');
+
+
+// window.addEventListener('load', function() {
+// 	fastclick.attach(document.body);
+// }, false);
 
 var id = function(a) { return a };
 
@@ -8,21 +14,30 @@ var pixels = function(x) { return (window.devicePixelRatio || 1) * x; }
 
 var canvas = document.getElementById('bg');
 canvas.style.position = 'fixed'; // stop autoscale stomping position:fixed
+
+document.addEventListener('click', function () {
+	State.nextBlend();
+});
+
+document.addEventListener('touchend', function () {
+	State.nextBlend();
+});
+
 window.context = canvas.getContext('2d');
 
 
-
-var loadImage = function (src) {
+window.Images = {
+	loadUrl: function (src) {
 		var img = new Image();
 		img.src = src;
 		return img;
+	}
 }
-
-window.Images = {
-	r: loadImage('assets/images/me-red.png'),
-	g: loadImage('assets/images/me-green.png'),
-	b: loadImage('assets/images/me-blue.png')
-};
+_.extend(Images, {
+	r: Images.loadUrl('assets/images/me-red.png'),
+	g: Images.loadUrl('assets/images/me-green.png'),
+	b: Images.loadUrl('assets/images/me-blue.png')
+});
 
 // replace with backbone?
 var inputs = {
@@ -33,7 +48,7 @@ var inputs = {
 			this.a = this.aRanger(a);
 			this.b = this.bRanger(b);
 		} else {
-			debug.innerHTML = window.orientation;
+			// debug.innerHTML = window.orientation;
 			this.a = this.aRanger(b);
 			this.b = this.bRanger(a);
 		}
@@ -83,53 +98,37 @@ var AccelOrGyro = {
 // FIXME wait for onready() also ?
 setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
 
-
-
-var nextBlend = (function () {
-	var blendN = 0;
-	var blends = 'lighten screen multiply overlay darken color-dodge color-burn hard-light soft-light difference exclusion hue saturation color luminosity'.split(' ');
-
-	return _.debounce(function () {
-		// console.log( blends[ blendN % blends.length ] )
-		// sayWhat = ! sayWhat;
-		context.globalCompositeOperation = blends[ blendN++ % blends.length ];
-	}, 50);
-})();
+window.State = {
+	blends: ('lighten screen multiply overlay darken color-dodge color-burn hard-light soft-light '+
+	         'difference exclusion hue saturation color luminosity').split(' '),
+	blendN: 0,
+	nextBlend: function () {
+		context.globalCompositeOperation = State.blends[ State.blendN++ % State.blends.length ];
+		State.redraw = true;
+	}
+}
 
 
 var Dimensions = {
 	w: canvas.width,
 	h: canvas.height,
-
 	postCanvasSetup: function(passedThru) {
 		this.w = canvas.width;
 		this.h = canvas.height;
-
 		if (! AccelOrGyro.receivingData) {
 			inputs.aRanger = curry( range, [0, this.w] )
 			inputs.bRanger = curry( range, [0, this.h] )
 		}
-
-		nextBlend();
-	},
-	set: function () {
-		var orientation = window.orientation || 0;
-
-		// if (orientation == 90 || orientation == 270) {
-			// this.w = canvas.width;
-			// this.h = canvas.height;
-		// }
+		State.nextBlend();
 	}
 };
-
 Dimensions.resize = _.compose(
 	fit(canvas, window, pixels(1)),
 	function(){
 		setTimeout(Dimensions.postCanvasSetup.bind(Dimensions), 10) // magic :/
 	}
 );
-
-Dimensions.resize()
+Dimensions.resize();
 window.addEventListener('resize', Dimensions.resize.bind(Dimensions), false)
 
 
@@ -153,7 +152,7 @@ _.extend( Dot.prototype, {
 			this.changeSizeBy = -dotGrowthSpeed;
 		} else if (this.size < 0) {
 			this.changeSizeBy = dotGrowthSpeed;
-			nextBlend();
+			State.nextBlend();
 		}
 		this.size += this.changeSizeBy;
 		this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Quadratic.InOut(this.size) );
@@ -194,11 +193,11 @@ var dots = {
 		dots.g.reposition(x, y)
 		dots.b.reposition(x, y)
 
-		if (dots.collision()) {
-			dots.r.bumpSize()
-			dots.g.bumpSize()
-			dots.b.bumpSize()
-		}
+		// if (dots.collision()) {
+		// 	dots.r.bumpSize()
+		// 	dots.g.bumpSize()
+		// 	dots.b.bumpSize()
+		// }
 	},
 	near: function(a, b, c) {
 		return within(pixels(10), a.x, b.x ) && within(pixels(10), a.x, c.x ) &&
@@ -209,7 +208,7 @@ var dots = {
 window.sayWhat = false;
 
 function draw() {
-	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved()) {
+	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved() || State.redraw) {
 		context.clearRect(0, 0, canvas.width, canvas.height)
 
 		var radius = { r: dots.r.pxSize, g: dots.g.pxSize, b: dots.b.pxSize };
@@ -229,6 +228,7 @@ function draw() {
 		dots.r.savePosition()
 		dots.g.savePosition()
 		dots.b.savePosition()
+		State.redraw = false;
 	}
 }
 
