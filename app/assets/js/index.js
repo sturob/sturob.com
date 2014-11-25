@@ -91,7 +91,7 @@ var nextBlend = (function () {
 
 	return _.debounce(function () {
 		// console.log( blends[ blendN % blends.length ] )
-		sayWhat = ! sayWhat;
+		// sayWhat = ! sayWhat;
 		context.globalCompositeOperation = blends[ blendN++ % blends.length ];
 	}, 50);
 })();
@@ -136,7 +136,7 @@ window.addEventListener('resize', Dimensions.resize.bind(Dimensions), false)
 
 
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
-var dotSizeRange = [ pixels(15), pixels(120) ];
+var dotSizeRange = [ pixels(100), pixels(120) ];
 var dotGrowthSpeed = 0.01;
 
 function Dot (scaleX, scaleY) {
@@ -206,21 +206,24 @@ var dots = {
 	}
 }
 
-window.sayWhat = true;
+window.sayWhat = false;
 
 function draw() {
 	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved()) {
 		context.clearRect(0, 0, canvas.width, canvas.height)
 
+		var radius = { r: dots.r.pxSize, g: dots.g.pxSize, b: dots.b.pxSize };
+		var width =  { r: dots.r.pxSize * 2, g: dots.g.pxSize * 2, b: dots.b.pxSize * 2 };
+
 		if (sayWhat) {
 			context
-				.prop({ fillStyle: '#f00' }).circle(dots.r.x, dots.r.y, dots.r.pxSize).fill()
-				.prop({ fillStyle: '#0f0' }).circle(dots.g.x, dots.g.y, dots.g.pxSize).fill()
-				.prop({ fillStyle: '#00f' }).circle(dots.b.x, dots.b.y, dots.b.pxSize).fill()
+				.prop({ fillStyle: '#f00' }).circle(dots.r.x, dots.r.y, radius.r).fill()
+				.prop({ fillStyle: '#0f0' }).circle(dots.g.x, dots.g.y, radius.g).fill()
+				.prop({ fillStyle: '#00f' }).circle(dots.b.x, dots.b.y, radius.b).fill()
 		} else {
-			context.drawImage(Images.r, dots.r.x, dots.r.y, dots.r.pxSize * 2, dots.r.pxSize * 2)
-			context.drawImage(Images.g, dots.g.x, dots.g.y, dots.g.pxSize * 2, dots.g.pxSize * 2)
-			context.drawImage(Images.b, dots.b.x, dots.b.y, dots.b.pxSize * 2, dots.b.pxSize * 2)
+			context.drawImage(Images.r, dots.r.x - radius.r, dots.r.y - radius.r, width.r, width.r)
+			context.drawImage(Images.g, dots.g.x - radius.g, dots.g.y - radius.g, width.g, width.g)
+			context.drawImage(Images.b, dots.b.x - radius.b, dots.b.y - radius.b, width.b, width.b)
 		}
 
 		dots.r.savePosition()
