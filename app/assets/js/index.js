@@ -26,9 +26,9 @@ window.Images = {
 	}
 }
 _.extend(Images, {
-	r: Images.loadUrl('assets/images/circle-red.png'),
-	g: Images.loadUrl('assets/images/circle-green.png'),
-	b: Images.loadUrl('assets/images/circle-blue.png')
+	r: Images.loadUrl('assets/images/me-red.png'),
+	g: Images.loadUrl('assets/images/me-green.png'),
+	b: Images.loadUrl('assets/images/me-blue.png')
 });
 
 // replace with backbone?
@@ -91,13 +91,24 @@ var AccelOrGyro = {
 setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
 
 window.State = {
-	drawCircles: false,
-	blends: ('lighten screen multiply overlay darken color-dodge color-burn hard-light soft-light '+
-	         'difference exclusion hue saturation color luminosity').split(' '),
+	drawCircles: true,
+	blends: ('screen overlay lighten color-dodge color-burn difference exclusion hue hard-light soft-light saturation color luminosity multiply darken').split(' '),
 	blendN: 0,
 	nextBlend: function () {
-		context.globalCompositeOperation = State.blends[ State.blendN++ % State.blends.length ];
+		State.blendN = (State.blendN + 1) % State.blends.length;
+		context.globalCompositeOperation = this.currentBlend()
+		console.log( this.currentBlend() )
 		State.redraw = true;
+	},
+	prevBlend: function (ev) {
+		if (ev.keyCode != 37) return;
+		State.blendN = (State.blendN - 1) % State.blends.length;
+		context.globalCompositeOperation = this.currentBlend()
+		console.log( this.currentBlend() )
+		State.redraw = true;
+	},
+	currentBlend: function () {
+		return State.blends[ State.blendN ]
 	}
 }
 
@@ -112,7 +123,7 @@ var Dimensions = {
 			inputs.aRanger = curry( range, [0, this.w] )
 			inputs.bRanger = curry( range, [0, this.h] )
 		}
-		State.nextBlend();
+		// State.end();
 	}
 };
 Dimensions.resize = _.compose(
@@ -126,6 +137,7 @@ Dimensions.resize();
 
 
 document.addEventListener('click', State.nextBlend.bind(State));
+document.addEventListener('keydown', State.prevBlend.bind(State));
 document.addEventListener('touchend', State.nextBlend.bind(State));
 
 window.addEventListener('resize', Dimensions.resize.bind(Dimensions), false)
