@@ -15,14 +15,6 @@ var pixels = function(x) { return (window.devicePixelRatio || 1) * x; }
 var canvas = document.getElementById('bg');
 canvas.style.position = 'fixed'; // stop autoscale stomping position:fixed
 
-document.addEventListener('click', function () {
-	State.nextBlend();
-});
-
-document.addEventListener('touchend', function () {
-	State.nextBlend();
-});
-
 window.context = canvas.getContext('2d');
 
 
@@ -34,9 +26,9 @@ window.Images = {
 	}
 }
 _.extend(Images, {
-	r: Images.loadUrl('assets/images/me-red.png'),
-	g: Images.loadUrl('assets/images/me-green.png'),
-	b: Images.loadUrl('assets/images/me-blue.png')
+	r: Images.loadUrl('assets/images/circle-red.png'),
+	g: Images.loadUrl('assets/images/circle-green.png'),
+	b: Images.loadUrl('assets/images/circle-blue.png')
 });
 
 // replace with backbone?
@@ -99,6 +91,7 @@ var AccelOrGyro = {
 setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
 
 window.State = {
+	drawCircles: false,
 	blends: ('lighten screen multiply overlay darken color-dodge color-burn hard-light soft-light '+
 	         'difference exclusion hue saturation color luminosity').split(' '),
 	blendN: 0,
@@ -129,6 +122,12 @@ Dimensions.resize = _.compose(
 	}
 );
 Dimensions.resize();
+
+
+
+document.addEventListener('click', State.nextBlend.bind(State));
+document.addEventListener('touchend', State.nextBlend.bind(State));
+
 window.addEventListener('resize', Dimensions.resize.bind(Dimensions), false)
 
 
@@ -199,13 +198,13 @@ var dots = {
 		// 	dots.b.bumpSize()
 		// }
 	},
-	near: function(a, b, c) {
-		return within(pixels(10), a.x, b.x ) && within(pixels(10), a.x, c.x ) &&
-		       within(pixels(10), a.y, b.y ) && within(pixels(10), a.y, c.y )
-	}
+	// near: function(a, b, c) {
+	// 	return within(pixels(10), a.x, b.x ) && within(pixels(10), a.x, c.x ) &&
+	// 	       within(pixels(10), a.y, b.y ) && within(pixels(10), a.y, c.y )
+	// }
 }
 
-window.sayWhat = false;
+
 
 function draw() {
 	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved() || State.redraw) {
@@ -214,7 +213,7 @@ function draw() {
 		var radius = { r: dots.r.pxSize, g: dots.g.pxSize, b: dots.b.pxSize };
 		var width =  { r: dots.r.pxSize * 2, g: dots.g.pxSize * 2, b: dots.b.pxSize * 2 };
 
-		if (sayWhat) {
+		if (State.drawCircles) {
 			context
 				.prop({ fillStyle: '#f00' }).circle(dots.r.x, dots.r.y, radius.r).fill()
 				.prop({ fillStyle: '#0f0' }).circle(dots.g.x, dots.g.y, radius.g).fill()
