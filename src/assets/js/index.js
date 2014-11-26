@@ -11,17 +11,25 @@ canvas.style.position = 'fixed'; // stop autoscale stomping position:fixed
 
 window.context = canvas.getContext('2d');
 
+
+
 window.Images = {
-	loadUrl: function (src) {
+	loadUrl: function (src, done) {
 		var img = new Image();
 		img.src = src;
+		img.onload = done;
 		return img;
+	},
+	onImagesLoaded: function () {
+		animate();
 	}
 }
+
+var allImagesLoaded = _.after(3, Images.onImagesLoaded)
 _.extend(Images, {
-	r: Images.loadUrl('assets/images/me-red.png'),
-	g: Images.loadUrl('assets/images/me-green.png'),
-	b: Images.loadUrl('assets/images/me-blue.png')
+	r: Images.loadUrl('assets/images/me-red.png', allImagesLoaded),
+	g: Images.loadUrl('assets/images/me-green.png', allImagesLoaded),
+	b: Images.loadUrl('assets/images/me-blue.png', allImagesLoaded)
 });
 
 // replace with backbone?
@@ -48,12 +56,12 @@ var AccelOrGyro = {
 	receivingData: false, // window.DeviceOrientationEvent exists when no sensor
 	setAsAccel: function() {
 		inputs.aRanger = curry( range, [-20, 20] )
-		inputs.bRanger = curry( range, [ 10, 40] )
+		inputs.bRanger = curry( range, [ 0, 50] )
 		this.receivingData = true;
 	},
 	setAsGyro: function() {
-		inputs.aRanger = curry( range, [  2.5, -2.5 ] )
-		inputs.bRanger = curry( range, [ 2,  8 ] )
+		inputs.aRanger = curry( range, [  3.5, -3.5 ] )
+		inputs.bRanger = curry( range, [ 0,  8 ] )
 		this.receivingData = true;
 	},
 	configureOnData: function (o) {
@@ -80,24 +88,22 @@ var AccelOrGyro = {
 	}
 }
 
-// FIXME wait for onready() also ?
-setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
-
 window.State = {
-	drawCircles: true,
-	blends: ('screen overlay lighten color-dodge color-burn difference exclusion hue hard-light soft-light saturation color luminosity multiply darken').split(' '),
+	drawCircles: false,
+	blends: ('screen overlay lighten color-dodge color-burn difference exclusion hue hard-light soft-light saturation color luminosity').split(' '),
 	blendN: 0,
 	nextBlend: function () {
 		State.blendN = (State.blendN + 1) % State.blends.length;
-		context.globalCompositeOperation = this.currentBlend()
-		console.log( this.currentBlend() )
-		State.redraw = true;
+		this.setBlend();
 	},
 	prevBlend: function (ev) {
 		if (ev.keyCode != 37) return;
 		State.blendN = (State.blendN - 1) % State.blends.length;
-		context.globalCompositeOperation = this.currentBlend()
-		console.log( this.currentBlend() )
+		this.setBlend();
+	},
+	setBlend: function () {
+		console.log( this.currentBlend() );
+		context.globalCompositeOperation = this.currentBlend();
 		State.redraw = true;
 	},
 	currentBlend: function () {
@@ -125,21 +131,27 @@ Dimensions.resize = _.compose(
 		setTimeout(Dimensions.postCanvasSetup.bind(Dimensions), 10) // magic :/
 	}
 );
+
+
+
+window.addEventListener('load', function () {
+	State.setBlend();
+	document.addEventListener('click', State.nextBlend.bind(State));
+	document.addEventListener('keydown', State.prevBlend.bind(State));
+	document.addEventListener('touchend', State.nextBlend.bind(State));
+	window.addEventListener('resize', Dimensions.resize.bind(Dimensions), false);
+
+	// FIXME wait for onready() also ?
+	setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
+	watchMouse();
+})
+
 Dimensions.resize();
 
 
 
-document.addEventListener('click', State.nextBlend.bind(State));
-document.addEventListener('keydown', State.prevBlend.bind(State));
-document.addEventListener('touchend', State.nextBlend.bind(State));
-
-window.addEventListener('resize', Dimensions.resize.bind(Dimensions), false)
-
-
-
-
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
-var dotSizeRange = [ pixels(100), pixels(120) ];
+var dotSizeRange = [ pixels(80), pixels(120) ];
 var dotGrowthSpeed = 0.01;
 
 function Dot (scaleX, scaleY) {
@@ -162,8 +174,8 @@ _.extend( Dot.prototype, {
 		this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Quadratic.InOut(this.size) );
 	},
 	reposition: function(x, y) { // [0-1, 0-1]
-		this.x = Math.round( this.scaleX(x) )
-		this.y = Math.round( this.scaleY(y) )
+		this.x = Math.round( this.scaleX(x) + pixels(50) )
+		this.y = Math.round( this.scaleY(y) + pixels(50) )
 	},
 	savePosition: function() {
 		this.savedX = this.x;
@@ -181,11 +193,11 @@ _.extend( Dot.prototype, {
 
 var dots = {
 	r: new Dot( function(n) { return lerp(Dimensions.w * 0.64, Dimensions.w * 0.80, n) },
-	            function(n) { return lerp(Dimensions.h * 0.70, Dimensions.h * 0.75, n) }),
-	g: new Dot( function(n) { return lerp(Dimensions.w * 0.70, Dimensions.w * 0.73, n) },
-	            function(n) { return lerp(Dimensions.h * 0.60, Dimensions.h * 0.76, n) }),
-	b: new Dot( function(n) { return lerp(Dimensions.w * 0.78, Dimensions.w * 0.64, n) },
-	            function(n) { return lerp(Dimensions.h * 0.90, Dimensions.h * 0.73, n) }),
+	            function(n) { return lerp(Dimensions.h * 0.80, Dimensions.h * 0.70, n) }),
+	g: new Dot( function(n) { return lerp(Dimensions.w * 0.72, Dimensions.w * 0.72, n) },
+	            function(n) { return lerp(Dimensions.h * 0.70, Dimensions.h * 0.8, n) }),
+	b: new Dot( function(n) { return lerp(Dimensions.w * 0.80, Dimensions.w * 0.64, n) },
+	            function(n) { return lerp(Dimensions.h * 0.80, Dimensions.h * 0.70, n) }),
 	collision: function() {
 		return dots.near(dots.r, dots.g, dots.b)
 	},
@@ -241,8 +253,6 @@ function animate() {
 	draw()
 }
 
-animate()
-
 
 
 function watchMouse() {
@@ -259,7 +269,6 @@ function watchMouse() {
 	}, 1000/60)
 }
 
-watchMouse();
 
 
 // libs
