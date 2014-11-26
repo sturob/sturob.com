@@ -1,15 +1,49 @@
-var TWEEN     = require('tween.js');
-var _         = require('underscore');
-var autoscale = require('canvas-autoscale');
+var TWEEN = require('tween.js');
+var _     = require('underscore');
+var fit   = require('canvas-fit');
+// var fastclick = require('fastclick');
+
+
+// window.addEventListener('load', function() {
+// 	fastclick.attach(document.body);
+// }, false);
+
+var id = function(a) { return a };
+
+var pixels = function(x) { return (window.devicePixelRatio || 1) * x; }
+
 var canvas = document.getElementById('bg');
+canvas.style.position = 'fixed'; // stop autoscale stomping position:fixed
 
-var id = function(a) { return a }
+window.context = canvas.getContext('2d');
 
-// replace with backbone + skip draw on no change
+
+window.Images = {
+	loadUrl: function (src) {
+		var img = new Image();
+		img.src = src;
+		return img;
+	}
+}
+_.extend(Images, {
+	r: Images.loadUrl('assets/images/me-red.png'),
+	g: Images.loadUrl('assets/images/me-green.png'),
+	b: Images.loadUrl('assets/images/me-blue.png')
+});
+
+// replace with backbone?
 var inputs = {
 	set: function(a, b) {
-		this.a = this.aRanger(a);
-		this.b = this.bRanger(b);
+		var angle = window.orientation;
+
+		if (! angle) { // no rotation (or not supported)
+			this.a = this.aRanger(a);
+			this.b = this.bRanger(b);
+		} else {
+			// debug.innerHTML = window.orientation;
+			this.a = this.aRanger(b);
+			this.b = this.bRanger(a);
+		}
 	},
 	aRanger: id,
 	bRanger: id,
@@ -17,33 +51,102 @@ var inputs = {
 	mouseY: 0
 };
 
-var w = canvas.width;
-var h = canvas.height;
+var AccelOrGyro = {
+	receivingData: false, // window.DeviceOrientationEvent exists when no sensor
+	setAsAccel: function() {
+		inputs.aRanger = curry( range, [-20, 20] )
+		inputs.bRanger = curry( range, [ 10, 40] )
+		this.receivingData = true;
+	},
+	setAsGyro: function() {
+		inputs.aRanger = curry( range, [  2.5, -2.5 ] )
+		inputs.bRanger = curry( range, [ 2,  8 ] )
+		this.receivingData = true;
+	},
+	configureOnData: function (o) {
+		if (o.gamma != null) {
+			AccelOrGyro.setAsAccel()
+		} else if (o.y != null) {
+			AccelOrGyro.setAsGyro()
+		} else { // getting null values for motion - screw you guys...
+			gyro.stopTracking()
+		}
+	},
+	setup: function () {
+		gyro.frequency = 1000/60;
+		gyro.startTracking( function(o) {
+			if (! AccelOrGyro.receivingData) {
+				AccelOrGyro.configureOnData(o)
+			}
+			if (o.gamma) { // FIXME exact zero would fail
+				inputs.set( o.gamma, o.beta );
+			} else if (o.x) {
+				inputs.set( o.x, o.y );
+			}
+		})
+	}
+}
 
-var postCanvasSetup = function () {
-	w = canvas.width;
-	h = canvas.height;
+// FIXME wait for onready() also ?
+setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
 
-	inputs.aRanger = curry( range, [0, canvas.width] )
-	inputs.bRanger = curry( range, [0, canvas.height] )
+window.State = {
+	drawCircles: false,
+	blends: ('screen overlay lighten color-dodge color-burn difference exclusion hue hard-light soft-light saturation color luminosity multiply darken').split(' '),
+	blendN: 0,
+	nextBlend: function () {
+		State.blendN = (State.blendN + 1) % State.blends.length;
+		context.globalCompositeOperation = this.currentBlend()
+		console.log( this.currentBlend() )
+		State.redraw = true;
+	},
+	prevBlend: function (ev) {
+		if (ev.keyCode != 37) return;
+		State.blendN = (State.blendN - 1) % State.blends.length;
+		context.globalCompositeOperation = this.currentBlend()
+		console.log( this.currentBlend() )
+		State.redraw = true;
+	},
+	currentBlend: function () {
+		return State.blends[ State.blendN ]
+	}
+}
+
+
+var Dimensions = {
+	w: canvas.width,
+	h: canvas.height,
+	postCanvasSetup: function(passedThru) {
+		this.w = canvas.width;
+		this.h = canvas.height;
+		if (! AccelOrGyro.receivingData) {
+			inputs.aRanger = curry( range, [0, this.w] )
+			inputs.bRanger = curry( range, [0, this.h] )
+		}
+		// State.end();
+	}
 };
+Dimensions.resize = _.compose(
+	fit(canvas, window, pixels(1)),
+	function(){
+		setTimeout(Dimensions.postCanvasSetup.bind(Dimensions), 10) // magic :/
+	}
+);
+Dimensions.resize();
 
 
-window.myResize = _.compose( autoscale(canvas), postCanvasSetup );
-myResize();
-window.onresize = myResize;
 
+document.addEventListener('click', State.nextBlend.bind(State));
+document.addEventListener('keydown', State.prevBlend.bind(State));
+document.addEventListener('touchend', State.nextBlend.bind(State));
 
+window.addEventListener('resize', Dimensions.resize.bind(Dimensions), false)
 
-var context = canvas.getContext('2d');
-context.globalCompositeOperation = 'screen';
-// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn
-// hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity
 
 
 
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
-var dotSizeRange = [ 15 * window.devicePixelRatio , 120 * window.devicePixelRatio ];
+var dotSizeRange = [ pixels(100), pixels(120) ];
 var dotGrowthSpeed = 0.01;
 
 function Dot (scaleX, scaleY) {
@@ -60,6 +163,7 @@ _.extend( Dot.prototype, {
 			this.changeSizeBy = -dotGrowthSpeed;
 		} else if (this.size < 0) {
 			this.changeSizeBy = dotGrowthSpeed;
+			State.nextBlend();
 		}
 		this.size += this.changeSizeBy;
 		this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Quadratic.InOut(this.size) );
@@ -74,7 +178,6 @@ _.extend( Dot.prototype, {
 		this.savedSize = this.size;
 	},
 	hasMoved: function(x, y) {
-
 		var stationary = (within(1, this.savedX, this.x) &&
 		                  within(1, this.savedY, this.y) &&
 		                  within(0.01, this.savedSize, this.size))
@@ -84,13 +187,12 @@ _.extend( Dot.prototype, {
 
 
 var dots = {
-	r: new Dot( curry(lerp, [ w * 0.64, w * 0.80 ]),
-	            curry(lerp, [ h * 0.70, h * 0.75 ])  ),
-	g: new Dot( curry(lerp, [ w * 0.70, w * 0.73 ]),
-	            curry(lerp, [ h * 0.60, h * 0.76 ])  ),
-	b: new Dot( curry(lerp, [ w * 0.78, w * 0.64 ]),
-	            curry(lerp, [ h * 0.90, h * 0.73 ])  ),
-
+	r: new Dot( function(n) { return lerp(Dimensions.w * 0.64, Dimensions.w * 0.80, n) },
+	            function(n) { return lerp(Dimensions.h * 0.70, Dimensions.h * 0.75, n) }),
+	g: new Dot( function(n) { return lerp(Dimensions.w * 0.70, Dimensions.w * 0.73, n) },
+	            function(n) { return lerp(Dimensions.h * 0.60, Dimensions.h * 0.76, n) }),
+	b: new Dot( function(n) { return lerp(Dimensions.w * 0.78, Dimensions.w * 0.64, n) },
+	            function(n) { return lerp(Dimensions.h * 0.90, Dimensions.h * 0.73, n) }),
 	collision: function() {
 		return dots.near(dots.r, dots.g, dots.b)
 	},
@@ -102,30 +204,42 @@ var dots = {
 		dots.g.reposition(x, y)
 		dots.b.reposition(x, y)
 
-		if (dots.collision()) {
-			dots.r.bumpSize()
-			dots.g.bumpSize()
-			dots.b.bumpSize()
-		}
+		// if (dots.collision()) {
+		// 	dots.r.bumpSize()
+		// 	dots.g.bumpSize()
+		// 	dots.b.bumpSize()
+		// }
 	},
-	near: function(a, b, c) {
-		return within(10, a.x, b.x ) && within(10, a.x, c.x ) &&
-		       within(10, a.y, b.y ) && within(10, a.y, c.y )
-	}
+	// near: function(a, b, c) {
+	// 	return within(pixels(10), a.x, b.x ) && within(pixels(10), a.x, c.x ) &&
+	// 	       within(pixels(10), a.y, b.y ) && within(pixels(10), a.y, c.y )
+	// }
 }
 
 
 
 function draw() {
-	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved()) {
+	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved() || State.redraw) {
 		context.clearRect(0, 0, canvas.width, canvas.height)
-		context
-		  .prop({ fillStyle: '#f88' }).circle(dots.r.x, dots.r.y, dots.r.pxSize).fill()
-		  .prop({ fillStyle: '#8f8' }).circle(dots.g.x, dots.g.y, dots.g.pxSize).fill()
-		  .prop({ fillStyle: '#88f' }).circle(dots.b.x, dots.b.y, dots.b.pxSize).fill()
+
+		var radius = { r: dots.r.pxSize, g: dots.g.pxSize, b: dots.b.pxSize };
+		var width =  { r: dots.r.pxSize * 2, g: dots.g.pxSize * 2, b: dots.b.pxSize * 2 };
+
+		if (State.drawCircles) {
+			context
+				.prop({ fillStyle: '#f00' }).circle(dots.r.x, dots.r.y, radius.r).fill()
+				.prop({ fillStyle: '#0f0' }).circle(dots.g.x, dots.g.y, radius.g).fill()
+				.prop({ fillStyle: '#00f' }).circle(dots.b.x, dots.b.y, radius.b).fill()
+		} else {
+			context.drawImage(Images.r, dots.r.x - radius.r, dots.r.y - radius.r, width.r, width.r)
+			context.drawImage(Images.g, dots.g.x - radius.g, dots.g.y - radius.g, width.g, width.g)
+			context.drawImage(Images.b, dots.b.x - radius.b, dots.b.y - radius.b, width.b, width.b)
+		}
+
 		dots.r.savePosition()
 		dots.g.savePosition()
 		dots.b.savePosition()
+		State.redraw = false;
 	}
 }
 
@@ -136,49 +250,23 @@ function animate() {
 
 animate()
 
-///
 
-var receivingDeviceMovement = false;  // window.DeviceOrientationEvent lies
 
-gyro.frequency = 1000/60;
+function watchMouse() {
+	window.onmousemove = function (ev) {
+		inputs.mouseX = ev.clientX;
+		inputs.mouseY = ev.clientY;
+	};
 
-function setupGyro() {
-	gyro.startTracking( function (o) {
-		if (! receivingDeviceMovement) {
-			if (o.gamma != null) {
-				inputs.aRanger = curry( range, [-20, 20] )
-				inputs.bRanger = curry( range, [ 10, 40] )
-				receivingDeviceMovement = true;
-			} else if (o.y != null) {
-				inputs.aRanger = curry( range, [  2.5, -2.5 ] )
-				inputs.bRanger = curry( range, [ 2,  8 ] )
-				receivingDeviceMovement = true;
-			} else { // getting null values for motion - screw you guys...
-				gyro.stopTracking()
-			}
+	setInterval(function() {
+		if (! AccelOrGyro.receivingData) { // use mouse
+			inputs.set( inputs.mouseX, inputs.mouseY );
 		}
-
-		if (o.gamma) { // FIXME exact zero would fail
-			inputs.set( o.gamma, o.beta );
-		} else if (o.x) {
-			inputs.set( o.x, o.y );
-		}
-	})
+		dots.update();
+	}, 1000/60)
 }
 
-setTimeout( setupGyro, 500 ); // magic number to wait for the gyro/accel to activate
-
-window.onmousemove = function (ev) {
-	inputs.mouseX = ev.clientX;
-	inputs.mouseY = ev.clientY;
-};
-
-setInterval(function() {
-	if (! receivingDeviceMovement) { // use mouse
-		inputs.set( inputs.mouseX, inputs.mouseY );
-	}
-	dots.update();
-}, 1000/60)
+watchMouse();
 
 
 // libs

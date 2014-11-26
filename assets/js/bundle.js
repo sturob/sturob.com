@@ -1,16 +1,50 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./app/assets/js/index.js":[function(require,module,exports){
-var TWEEN     = require('tween.js');
-var _         = require('underscore');
-var autoscale = require('canvas-autoscale');
+var TWEEN = require('tween.js');
+var _     = require('underscore');
+var fit   = require('canvas-fit');
+// var fastclick = require('fastclick');
+
+
+// window.addEventListener('load', function() {
+// 	fastclick.attach(document.body);
+// }, false);
+
+var id = function(a) { return a };
+
+var pixels = function(x) { return (window.devicePixelRatio || 1) * x; }
+
 var canvas = document.getElementById('bg');
+canvas.style.position = 'fixed'; // stop autoscale stomping position:fixed
 
-var id = function(a) { return a }
+window.context = canvas.getContext('2d');
 
-// replace with backbone + skip draw on no change
+
+window.Images = {
+	loadUrl: function (src) {
+		var img = new Image();
+		img.src = src;
+		return img;
+	}
+}
+_.extend(Images, {
+	r: Images.loadUrl('assets/images/me-red.png'),
+	g: Images.loadUrl('assets/images/me-green.png'),
+	b: Images.loadUrl('assets/images/me-blue.png')
+});
+
+// replace with backbone?
 var inputs = {
 	set: function(a, b) {
-		this.a = this.aRanger(a);
-		this.b = this.bRanger(b);
+		var angle = window.orientation;
+
+		if (! angle) { // no rotation (or not supported)
+			this.a = this.aRanger(a);
+			this.b = this.bRanger(b);
+		} else {
+			// debug.innerHTML = window.orientation;
+			this.a = this.aRanger(b);
+			this.b = this.bRanger(a);
+		}
 	},
 	aRanger: id,
 	bRanger: id,
@@ -18,45 +52,102 @@ var inputs = {
 	mouseY: 0
 };
 
-var pixels = function(x) {
-	var ratio = window.devicePixelRatio || 1;
-	return ratio * x;
+var AccelOrGyro = {
+	receivingData: false, // window.DeviceOrientationEvent exists when no sensor
+	setAsAccel: function() {
+		inputs.aRanger = curry( range, [-20, 20] )
+		inputs.bRanger = curry( range, [ 10, 40] )
+		this.receivingData = true;
+	},
+	setAsGyro: function() {
+		inputs.aRanger = curry( range, [  2.5, -2.5 ] )
+		inputs.bRanger = curry( range, [ 2,  8 ] )
+		this.receivingData = true;
+	},
+	configureOnData: function (o) {
+		if (o.gamma != null) {
+			AccelOrGyro.setAsAccel()
+		} else if (o.y != null) {
+			AccelOrGyro.setAsGyro()
+		} else { // getting null values for motion - screw you guys...
+			gyro.stopTracking()
+		}
+	},
+	setup: function () {
+		gyro.frequency = 1000/60;
+		gyro.startTracking( function(o) {
+			if (! AccelOrGyro.receivingData) {
+				AccelOrGyro.configureOnData(o)
+			}
+			if (o.gamma) { // FIXME exact zero would fail
+				inputs.set( o.gamma, o.beta );
+			} else if (o.x) {
+				inputs.set( o.x, o.y );
+			}
+		})
+	}
 }
 
-// window.addEventListener("orientationchange", function() {
-	// Announce the new orientation number
-	// alert(window.orientation);
-// }, false);
+// FIXME wait for onready() also ?
+setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
 
-window.context = canvas.getContext('2d');
-context.globalCompositeOperation = 'screen';
-// normal | multiply | screen | overlay | darken | lighten | color-dodge | color-burn
-// hard-light | soft-light | difference | exclusion | hue | saturation | color | luminosity
+window.State = {
+	drawCircles: true,
+	blends: ('screen overlay lighten color-dodge color-burn difference exclusion hue hard-light soft-light saturation color luminosity multiply darken').split(' '),
+	blendN: 0,
+	nextBlend: function () {
+		State.blendN = (State.blendN + 1) % State.blends.length;
+		context.globalCompositeOperation = this.currentBlend()
+		console.log( this.currentBlend() )
+		State.redraw = true;
+	},
+	prevBlend: function (ev) {
+		if (ev.keyCode != 37) return;
+		State.blendN = (State.blendN - 1) % State.blends.length;
+		context.globalCompositeOperation = this.currentBlend()
+		console.log( this.currentBlend() )
+		State.redraw = true;
+	},
+	currentBlend: function () {
+		return State.blends[ State.blendN ]
+	}
+}
 
 
-var w = canvas.width;
-var h = canvas.height;
-
-var postCanvasSetup = function () {
-	w = canvas.width;
-	h = canvas.height;
-
-	// alert(w + ' ' + h)
-
-	inputs.aRanger = curry( range, [0, canvas.width] )
-	inputs.bRanger = curry( range, [0, canvas.height] )
-	context.globalCompositeOperation = 'screen';
+var Dimensions = {
+	w: canvas.width,
+	h: canvas.height,
+	postCanvasSetup: function(passedThru) {
+		this.w = canvas.width;
+		this.h = canvas.height;
+		if (! AccelOrGyro.receivingData) {
+			inputs.aRanger = curry( range, [0, this.w] )
+			inputs.bRanger = curry( range, [0, this.h] )
+		}
+		// State.end();
+	}
 };
+Dimensions.resize = _.compose(
+	fit(canvas, window, pixels(1)),
+	function(){
+		setTimeout(Dimensions.postCanvasSetup.bind(Dimensions), 10) // magic :/
+	}
+);
+Dimensions.resize();
 
 
-window.myResize = autoscale( canvas, {}, postCanvasSetup );
-myResize();
-window.onresize = myResize;
+
+document.addEventListener('click', State.nextBlend.bind(State));
+document.addEventListener('keydown', State.prevBlend.bind(State));
+document.addEventListener('touchend', State.nextBlend.bind(State));
+
+window.addEventListener('resize', Dimensions.resize.bind(Dimensions), false)
+
 
 
 
 // var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
-var dotSizeRange = [ pixels(15), pixels(120) ];
+var dotSizeRange = [ pixels(100), pixels(120) ];
 var dotGrowthSpeed = 0.01;
 
 function Dot (scaleX, scaleY) {
@@ -73,6 +164,7 @@ _.extend( Dot.prototype, {
 			this.changeSizeBy = -dotGrowthSpeed;
 		} else if (this.size < 0) {
 			this.changeSizeBy = dotGrowthSpeed;
+			State.nextBlend();
 		}
 		this.size += this.changeSizeBy;
 		this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Quadratic.InOut(this.size) );
@@ -87,7 +179,6 @@ _.extend( Dot.prototype, {
 		this.savedSize = this.size;
 	},
 	hasMoved: function(x, y) {
-
 		var stationary = (within(1, this.savedX, this.x) &&
 		                  within(1, this.savedY, this.y) &&
 		                  within(0.01, this.savedSize, this.size))
@@ -97,12 +188,12 @@ _.extend( Dot.prototype, {
 
 
 var dots = {
-	r: new Dot( function(n) { return lerp(w * 0.64, w * 0.80, n) },
-	            function(n) { return lerp(h * 0.70, h * 0.75, n) }),
-	g: new Dot( function(n) { return lerp(w * 0.70, w * 0.73, n) },
-	            function(n) { return lerp(h * 0.60, h * 0.76, n) }),
-	b: new Dot( function(n) { return lerp(w * 0.78, w * 0.64, n) },
-	            function(n) { return lerp(h * 0.90, h * 0.73, n) }),
+	r: new Dot( function(n) { return lerp(Dimensions.w * 0.64, Dimensions.w * 0.80, n) },
+	            function(n) { return lerp(Dimensions.h * 0.70, Dimensions.h * 0.75, n) }),
+	g: new Dot( function(n) { return lerp(Dimensions.w * 0.70, Dimensions.w * 0.73, n) },
+	            function(n) { return lerp(Dimensions.h * 0.60, Dimensions.h * 0.76, n) }),
+	b: new Dot( function(n) { return lerp(Dimensions.w * 0.78, Dimensions.w * 0.64, n) },
+	            function(n) { return lerp(Dimensions.h * 0.90, Dimensions.h * 0.73, n) }),
 	collision: function() {
 		return dots.near(dots.r, dots.g, dots.b)
 	},
@@ -114,30 +205,42 @@ var dots = {
 		dots.g.reposition(x, y)
 		dots.b.reposition(x, y)
 
-		if (dots.collision()) {
-			dots.r.bumpSize()
-			dots.g.bumpSize()
-			dots.b.bumpSize()
-		}
+		// if (dots.collision()) {
+		// 	dots.r.bumpSize()
+		// 	dots.g.bumpSize()
+		// 	dots.b.bumpSize()
+		// }
 	},
-	near: function(a, b, c) {
-		return within(pixels(10), a.x, b.x ) && within(pixels(10), a.x, c.x ) &&
-		       within(pixels(10), a.y, b.y ) && within(pixels(10), a.y, c.y )
-	}
+	// near: function(a, b, c) {
+	// 	return within(pixels(10), a.x, b.x ) && within(pixels(10), a.x, c.x ) &&
+	// 	       within(pixels(10), a.y, b.y ) && within(pixels(10), a.y, c.y )
+	// }
 }
 
 
 
 function draw() {
-	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved()) {
+	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved() || State.redraw) {
 		context.clearRect(0, 0, canvas.width, canvas.height)
-		context
-		  .prop({ fillStyle: '#f88' }).circle(dots.r.x, dots.r.y, dots.r.pxSize).fill()
-		  .prop({ fillStyle: '#8f8' }).circle(dots.g.x, dots.g.y, dots.g.pxSize).fill()
-		  .prop({ fillStyle: '#88f' }).circle(dots.b.x, dots.b.y, dots.b.pxSize).fill()
+
+		var radius = { r: dots.r.pxSize, g: dots.g.pxSize, b: dots.b.pxSize };
+		var width =  { r: dots.r.pxSize * 2, g: dots.g.pxSize * 2, b: dots.b.pxSize * 2 };
+
+		if (State.drawCircles) {
+			context
+				.prop({ fillStyle: '#f00' }).circle(dots.r.x, dots.r.y, radius.r).fill()
+				.prop({ fillStyle: '#0f0' }).circle(dots.g.x, dots.g.y, radius.g).fill()
+				.prop({ fillStyle: '#00f' }).circle(dots.b.x, dots.b.y, radius.b).fill()
+		} else {
+			context.drawImage(Images.r, dots.r.x - radius.r, dots.r.y - radius.r, width.r, width.r)
+			context.drawImage(Images.g, dots.g.x - radius.g, dots.g.y - radius.g, width.g, width.g)
+			context.drawImage(Images.b, dots.b.x - radius.b, dots.b.y - radius.b, width.b, width.b)
+		}
+
 		dots.r.savePosition()
 		dots.g.savePosition()
 		dots.b.savePosition()
+		State.redraw = false;
 	}
 }
 
@@ -148,49 +251,23 @@ function animate() {
 
 animate()
 
-///
 
-var receivingDeviceMovement = false;  // window.DeviceOrientationEvent lies
 
-gyro.frequency = 1000/60;
+function watchMouse() {
+	window.onmousemove = function (ev) {
+		inputs.mouseX = ev.clientX;
+		inputs.mouseY = ev.clientY;
+	};
 
-function setupGyro() {
-	gyro.startTracking( function (o) {
-		if (! receivingDeviceMovement) {
-			if (o.gamma != null) {
-				inputs.aRanger = curry( range, [-20, 20] )
-				inputs.bRanger = curry( range, [ 10, 40] )
-				receivingDeviceMovement = true;
-			} else if (o.y != null) {
-				inputs.aRanger = curry( range, [  2.5, -2.5 ] )
-				inputs.bRanger = curry( range, [ 2,  8 ] )
-				receivingDeviceMovement = true;
-			} else { // getting null values for motion - screw you guys...
-				gyro.stopTracking()
-			}
+	setInterval(function() {
+		if (! AccelOrGyro.receivingData) { // use mouse
+			inputs.set( inputs.mouseX, inputs.mouseY );
 		}
-
-		if (o.gamma) { // FIXME exact zero would fail
-			inputs.set( o.gamma, o.beta );
-		} else if (o.x) {
-			inputs.set( o.x, o.y );
-		}
-	})
+		dots.update();
+	}, 1000/60)
 }
 
-setTimeout( setupGyro, 500 ); // magic number to wait for the gyro/accel to activate
-
-window.onmousemove = function (ev) {
-	inputs.mouseX = ev.clientX;
-	inputs.mouseY = ev.clientY;
-};
-
-setInterval(function() {
-	if (! receivingDeviceMovement) { // use mouse
-		inputs.set( inputs.mouseX, inputs.mouseY );
-	}
-	dots.update();
-}, 1000/60)
+watchMouse();
 
 
 // libs
@@ -235,482 +312,22 @@ function curry(func,args,space) {
 	return accumulator([],sa,n);
 }
 
-},{"canvas-autoscale":"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/index.js","tween.js":"/Users/stu/Projects/sturob.com/node_modules/tween.js/index.js","underscore":"/Users/stu/node_modules/underscore/underscore.js"}],"/Users/stu/Projects/sturob.com/node_modules/browserify/node_modules/events/events.js":[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-function EventEmitter() {
-  this._events = this._events || {};
-  this._maxListeners = this._maxListeners || undefined;
-}
-module.exports = EventEmitter;
-
-// Backwards-compat with node 0.10.x
-EventEmitter.EventEmitter = EventEmitter;
-
-EventEmitter.prototype._events = undefined;
-EventEmitter.prototype._maxListeners = undefined;
-
-// By default EventEmitters will print a warning if more than 10 listeners are
-// added to it. This is a useful default which helps finding memory leaks.
-EventEmitter.defaultMaxListeners = 10;
-
-// Obviously not all Emitters should be limited to 10. This function allows
-// that to be increased. Set to zero for unlimited.
-EventEmitter.prototype.setMaxListeners = function(n) {
-  if (!isNumber(n) || n < 0 || isNaN(n))
-    throw TypeError('n must be a positive number');
-  this._maxListeners = n;
-  return this;
-};
-
-EventEmitter.prototype.emit = function(type) {
-  var er, handler, len, args, i, listeners;
-
-  if (!this._events)
-    this._events = {};
-
-  // If there is no 'error' event listener then throw.
-  if (type === 'error') {
-    if (!this._events.error ||
-        (isObject(this._events.error) && !this._events.error.length)) {
-      er = arguments[1];
-      if (er instanceof Error) {
-        throw er; // Unhandled 'error' event
-      }
-      throw TypeError('Uncaught, unspecified "error" event.');
-    }
-  }
-
-  handler = this._events[type];
-
-  if (isUndefined(handler))
-    return false;
-
-  if (isFunction(handler)) {
-    switch (arguments.length) {
-      // fast cases
-      case 1:
-        handler.call(this);
-        break;
-      case 2:
-        handler.call(this, arguments[1]);
-        break;
-      case 3:
-        handler.call(this, arguments[1], arguments[2]);
-        break;
-      // slower
-      default:
-        len = arguments.length;
-        args = new Array(len - 1);
-        for (i = 1; i < len; i++)
-          args[i - 1] = arguments[i];
-        handler.apply(this, args);
-    }
-  } else if (isObject(handler)) {
-    len = arguments.length;
-    args = new Array(len - 1);
-    for (i = 1; i < len; i++)
-      args[i - 1] = arguments[i];
-
-    listeners = handler.slice();
-    len = listeners.length;
-    for (i = 0; i < len; i++)
-      listeners[i].apply(this, args);
-  }
-
-  return true;
-};
-
-EventEmitter.prototype.addListener = function(type, listener) {
-  var m;
-
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  if (!this._events)
-    this._events = {};
-
-  // To avoid recursion in the case that type === "newListener"! Before
-  // adding it to the listeners, first emit "newListener".
-  if (this._events.newListener)
-    this.emit('newListener', type,
-              isFunction(listener.listener) ?
-              listener.listener : listener);
-
-  if (!this._events[type])
-    // Optimize the case of one listener. Don't need the extra array object.
-    this._events[type] = listener;
-  else if (isObject(this._events[type]))
-    // If we've already got an array, just append.
-    this._events[type].push(listener);
-  else
-    // Adding the second element, need to change to array.
-    this._events[type] = [this._events[type], listener];
-
-  // Check for listener leak
-  if (isObject(this._events[type]) && !this._events[type].warned) {
-    var m;
-    if (!isUndefined(this._maxListeners)) {
-      m = this._maxListeners;
-    } else {
-      m = EventEmitter.defaultMaxListeners;
-    }
-
-    if (m && m > 0 && this._events[type].length > m) {
-      this._events[type].warned = true;
-      console.error('(node) warning: possible EventEmitter memory ' +
-                    'leak detected. %d listeners added. ' +
-                    'Use emitter.setMaxListeners() to increase limit.',
-                    this._events[type].length);
-      if (typeof console.trace === 'function') {
-        // not supported in IE 10
-        console.trace();
-      }
-    }
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-EventEmitter.prototype.once = function(type, listener) {
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  var fired = false;
-
-  function g() {
-    this.removeListener(type, g);
-
-    if (!fired) {
-      fired = true;
-      listener.apply(this, arguments);
-    }
-  }
-
-  g.listener = listener;
-  this.on(type, g);
-
-  return this;
-};
-
-// emits a 'removeListener' event iff the listener was removed
-EventEmitter.prototype.removeListener = function(type, listener) {
-  var list, position, length, i;
-
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  if (!this._events || !this._events[type])
-    return this;
-
-  list = this._events[type];
-  length = list.length;
-  position = -1;
-
-  if (list === listener ||
-      (isFunction(list.listener) && list.listener === listener)) {
-    delete this._events[type];
-    if (this._events.removeListener)
-      this.emit('removeListener', type, listener);
-
-  } else if (isObject(list)) {
-    for (i = length; i-- > 0;) {
-      if (list[i] === listener ||
-          (list[i].listener && list[i].listener === listener)) {
-        position = i;
-        break;
-      }
-    }
-
-    if (position < 0)
-      return this;
-
-    if (list.length === 1) {
-      list.length = 0;
-      delete this._events[type];
-    } else {
-      list.splice(position, 1);
-    }
-
-    if (this._events.removeListener)
-      this.emit('removeListener', type, listener);
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.removeAllListeners = function(type) {
-  var key, listeners;
-
-  if (!this._events)
-    return this;
-
-  // not listening for removeListener, no need to emit
-  if (!this._events.removeListener) {
-    if (arguments.length === 0)
-      this._events = {};
-    else if (this._events[type])
-      delete this._events[type];
-    return this;
-  }
-
-  // emit removeListener for all listeners on all events
-  if (arguments.length === 0) {
-    for (key in this._events) {
-      if (key === 'removeListener') continue;
-      this.removeAllListeners(key);
-    }
-    this.removeAllListeners('removeListener');
-    this._events = {};
-    return this;
-  }
-
-  listeners = this._events[type];
-
-  if (isFunction(listeners)) {
-    this.removeListener(type, listeners);
-  } else {
-    // LIFO order
-    while (listeners.length)
-      this.removeListener(type, listeners[listeners.length - 1]);
-  }
-  delete this._events[type];
-
-  return this;
-};
-
-EventEmitter.prototype.listeners = function(type) {
-  var ret;
-  if (!this._events || !this._events[type])
-    ret = [];
-  else if (isFunction(this._events[type]))
-    ret = [this._events[type]];
-  else
-    ret = this._events[type].slice();
-  return ret;
-};
-
-EventEmitter.listenerCount = function(emitter, type) {
-  var ret;
-  if (!emitter._events || !emitter._events[type])
-    ret = 0;
-  else if (isFunction(emitter._events[type]))
-    ret = 1;
-  else
-    ret = emitter._events[type].length;
-  return ret;
-};
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-
-},{}],"/Users/stu/Projects/sturob.com/node_modules/browserify/node_modules/process/browser.js":[function(require,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-    && window.setImmediate;
-    var canMutationObserver = typeof window !== 'undefined'
-    && window.MutationObserver;
-    var canPost = typeof window !== 'undefined'
-    && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    var queue = [];
-
-    if (canMutationObserver) {
-        var hiddenDiv = document.createElement("div");
-        var observer = new MutationObserver(function () {
-            var queueList = queue.slice();
-            queue.length = 0;
-            queueList.forEach(function (fn) {
-                fn();
-            });
-        });
-
-        observer.observe(hiddenDiv, { attributes: true });
-
-        return function nextTick(fn) {
-            if (!queue.length) {
-                hiddenDiv.setAttribute('yes', 'no');
-            }
-            queue.push(fn);
-        };
-    }
-
-    if (canPost) {
-        window.addEventListener('message', function (ev) {
-            var source = ev.source;
-            if ((source === window || source === null) && ev.data === 'process-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('process-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-
-},{}],"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/index.js":[function(require,module,exports){
-var throttle = require('frame-debounce')
-var size     = require('element-size')
-var clamp    = require('clamp')
-var raf      = require('raf')
-var fps      = require('fps')
-
-var noop = function(){}
-
-var defaultScales = [
-    0.25
-  , 0.50
-  , 1.00
-]
-
-if (
-  typeof window !== 'undefined' &&
-  window.devicePixelRatio > 1
-) defaultScales.push(window.devicePixelRatio)
+},{"canvas-fit":"/Users/stu/Projects/sturob.com/node_modules/canvas-fit/index.js","tween.js":"/Users/stu/Projects/sturob.com/node_modules/tween.js/index.js","underscore":"/Users/stu/node_modules/underscore/underscore.js"}],"/Users/stu/Projects/sturob.com/node_modules/canvas-fit/index.js":[function(require,module,exports){
+var size = require('element-size')
 
 module.exports = fit
 
-function fit(canvas, options, updated) {
-  if (typeof options === 'function') {
-    updated = options
-    options = {}
-  }
-
-  options = options || {}
-  updated = updated || noop
-
+function fit(canvas, parent, scale) {
   canvas.style.position = canvas.style.position || 'absolute'
   canvas.style.top = 0
   canvas.style.left = 0
 
-  var scales      = (options.scales || defaultScales).slice().sort(numeric)
-  var target      = options.target || [55, 59]
-  var getFPS      = options.fps || defaultFPS()
-  var sensitivity = options.sensitivity || 0.01
-  var gap         = options.gap || 60
-  var scale       = scales[0]
-  var goalScale   = 0
-  var currScale   = 0
-  var limit       = 0
-  var first       = true
-
-  resize.rate   = target[1]
-  resize.tick   = tick
-  resize.resize = resize
-
-  Object.defineProperty(resize, 'scale', {
-    get: function() { return scale }
-  })
-
-  if (!('auto' in options) || options.auto) {
-    setupAuto()
-  }
+  scale = parseFloat(scale || 1)
 
   return resize()
 
-  function defaultFPS() {
-    var measure = fps({ decay: 1, every: Infinity })
-
-    return function() {
-      measure.tick()
-      return measure.rate
-    }
-  }
-
-  function setupAuto() {
-    window.addEventListener('resize'
-      , throttle(resize)
-      , false
-    )
-
-    raf(frame)
-
-    function frame() {
-      raf(frame)
-      tick()
-    }
-  }
-
   function resize() {
-    var p = options.parent || canvas.parentNode
+    var p = parent || canvas.parentNode
     if (p && p !== document.body) {
       var psize  = size(p)
       var width  = psize[0]|0
@@ -725,52 +342,11 @@ function fit(canvas, options, updated) {
     canvas.style.width = width + 'px'
     canvas.style.height = height + 'px'
 
-    if (first) {
-      first = false
-    } else {
-      updated(canvas.width, canvas.height)
-    }
-
     return resize
   }
-
-  function tick() {
-    var framerate = resize.rate = getFPS()
-    if (limit-- > 0) return
-
-    var nextScale = framerate <= target[0]
-      ? goalScale + 1
-      : framerate >= target[1]
-      ? goalScale - 1
-      : goalScale
-
-    nextScale = clamp(nextScale, 0, scales.length - 1)
-    goalScale = goalScale + (nextScale - goalScale) * sensitivity
-    nextScale = Math.round(goalScale)
-
-    if (nextScale !== currScale) {
-      currScale = nextScale
-      scale = scales[currScale]
-      limit = gap
-      resize()
-    }
-  }
 }
 
-function numeric(a, b) {
-  return b - a
-}
-
-},{"clamp":"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/clamp/index.js","element-size":"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/element-size/index.js","fps":"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/fps/index.js","frame-debounce":"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/frame-debounce/index.js","raf":"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/raf/index.js"}],"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/clamp/index.js":[function(require,module,exports){
-module.exports = clamp
-
-function clamp(value, min, max) {
-  return min < max
-    ? (value < min ? min : value > max ? max : value)
-    : (value < max ? max : value > min ? min : value)
-}
-
-},{}],"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/element-size/index.js":[function(require,module,exports){
+},{"element-size":"/Users/stu/Projects/sturob.com/node_modules/element-size/index.js"}],"/Users/stu/Projects/sturob.com/node_modules/element-size/index.js":[function(require,module,exports){
 module.exports = getSize
 
 function getSize(element) {
@@ -806,315 +382,7 @@ function parse(prop) {
   return parseFloat(prop) || 0
 }
 
-},{}],"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/fps/index.js":[function(require,module,exports){
-var EventEmitter = require('events').EventEmitter
-  , inherits = require('inherits')
-
-module.exports = fps
-
-// Try use performance.now(), otherwise try
-// +new Date.
-var now = (
-  (function(){ return this }()).performance &&
-  'function' === typeof performance.now
-) ? function() { return performance.now() }
-  : Date.now || function() { return +new Date }
-
-function fps(opts) {
-  if (!(this instanceof fps)) return new fps(opts)
-  EventEmitter.call(this)
-
-  opts = opts || {}
-  this.last = now()
-  this.rate = 0
-  this.time = 0
-  this.decay = opts.decay || 1
-  this.every = opts.every || 1
-  this.ticks = 0
-}
-inherits(fps, EventEmitter)
-
-fps.prototype.tick = function() {
-  var time = now()
-    , diff = time - this.last
-    , fps = diff
-
-  this.ticks += 1
-  this.last = time
-  this.time += (fps - this.time) * this.decay
-  this.rate = 1000 / this.time
-  if (!(this.ticks % this.every)) this.emit('data', this.rate)
-}
-
-
-},{"events":"/Users/stu/Projects/sturob.com/node_modules/browserify/node_modules/events/events.js","inherits":"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/fps/node_modules/inherits/inherits.js"}],"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/fps/node_modules/inherits/inherits.js":[function(require,module,exports){
-module.exports = inherits
-
-function inherits (c, p, proto) {
-  proto = proto || {}
-  var e = {}
-  ;[c.prototype, proto].forEach(function (s) {
-    Object.getOwnPropertyNames(s).forEach(function (k) {
-      e[k] = Object.getOwnPropertyDescriptor(s, k)
-    })
-  })
-  c.prototype = Object.create(p.prototype, e)
-  c.super = p
-}
-
-//function Child () {
-//  Child.super.call(this)
-//  console.error([this
-//                ,this.constructor
-//                ,this.constructor === Child
-//                ,this.constructor.super === Parent
-//                ,Object.getPrototypeOf(this) === Child.prototype
-//                ,Object.getPrototypeOf(Object.getPrototypeOf(this))
-//                 === Parent.prototype
-//                ,this instanceof Child
-//                ,this instanceof Parent])
-//}
-//function Parent () {}
-//inherits(Child, Parent)
-//new Child
-
-},{}],"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/frame-debounce/index.js":[function(require,module,exports){
-(function (process){
-var slice = require('sliced')
-
-if (process.browser) {
-  var raf = require('raf-component')
-} else {
-  var raf = typeof setImmediate !== 'undefined'
-    ? setImmediate
-    : process.nextTick
-}
-
-module.exports = debounce
-
-function debounce(fn, now) {
-  var args = null
-  var ctx = null
-
-  return debounced
-
-  function debounced() {
-    if (args !== null) return
-    args = slice(arguments)
-    ctx = this
-    if (now) fn.apply(ctx, args)
-    raf(next)
-  }
-
-  function next() {
-    if (!now) fn.apply(ctx, args)
-    args = null
-    ctx = null
-  }
-}
-
-}).call(this,require('_process'))
-},{"_process":"/Users/stu/Projects/sturob.com/node_modules/browserify/node_modules/process/browser.js","raf-component":"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/frame-debounce/node_modules/raf-component/index.js","sliced":"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/frame-debounce/node_modules/sliced/index.js"}],"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/frame-debounce/node_modules/raf-component/index.js":[function(require,module,exports){
-/**
- * Expose `requestAnimationFrame()`.
- */
-
-exports = module.exports = window.requestAnimationFrame
-  || window.webkitRequestAnimationFrame
-  || window.mozRequestAnimationFrame
-  || window.oRequestAnimationFrame
-  || window.msRequestAnimationFrame
-  || fallback;
-
-/**
- * Fallback implementation.
- */
-
-var prev = new Date().getTime();
-function fallback(fn) {
-  var curr = new Date().getTime();
-  var ms = Math.max(0, 16 - (curr - prev));
-  var req = setTimeout(fn, ms);
-  prev = curr;
-  return req;
-}
-
-/**
- * Cancel.
- */
-
-var cancel = window.cancelAnimationFrame
-  || window.webkitCancelAnimationFrame
-  || window.mozCancelAnimationFrame
-  || window.oCancelAnimationFrame
-  || window.msCancelAnimationFrame
-  || window.clearTimeout;
-
-exports.cancel = function(id){
-  cancel.call(window, id);
-};
-
-},{}],"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/frame-debounce/node_modules/sliced/index.js":[function(require,module,exports){
-module.exports = exports = require('./lib/sliced');
-
-},{"./lib/sliced":"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/frame-debounce/node_modules/sliced/lib/sliced.js"}],"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/frame-debounce/node_modules/sliced/lib/sliced.js":[function(require,module,exports){
-
-/**
- * An Array.prototype.slice.call(arguments) alternative
- *
- * @param {Object} args something with a length
- * @param {Number} slice
- * @param {Number} sliceEnd
- * @api public
- */
-
-module.exports = function (args, slice, sliceEnd) {
-  var ret = [];
-  var len = args.length;
-
-  if (0 === len) return ret;
-
-  var start = slice < 0
-    ? Math.max(0, slice + len)
-    : slice || 0;
-
-  if (sliceEnd !== undefined) {
-    len = sliceEnd < 0
-      ? sliceEnd + len
-      : sliceEnd
-  }
-
-  while (len-- > start) {
-    ret[len - start] = args[len];
-  }
-
-  return ret;
-}
-
-
-},{}],"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/raf/index.js":[function(require,module,exports){
-var now = require('performance-now')
-  , global = typeof window === 'undefined' ? {} : window
-  , vendors = ['moz', 'webkit']
-  , suffix = 'AnimationFrame'
-  , raf = global['request' + suffix]
-  , caf = global['cancel' + suffix] || global['cancelRequest' + suffix]
-  , isNative = true
-
-for(var i = 0; i < vendors.length && !raf; i++) {
-  raf = global[vendors[i] + 'Request' + suffix]
-  caf = global[vendors[i] + 'Cancel' + suffix]
-      || global[vendors[i] + 'CancelRequest' + suffix]
-}
-
-// Some versions of FF have rAF but not cAF
-if(!raf || !caf) {
-  isNative = false
-
-  var last = 0
-    , id = 0
-    , queue = []
-    , frameDuration = 1000 / 60
-
-  raf = function(callback) {
-    if(queue.length === 0) {
-      var _now = now()
-        , next = Math.max(0, frameDuration - (_now - last))
-      last = next + _now
-      setTimeout(function() {
-        var cp = queue.slice(0)
-        // Clear queue here to prevent
-        // callbacks from appending listeners
-        // to the current frame's queue
-        queue.length = 0
-        for(var i = 0; i < cp.length; i++) {
-          if(!cp[i].cancelled) {
-            try{
-              cp[i].callback(last)
-            } catch(e) {
-              setTimeout(function() { throw e }, 0)
-            }
-          }
-        }
-      }, Math.round(next))
-    }
-    queue.push({
-      handle: ++id,
-      callback: callback,
-      cancelled: false
-    })
-    return id
-  }
-
-  caf = function(handle) {
-    for(var i = 0; i < queue.length; i++) {
-      if(queue[i].handle === handle) {
-        queue[i].cancelled = true
-      }
-    }
-  }
-}
-
-module.exports = function(fn) {
-  // Wrap in a new function to prevent
-  // `cancel` potentially being assigned
-  // to the native rAF function
-  if(!isNative) {
-    return raf.call(global, fn)
-  }
-  return raf.call(global, function() {
-    try{
-      fn.apply(this, arguments)
-    } catch(e) {
-      setTimeout(function() { throw e }, 0)
-    }
-  })
-}
-module.exports.cancel = function() {
-  caf.apply(global, arguments)
-}
-
-},{"performance-now":"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/raf/node_modules/performance-now/lib/performance-now.js"}],"/Users/stu/Projects/sturob.com/node_modules/canvas-autoscale/node_modules/raf/node_modules/performance-now/lib/performance-now.js":[function(require,module,exports){
-(function (process){
-// Generated by CoffeeScript 1.6.3
-(function() {
-  var getNanoSeconds, hrtime, loadTime;
-
-  if ((typeof performance !== "undefined" && performance !== null) && performance.now) {
-    module.exports = function() {
-      return performance.now();
-    };
-  } else if ((typeof process !== "undefined" && process !== null) && process.hrtime) {
-    module.exports = function() {
-      return (getNanoSeconds() - loadTime) / 1e6;
-    };
-    hrtime = process.hrtime;
-    getNanoSeconds = function() {
-      var hr;
-      hr = hrtime();
-      return hr[0] * 1e9 + hr[1];
-    };
-    loadTime = getNanoSeconds();
-  } else if (Date.now) {
-    module.exports = function() {
-      return Date.now() - loadTime;
-    };
-    loadTime = Date.now();
-  } else {
-    module.exports = function() {
-      return new Date().getTime() - loadTime;
-    };
-    loadTime = new Date().getTime();
-  }
-
-}).call(this);
-
-/*
-//@ sourceMappingURL=performance-now.map
-*/
-
-}).call(this,require('_process'))
-},{"_process":"/Users/stu/Projects/sturob.com/node_modules/browserify/node_modules/process/browser.js"}],"/Users/stu/Projects/sturob.com/node_modules/tween.js/index.js":[function(require,module,exports){
+},{}],"/Users/stu/Projects/sturob.com/node_modules/tween.js/index.js":[function(require,module,exports){
 /**
  * Tween.js - Licensed under the MIT license
  * https://github.com/sole/tween.js
