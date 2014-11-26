@@ -18,6 +18,9 @@ module.exports = {
     src: src + "/assets/less/*.{less,css}",
     dest: dest + "/assets/css"
   },
+  statics: {
+    // todo
+  },
   images: {
     src: src + "/assets/images/**",
     dest: dest + "/assets/images"
