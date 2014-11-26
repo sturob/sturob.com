@@ -1,12 +1,6 @@
 var TWEEN = require('tween.js');
 var _     = require('underscore');
 var fit   = require('canvas-fit');
-// var fastclick = require('fastclick');
-
-
-// window.addEventListener('load', function() {
-// 	fastclick.attach(document.body);
-// }, false);
 
 var id = function(a) { return a };
 
@@ -16,7 +10,6 @@ var canvas = document.getElementById('bg');
 canvas.style.position = 'fixed'; // stop autoscale stomping position:fixed
 
 window.context = canvas.getContext('2d');
-
 
 window.Images = {
 	loadUrl: function (src) {
