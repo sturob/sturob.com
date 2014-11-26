@@ -14,9 +14,12 @@ Hosted on github pages.
 /experiments
 
 
-## Changelog
 
-<!--* added icons from http://www.entypo.com/characters/-->
+# Issues
+
+* position:fixed is a bit fucked on Mac Chrome when there is a scrollbar
+
+## Changelog
 
 * 2014-11-11 - browsersync
 * 2014-11-05 - Moved to gulp build process

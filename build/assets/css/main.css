@@ -180,7 +180,6 @@ select {
 /* close commented backslash hack */
 html {
   box-sizing: border-box;
-  overflow: hidden;
 }
 *,
 *:before,
@@ -209,6 +208,7 @@ body {
   color: #222;
   background: #fff;
   font-size: 16px;
+  position: relative;
 }
 section {
   max-width: 480px;
@@ -224,7 +224,6 @@ p:last-child {
 b {
   font-weight: normal;
   padding: 0 1px;
-  border-bottom: 1px solid black;
 }
 a {
   text-decoration: none;
@@ -234,6 +233,7 @@ a:hover {
   text-decoration: underline;
 }
 #stu {
+  display: block;
   position: fixed;
   width: 100px;
   height: 100px;
@@ -242,7 +242,7 @@ a:hover {
   bottom: 0;
 }
 canvas {
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   right: 0;

@@ -1,9 +1,9 @@
 var gulp       = require('gulp');
 var less       = require('gulp-less');
-// var changed    = require('gulp-changed');
 var plumber    = require('gulp-plumber');
 var htmlhint   = require('gulp-htmlhint');
 var browserSync = require('browser-sync');
+
 var reload      = browserSync.reload;
 
 var gutil = require('gulp-util');
@@ -24,14 +24,15 @@ gulp.task('newjs', function() {
 	function rebundle() {
 		return bundler.bundle()
 		// log errors if they happen
-		.on('error', gutil.log.bind(gutil, 'Browserify Error'))
-		.pipe(source('bundle.js'))
-		.pipe(gulp.dest('./build/assets/js/'))
-		.pipe( reload({stream:true}));
+			.on('error', gutil.log.bind(gutil, 'Browserify Error'))
+			.pipe(source('bundle.js'))
+			.pipe(gulp.dest('./build/assets/js/'))
+			// .pipe( reload({ stream:true }));
 	}
 
 	return rebundle();
 });
+
 
 gulp.task('browser-sync', function() {
 	browserSync.init(['assets/css/*.css', 'assets/js/*.js', '*.html'], {
