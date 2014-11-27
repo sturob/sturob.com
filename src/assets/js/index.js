@@ -1,16 +1,17 @@
-var TWEEN = require('tween.js');
-var _     = require('underscore');
-var fit   = require('canvas-fit');
+var TWEEN = require('tween.js')
+var _     = require('underscore')
+var fit   = require('canvas-fit')
+var range = require('unlerp')
+var lerp  = require('lerp')
+var almostEqual = require('almost-equal')
 
-var id = function(a) { return a };
-
+var id    = function(a) { return a };
 var pixels = function(x) { return (window.devicePixelRatio || 1) * x; }
 
 var canvas = document.getElementById('bg');
 canvas.style.position = 'fixed'; // stop canvas-fit stomping position:fixed
 
 var context = canvas.getContext('2d');
-
 
 
 window.Images = {
@@ -142,7 +143,7 @@ var Dimensions = {
 Dimensions.resize = _.compose(
 	fit(canvas, window, pixels(1)),
 	function(){
-		setTimeout(Dimensions.postCanvasSetup.bind(Dimensions), 10) // magic :/
+		setTimeout(Dimensions.postCanvasSetup.bind(Dimensions), 10) // 10 == magic :/
 	}
 );
 
@@ -196,9 +197,10 @@ _.extend( Dot.prototype, {
 		this.savedSize = this.size;
 	},
 	hasMoved: function(x, y) {
-		var stationary = (within(1, this.savedX, this.x) &&
-		                  within(1, this.savedY, this.y) &&
-		                  within(0.01, this.savedSize, this.size))
+		var stationary = (almostEqual(this.savedX, this.x, 1, 0) &&
+		                  almostEqual(this.savedY, this.y, 1, 0) &&
+                      almostEqual(this.savedSize, this.size, 0.01)
+		                 )
 		return ! stationary;
 	}
 })
@@ -249,11 +251,14 @@ function draw() {
 				.prop({ fillStyle: '#0f0' }).circle(dots.g.x, dots.g.y, radius.g).fill()
 				.prop({ fillStyle: '#00f' }).circle(dots.b.x, dots.b.y, radius.b).fill()
 		} else {
+
+			// context.drawImage.apply(context, [Images.r].concat( dots.calcImageXY() ))
 			context.drawImage(Images.r, dots.r.x - radius.r, dots.r.y - radius.r, width.r, width.r)
 			context.drawImage(Images.g, dots.g.x - radius.g, dots.g.y - radius.g, width.g, width.g)
 			context.drawImage(Images.b, dots.b.x - radius.b, dots.b.y - radius.b, width.b, width.b)
 		}
 
+		// dots.savePositions()
 		dots.r.savePosition()
 		dots.g.savePosition()
 		dots.b.savePosition()
@@ -266,27 +271,7 @@ function animate() {
 	draw()
 }
 
-
-
-
-
-
-
 // libs
-
-function within (margin, x1, x2) {
-	if (x1 == x2) return true;
-	return (x1 + margin > x2) && (x1 < x2) ||
-	       (x2 + margin > x1) && (x2 < x1)
-}
-
-function range(min, max, value) {
-	return (value - min) / (max - min)
-}
-
-function lerp(v0, v1, t) {
-	return v0*(1-t)+v1*t
-}
 
 // http://www.crockford.com/javascript/www_svendtofte_com/code/curried_javascript/index.html
 function curry(func,args,space) {
