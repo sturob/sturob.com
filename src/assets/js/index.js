@@ -7,9 +7,9 @@ var id = function(a) { return a };
 var pixels = function(x) { return (window.devicePixelRatio || 1) * x; }
 
 var canvas = document.getElementById('bg');
-canvas.style.position = 'fixed'; // stop autoscale stomping position:fixed
+canvas.style.position = 'fixed'; // stop canvas-fit stomping position:fixed
 
-window.context = canvas.getContext('2d');
+var context = canvas.getContext('2d');
 
 
 
@@ -49,8 +49,22 @@ var inputs = {
 	aRanger: id,
 	bRanger: id,
 	mouseX: 0,
-	mouseY: 0
+	mouseY: 0,
+	watchMouse: function() {
+		window.onmousemove = function (ev) {
+			inputs.mouseX = ev.clientX;
+			inputs.mouseY = ev.clientY;
+		};
+
+		setInterval(function() {
+			if (! AccelOrGyro.receivingData) { // use mouse
+				inputs.set( inputs.mouseX, inputs.mouseY );
+			}
+			dots.update();
+		}, 1000/60)
+	}
 };
+
 
 var AccelOrGyro = {
 	receivingData: false, // window.DeviceOrientationEvent exists when no sensor
@@ -79,9 +93,9 @@ var AccelOrGyro = {
 			if (! AccelOrGyro.receivingData) {
 				AccelOrGyro.configureOnData(o)
 			}
-			if (o.gamma) { // FIXME exact zero would fail
+			if (o.gamma && o.gamma != 0) {
 				inputs.set( o.gamma, o.beta );
-			} else if (o.x) {
+			} else if (o.x && o.x != 0) {
 				inputs.set( o.x, o.y );
 			}
 		})
@@ -141,9 +155,8 @@ window.addEventListener('load', function () {
 	document.addEventListener('touchend', State.nextBlend.bind(State));
 	window.addEventListener('resize', Dimensions.resize.bind(Dimensions), false);
 
-	// FIXME wait for onready() also ?
 	setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
-	watchMouse();
+	inputs.watchMouse();
 })
 
 Dimensions.resize();
@@ -255,19 +268,7 @@ function animate() {
 
 
 
-function watchMouse() {
-	window.onmousemove = function (ev) {
-		inputs.mouseX = ev.clientX;
-		inputs.mouseY = ev.clientY;
-	};
 
-	setInterval(function() {
-		if (! AccelOrGyro.receivingData) { // use mouse
-			inputs.set( inputs.mouseX, inputs.mouseY );
-		}
-		dots.update();
-	}, 1000/60)
-}
 
 
 
