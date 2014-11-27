@@ -17,8 +17,8 @@ var context = canvas.getContext('2d');
 window.Images = {
 	loadUrl: function (src, done) {
 		var img = new Image();
-		img.src = src;
 		img.onload = done;
+		img.src = src;
 		return img;
 	},
 	onImagesLoaded: function () {
@@ -76,7 +76,7 @@ var AccelOrGyro = {
 	},
 	setAsGyro: function() {
 		inputs.aRanger = curry( range, [  3.5, -3.5 ] )
-		inputs.bRanger = curry( range, [ 0,  8 ] )
+		inputs.bRanger = curry( range, [  0.0,  8.0 ] )
 		this.receivingData = true;
 	},
 	configureOnData: function (o) {
@@ -106,25 +106,34 @@ var AccelOrGyro = {
 window.State = {
 	drawCircles: false,
 	blends: ('screen overlay lighten color-dodge color-burn difference exclusion hue hard-light soft-light saturation color luminosity').split(' '),
-	blendN: 0,
 	nextBlend: function () {
-		State.blendN = (State.blendN + 1) % State.blends.length;
-		this.setBlend();
+		this.setBlend( this.blendCycle(+1) )
 	},
 	prevBlend: function (ev) {
 		if (ev.keyCode != 37) return;
-		State.blendN = (State.blendN - 1) % State.blends.length;
-		this.setBlend();
+		this.setBlend( this.blendCycle(-1) )
 	},
-	setBlend: function () {
-		console.log( this.currentBlend() );
-		context.globalCompositeOperation = this.currentBlend();
+	setInitialBlend: function () {
+		State.blendCycle = cycle(State.blends)
+		this.setBlend( this.blendCycle() )
+	},
+	setBlend: function (blend) {
+		context.globalCompositeOperation = blend;
 		State.redraw = true;
-	},
-	currentBlend: function () {
-		return State.blends[ State.blendN ]
 	}
 }
+
+window.cycle = function (arr) {
+	var pos = 0;
+	return function (n) {
+		n |= 0;
+		pos += n;
+		if (pos < 0) { pos = arr.length + pos } // negatives
+		pos = pos % arr.length;
+		return arr[pos];
+	}
+}
+
 
 
 var Dimensions = {
@@ -150,7 +159,7 @@ Dimensions.resize = _.compose(
 
 
 window.addEventListener('load', function () {
-	State.setBlend();
+	State.setInitialBlend();
 	document.addEventListener('click', State.nextBlend.bind(State));
 	document.addEventListener('keydown', State.prevBlend.bind(State));
 	document.addEventListener('touchend', State.nextBlend.bind(State));
@@ -164,7 +173,6 @@ Dimensions.resize();
 
 
 
-// var target = [ 0.6, 0.8 ]; // => only a,b where rgb[a,b] all line up (ish)
 var dotSizeRange = [ pixels(80), pixels(120) ];
 var dotGrowthSpeed = 0.01;
 
