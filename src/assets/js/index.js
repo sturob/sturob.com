@@ -65,12 +65,12 @@ var Transform = {
 			return distance;
 		},
 		setForAccel: function (currentA, currentB) {
-			Transform.input.a = curry(unlerp)( -20, 20 )
-			Transform.input.b = curry(unlerp)(   0, 50 )
+			Transform.input.a = curry(unlerp)( -15, 15 )
+			Transform.input.b = curry(unlerp)(   0, 80 )
 		},
 		setForGyro: function (currentA, currentB) {
-			Transform.input.a = curry(unlerp)( 3.5, -3.5 )
-			Transform.input.b = curry(unlerp)( 0.0,  8.0 )
+			Transform.input.a = curry(unlerp)( 1.5, -1.5 )
+			Transform.input.b = curry(unlerp)( 0.0,  15.0 )
 		}
 	},
 	output: {
