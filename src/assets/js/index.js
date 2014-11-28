@@ -81,11 +81,14 @@ var Transform = {
 
 // replace with backbone?
 
-var inputs = {
+var NormalisedInput = {
 	a: 0,
 	b: 0,
 	set: function (a, b) {
 		var angle = window.orientation;
+
+		this.rawA = a;
+		this.rawB = b;
 
 		if (! angle) { // no rotation (or not supported)
 			this.a = Transform.input.a(a);
@@ -99,6 +102,8 @@ var inputs = {
 }
 
 var Mouse = {
+	x: 0,
+	y: 0,
 	watch: function () {
 		window.onmousemove = function (ev) {
 			Mouse.x = ev.clientX;
@@ -107,13 +112,12 @@ var Mouse = {
 
 		setInterval(function() {
 			if (! AccelOrGyro.receivingData) { // use mouse
-				inputs.set( Mouse.x, Mouse.y );
+				NormalisedInput.set( Mouse.x, Mouse.y );
 			}
 			dots.update(); // what?
 		}, 1000/60)
 	}
 }
-
 
 var AccelOrGyro = {
 	receivingData: false, // window.DeviceOrientationEvent exists when no sensor
@@ -141,9 +145,9 @@ var AccelOrGyro = {
 				AccelOrGyro.configureOnData(o)
 			}
 			if (o.gamma && o.gamma != 0) {
-				inputs.set( o.gamma, o.beta );
+				NormalisedInput.set( o.gamma, o.beta );
 			} else if (o.x && o.x != 0) {
-				inputs.set( o.x, o.y );
+				NormalisedInput.set( o.x, o.y );
 			}
 		})
 	}
@@ -195,13 +199,14 @@ window.addEventListener('load', function () {
 
 
 ///////////////////////////////////////////////////////
+// the mess starts here...
 
 var dotSizeRange = [ pixels(80), pixels(120) ];
-var dotGrowthSpeed = 0.01;
+// var dotGrowthSpeed = 0.01;
 
 function Dot (scaleX, scaleY) {
 	_.extend(this, {
-		changeSizeBy: dotGrowthSpeed,
+		// changeSizeBy: dotGrowthSpeed,
 		size:0, scaleX:scaleX, scaleY:scaleY, x:0, y:0,
 	})
 	this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], this.size);
@@ -245,8 +250,8 @@ var dots = {
 	// 	return dots.near(dots.r, dots.g, dots.b)
 	// },
 	update: function () {
-		var x = inputs.a;
-		var y = inputs.b;
+		var x = NormalisedInput.a;
+		var y = NormalisedInput.b;
 
 		dots.r.move(x, y)
 		dots.g.move(x, y)
