@@ -80,8 +80,11 @@ var Transform = {
 
 
 // replace with backbone?
+
 var inputs = {
-	set: function(a, b) {
+	a: 0,
+	b: 0,
+	set: function (a, b) {
 		var angle = window.orientation;
 
 		if (! angle) { // no rotation (or not supported)
@@ -92,23 +95,24 @@ var inputs = {
 			this.a = Transform.input.a(b);
 			this.b = Transform.input.b(a);
 		}
-	},
-	mouseX: 0,
-	mouseY: 0,
-	watchMouse: function() {
+	}
+}
+
+var Mouse = {
+	watch: function () {
 		window.onmousemove = function (ev) {
-			inputs.mouseX = ev.clientX;
-			inputs.mouseY = ev.clientY;
+			Mouse.x = ev.clientX;
+			Mouse.y = ev.clientY;
 		};
 
 		setInterval(function() {
 			if (! AccelOrGyro.receivingData) { // use mouse
-				inputs.set( inputs.mouseX, inputs.mouseY );
+				inputs.set( Mouse.x, Mouse.y );
 			}
-			dots.update();
+			dots.update(); // what?
 		}, 1000/60)
 	}
-};
+}
 
 
 var AccelOrGyro = {
@@ -165,7 +169,6 @@ window.State = {
 	}
 }
 
-
 window.cycle = function (arr) {
 	var pos = 0;
 	return function (n) {
@@ -178,29 +181,6 @@ window.cycle = function (arr) {
 }
 
 
-
-// var Dimensions = {
-// 	w: canvas.width,
-// 	h: canvas.height,
-// 	postCanvasSetup: function(passedThru) {
-// 		this.w = canvas.width;
-// 		this.h = canvas.height;
-// 		if (! AccelOrGyro.receivingData) {
-// 			inputs.aRanger = curry( range, [0, this.w] )
-// 			inputs.bRanger = curry( range, [0, this.h] )
-// 		}
-// 		// State.end();
-// 	}
-// };
-// Dimensions.resize = _.compose(
-// 	fit(canvas, window, pixels(1)),
-// 	function(){
-// 		setTimeout(Dimensions.postCanvasSetup.bind(Dimensions), 10) // 10 == magic :/
-// 	}
-// );
-
-
-
 window.addEventListener('load', function () {
 	var resize = fit(canvas, window, pixels(1));
 	State.setInitialBlend();
@@ -210,12 +190,11 @@ window.addEventListener('load', function () {
 	window.addEventListener('resize', resize, false);
 
 	setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
-	inputs.watchMouse();
+	Mouse.watch();
 })
 
-// Dimensions.resize();
 
-
+///////////////////////////////////////////////////////
 
 var dotSizeRange = [ pixels(80), pixels(120) ];
 var dotGrowthSpeed = 0.01;
