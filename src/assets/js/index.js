@@ -1,8 +1,9 @@
-var TWEEN = require('tween.js')
-var _     = require('underscore')
-var fit   = require('canvas-fit')
-var range = require('unlerp')
-var lerp  = require('lerp')
+// var TWEEN  = require('tween.js')
+var _      = require('underscore') // using: after extend
+var fit    = require('canvas-fit')
+var unlerp = require('unlerp')
+var lerp   = require('lerp')
+var curry  = require('lodash.curry')
 var almostEqual = require('almost-equal')
 
 var id    = function(a) { return a };
@@ -34,20 +35,28 @@ _.extend(Images, {
 
 
 var Transform = {
+	// util: {
+	// 	w: function (zto1) {
+	// 		return canvas.width * zto1
+	// 	},
+	// 	h: function (zto1) {
+	// 		return canvas.height* zto1
+	// 	},
+	// },
 	input: {
 		a: function(n) {
-			return range(0, canvas.width, n)
+			return unlerp(0, canvas.width, n)
 		},
 		b: function(n) {
-			return range(0, canvas.height, n)
+			return unlerp(0, canvas.height, n)
 		},
-		setForAccel: function () {
-			Transform.input.a = curry( range, [-20, 20] )
-			Transform.input.b = curry( range, [ 0, 50] )
+		setForAccel: function (currentA, currentB) {
+			Transform.input.a = curry(unlerp)( -20, 20 )
+			Transform.input.b = curry(unlerp)(   0, 50 )
 		},
-		setForGyro: function () {
-			Transform.input.a = curry( range, [  3.5, -3.5 ] )
-			Transform.input.b = curry( range, [  0.0,  8.0 ] )
+		setForGyro: function (currentA, currentB) {
+			Transform.input.a = curry(unlerp)( 3.5, -3.5 )
+			Transform.input.b = curry(unlerp)( 0.0,  8.0 )
 		}
 	},
 	output: {
@@ -79,8 +88,7 @@ var Transform = {
 }
 
 
-// replace with backbone?
-
+// normalised to 0-1
 var NormalisedInput = {
 	a: 0,
 	b: 0,
@@ -112,29 +120,34 @@ var Mouse = {
 			Mouse.y = ev.clientY;
 		};
 
-		setInterval(function() {
+		this.intervalId = setInterval(function() {
 			if (! AccelOrGyro.receivingData) { // use mouse
 				NormalisedInput.set( Mouse.x, Mouse.y );
 			}
 		}, 1000/60)
+	},
+	stopWatching: function () {
+		clearInterval( this.intervalId )
 	}
 }
 
 var AccelOrGyro = {
 	receivingData: false, // window.DeviceOrientationEvent exists when no sensor
-	setAsAccel: function() {
-		Transform.input.setForAccel();
+	setAsAccel: function(a, b) {
+		Transform.input.setForAccel(a, b);
 		this.receivingData = true;
 	},
-	setAsGyro: function() {
-		Transform.input.setForGyro();
+	setAsGyro: function(a, b) {
+		Transform.input.setForGyro(a, b);
 		this.receivingData = true;
 	},
 	configureOnData: function (o) {
 		if (o.gamma != null) {
-			AccelOrGyro.setAsAccel()
+			AccelOrGyro.setAsAccel(o.gamma, o.beta)
+			Mouse.stopWatching()
 		} else if (o.y != null) {
-			AccelOrGyro.setAsGyro()
+			AccelOrGyro.setAsGyro(o.x, o.y)
+			Mouse.stopWatching()
 		} else { // getting null values for motion - screw you guys...
 			gyro.stopTracking()
 		}
@@ -200,10 +213,6 @@ window.addEventListener('load', function () {
 
 
 ///////////////////////////////////////////////////////
-// the mess starts here...
-
-
-
 
 function Dot (id, scaleX, scaleY, color) {
 	// var dotGrowthSpeed = 0.01;
@@ -236,7 +245,7 @@ _.extend( Dot.prototype, {
 		var width =  this.pxSize * 2;
 
 		if (State.drawCircles) {
-			context.prop({ fillStyle: '#f00' }).circle(this.x, this.y, radius).fill()
+			context.prop({ fillStyle: this.color }).circle(this.x, this.y, radius).fill()
 		} else {
 			context.drawImage(Images[this.id], this.x - radius, this.y - radius, width, width)
 		}
@@ -309,32 +318,4 @@ function draw() {
 function animate() {
 	requestAnimationFrame( animate )
 	draw()
-}
-
-// libs
-
-// http://www.crockford.com/javascript/www_svendtofte_com/code/curried_javascript/index.html
-function curry(func,args,space) {
-	var n  = func.length - args.length; //arguments still to come
-	var sa = Array.prototype.slice.apply(args); // saved accumulator array
-	function accumulator(moreArgs,sa,n) {
-		var saPrev = sa.slice(0); // to reset
-		var nPrev  = n; // to reset
-		for(var i=0;i<moreArgs.length;i++,n--) {
-			sa[sa.length] = moreArgs[i];
-		}
-		if ((n-moreArgs.length)<=0) {
-			var res = func.apply(space,sa);
-			// reset vars, so curried function can be applied to new params.
-			sa = saPrev;
-			n  = nPrev;
-			return res;
-		} else {
-			return function (){
-				// arguments are params, so closure bussiness is avoided.
-				return accumulator(arguments,sa.slice(0),n);
-			}
-		}
-	}
-	return accumulator([],sa,n);
 }
