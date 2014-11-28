@@ -101,6 +101,8 @@ var NormalisedInput = {
 	}
 }
 
+
+
 var Mouse = {
 	x: 0,
 	y: 0,
@@ -114,7 +116,6 @@ var Mouse = {
 			if (! AccelOrGyro.receivingData) { // use mouse
 				NormalisedInput.set( Mouse.x, Mouse.y );
 			}
-			dots.update(); // what?
 		}, 1000/60)
 	}
 }
@@ -201,29 +202,20 @@ window.addEventListener('load', function () {
 ///////////////////////////////////////////////////////
 // the mess starts here...
 
-var dotSizeRange = [ pixels(80), pixels(120) ];
-// var dotGrowthSpeed = 0.01;
 
-function Dot (scaleX, scaleY) {
+
+
+function Dot (id, scaleX, scaleY, color) {
+	// var dotGrowthSpeed = 0.01;
+	var dotSizeRange = [ pixels(80), pixels(120) ];
 	_.extend(this, {
-		// changeSizeBy: dotGrowthSpeed,
-		size:0, scaleX:scaleX, scaleY:scaleY, x:0, y:0,
+		id:id, scaleX:scaleX, scaleY:scaleY, color:color, size:0, x:0, y:0
 	})
 	this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], this.size);
 	return this;
 }
 _.extend( Dot.prototype, {
-	// bumpSize: function() {
-	// 	if (this.size > 1) {
-	// 		this.changeSizeBy = -dotGrowthSpeed;
-	// 	} else if (this.size < 0) {
-	// 		this.changeSizeBy = dotGrowthSpeed;
-	// 		State.nextBlend();
-	// 	}
-	// 	this.size += this.changeSizeBy;
-	// 	this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Quadratic.InOut(this.size) );
-	// },
-	move: function(x, y) { // [0-1, 0-1]
+	setXY: function(x, y) { // [0-1, 0-1]
 		this.x = Math.round( this.scaleX(x) + pixels(50) )
 		this.y = Math.round( this.scaleY(y) + pixels(50) )
 	},
@@ -238,30 +230,63 @@ _.extend( Dot.prototype, {
                       almostEqual(this.savedSize, this.size, 0.01)
 		                 )
 		return ! stationary;
-	}
+	},
+	draw: function () {
+		var radius = this.pxSize;
+		var width =  this.pxSize * 2;
+
+		if (State.drawCircles) {
+			context.prop({ fillStyle: '#f00' }).circle(this.x, this.y, radius).fill()
+		} else {
+			context.drawImage(Images[this.id], this.x - radius, this.y - radius, width, width)
+		}
+	},
+/*bumpSize: function() {
+		if (this.size > 1) { this.changeSizeBy = -dotGrowthSpeed; }
+		else if (this.size < 0) {
+			this.changeSizeBy = dotGrowthSpeed;
+			State.nextBlend();
+		}
+		this.size += this.changeSizeBy;
+		this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1],
+	                     TWEEN.Easing.Quadratic.InOut(this.size) );
+  }, */
 })
 
 
-var dots = {
-	r: new Dot( Transform.output.r.x, Transform.output.r.y ),
-	g: new Dot( Transform.output.g.x, Transform.output.g.y ),
-	b: new Dot( Transform.output.b.x, Transform.output.b.y ),
+var Dots = {
+	r: new Dot( 'r', Transform.output.r.x, Transform.output.r.y, '#f00' ),
+	g: new Dot( 'g', Transform.output.g.x, Transform.output.g.y, '#0f0' ),
+	b: new Dot( 'b', Transform.output.b.x, Transform.output.b.y, '#00f' ),
 	// collision: function() {
 	// 	return dots.near(dots.r, dots.g, dots.b)
 	// },
-	update: function () {
+	haveMoved: function () {
+		return Dots.r.hasMoved() || Dots.g.hasMoved() || Dots.b.hasMoved()
+	},
+	savePositions: function () {
+		Dots.r.savePosition()
+		Dots.g.savePosition()
+		Dots.b.savePosition()
+	},
+	updateXY: function () {
 		var x = NormalisedInput.a;
 		var y = NormalisedInput.b;
 
-		dots.r.move(x, y)
-		dots.g.move(x, y)
-		dots.b.move(x, y)
+		Dots.r.setXY(x, y)
+		Dots.g.setXY(x, y)
+		Dots.b.setXY(x, y)
 
 		// if (dots.collision()) {
 		// 	dots.r.bumpSize()
 		// 	dots.g.bumpSize()
 		// 	dots.b.bumpSize()
 		// }
+	},
+	draw: function () {
+		Dots.r.draw();
+		Dots.g.draw();
+		Dots.b.draw();
 	},
 	// near: function(a, b, c) {
 	// 	return within(pixels(10), a.x, b.x ) && within(pixels(10), a.x, c.x ) &&
@@ -271,29 +296,12 @@ var dots = {
 
 
 function draw() {
-	if (dots.r.hasMoved() || dots.g.hasMoved() || dots.b.hasMoved() || State.redraw) {
+	Dots.updateXY();
+
+	if (Dots.haveMoved() || State.redraw) {
 		context.clearRect(0, 0, canvas.width, canvas.height)
-
-		var radius = { r: dots.r.pxSize, g: dots.g.pxSize, b: dots.b.pxSize };
-		var width =  { r: dots.r.pxSize * 2, g: dots.g.pxSize * 2, b: dots.b.pxSize * 2 };
-
-		if (State.drawCircles) {
-			context
-				.prop({ fillStyle: '#f00' }).circle(dots.r.x, dots.r.y, radius.r).fill()
-				.prop({ fillStyle: '#0f0' }).circle(dots.g.x, dots.g.y, radius.g).fill()
-				.prop({ fillStyle: '#00f' }).circle(dots.b.x, dots.b.y, radius.b).fill()
-		} else {
-
-			// context.drawImage.apply(context, [Images.r].concat( dots.calcImageXY() ))
-			context.drawImage(Images.r, dots.r.x - radius.r, dots.r.y - radius.r, width.r, width.r)
-			context.drawImage(Images.g, dots.g.x - radius.g, dots.g.y - radius.g, width.g, width.g)
-			context.drawImage(Images.b, dots.b.x - radius.b, dots.b.y - radius.b, width.b, width.b)
-		}
-
-		// dots.savePositions()
-		dots.r.savePosition()
-		dots.g.savePosition()
-		dots.b.savePosition()
+		Dots.draw()
+		Dots.savePositions()
 		State.redraw = false;
 	}
 }
