@@ -36,11 +36,11 @@ _.extend(Images, {
 
 
 
-var TargetPosition = {
+var Target = {
 	x:0, y:0,
 	init: function () {
-		this.x = canvas.width - pixels(100);
-		this.y = canvas.height - pixels(100);
+		this.x = canvas.width - pixels(125);
+		this.y = canvas.height - pixels(125);
 	}
 };
 
@@ -57,11 +57,11 @@ var Transform = {
 	input: {
 		a: function(n) {
 			// calc distance from target (0.5 == bang on)
-			var distance = 0.5 + ((TargetPosition.x - n) / canvas.width)
+			var distance = 0.5 + ((Target.x - n) / canvas.width)
 			return distance;
 		},
 		b: function(n) {
-			var distance = 0.5 + ((TargetPosition.y - n) / canvas.height)
+			var distance = 0.5 + ((Target.y - n) / canvas.height)
 			return distance;
 		},
 		setForAccel: function (currentA, currentB) {
@@ -74,28 +74,39 @@ var Transform = {
 		}
 	},
 	output: {
+		x: function (zto1) {
+			return lerp(0, canvas.width, zto1)
+		},
+		y: function (zto1) {
+			return lerp(0, canvas.height, zto1)
+		},
 		r: {
 			x: function (zto1) {
-				return lerp(canvas.width * 0.64, canvas.width * 0.80, zto1)
+				var band = Transform.output.x(0.08);
+				return lerp(Target.x - band, Target.x + band, zto1)
 			},
 			y: function (zto1) {
-				return lerp(canvas.height * 0.80, canvas.height * 0.70, zto1)
+				var band = Transform.output.y(0.05);
+				return lerp(Target.y + band, Target.y - band, zto1)
 			}
 		},
 		g: {
 			x: function (zto1) {
-				return lerp(canvas.width * 0.72, canvas.width * 0.72, zto1)
+				return Target.x
 			},
 			y: function (zto1) {
-				return lerp(canvas.height * 0.70, canvas.height * 0.8, zto1)
+				var band = Transform.output.y(0.05);
+				return lerp(Target.y - band, Target.y + band, zto1)
 			}
 		},
 		b: {
 			x: function (zto1) {
-				return lerp(canvas.width * 0.80, canvas.width * 0.64, zto1)
+				var band = Transform.output.x(0.08);
+				return lerp(Target.x + band, Target.x - band, zto1)
 			},
 			y: function (zto1) {
-				return lerp(canvas.height * 0.80, canvas.height * 0.70, zto1)
+				var band = Transform.output.y(0.05);
+				return lerp(Target.y + band, Target.y - band, zto1)
 			}
 		}
 	}
@@ -221,7 +232,7 @@ window.addEventListener('load', function () {
 	document.addEventListener('touchend', State.nextBlend.bind(State));
 	window.addEventListener('resize', resize, false);
 
-	TargetPosition.init();
+	Target.init();
 
 	setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
 	Mouse.watch();
