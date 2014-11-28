@@ -13,8 +13,7 @@ canvas.style.position = 'fixed'; // stop canvas-fit stomping position:fixed
 
 var context = canvas.getContext('2d');
 
-
-window.Images = {
+var Images = {
 	loadUrl: function (src, done) {
 		var img = new Image();
 		img.onload = done;
@@ -33,22 +32,67 @@ _.extend(Images, {
 	b: Images.loadUrl('assets/images/me-blue.png', allImagesLoaded)
 });
 
+
+var Transform = {
+	input: {
+		a: function(n) {
+			return range(0, canvas.width, n)
+		},
+		b: function(n) {
+			return range(0, canvas.height, n)
+		},
+		setForAccel: function () {
+			Transform.input.a = curry( range, [-20, 20] )
+			Transform.input.b = curry( range, [ 0, 50] )
+		},
+		setForGyro: function () {
+			Transform.input.a = curry( range, [  3.5, -3.5 ] )
+			Transform.input.b = curry( range, [  0.0,  8.0 ] )
+		}
+	},
+	output: {
+		r: {
+			x: function (zto1) {
+				return lerp(canvas.width * 0.64, canvas.width * 0.80, zto1)
+			},
+			y: function (zto1) {
+				return lerp(canvas.height * 0.80, canvas.height * 0.70, zto1)
+			}
+		},
+		g: {
+			x: function (zto1) {
+				return lerp(canvas.width * 0.72, canvas.width * 0.72, zto1)
+			},
+			y: function (zto1) {
+				return lerp(canvas.height * 0.70, canvas.height * 0.8, zto1)
+			}
+		},
+		b: {
+			x: function (zto1) {
+				return lerp(canvas.width * 0.80, canvas.width * 0.64, zto1)
+			},
+			y: function (zto1) {
+				return lerp(canvas.height * 0.80, canvas.height * 0.70, zto1)
+			}
+		}
+	}
+}
+
+
 // replace with backbone?
 var inputs = {
 	set: function(a, b) {
 		var angle = window.orientation;
 
 		if (! angle) { // no rotation (or not supported)
-			this.a = this.aRanger(a);
-			this.b = this.bRanger(b);
+			this.a = Transform.input.a(a);
+			this.b = Transform.input.b(b);
 		} else {
 			// debug.innerHTML = window.orientation;
-			this.a = this.aRanger(b);
-			this.b = this.bRanger(a);
+			this.a = Transform.input.a(b);
+			this.b = Transform.input.b(a);
 		}
 	},
-	aRanger: id,
-	bRanger: id,
 	mouseX: 0,
 	mouseY: 0,
 	watchMouse: function() {
@@ -70,13 +114,11 @@ var inputs = {
 var AccelOrGyro = {
 	receivingData: false, // window.DeviceOrientationEvent exists when no sensor
 	setAsAccel: function() {
-		inputs.aRanger = curry( range, [-20, 20] )
-		inputs.bRanger = curry( range, [ 0, 50] )
+		Transform.input.setForAccel();
 		this.receivingData = true;
 	},
 	setAsGyro: function() {
-		inputs.aRanger = curry( range, [  3.5, -3.5 ] )
-		inputs.bRanger = curry( range, [  0.0,  8.0 ] )
+		Transform.input.setForGyro();
 		this.receivingData = true;
 	},
 	configureOnData: function (o) {
@@ -123,6 +165,7 @@ window.State = {
 	}
 }
 
+
 window.cycle = function (arr) {
 	var pos = 0;
 	return function (n) {
@@ -136,40 +179,41 @@ window.cycle = function (arr) {
 
 
 
-var Dimensions = {
-	w: canvas.width,
-	h: canvas.height,
-	postCanvasSetup: function(passedThru) {
-		this.w = canvas.width;
-		this.h = canvas.height;
-		if (! AccelOrGyro.receivingData) {
-			inputs.aRanger = curry( range, [0, this.w] )
-			inputs.bRanger = curry( range, [0, this.h] )
-		}
-		// State.end();
-	}
-};
-Dimensions.resize = _.compose(
-	fit(canvas, window, pixels(1)),
-	function(){
-		setTimeout(Dimensions.postCanvasSetup.bind(Dimensions), 10) // 10 == magic :/
-	}
-);
+// var Dimensions = {
+// 	w: canvas.width,
+// 	h: canvas.height,
+// 	postCanvasSetup: function(passedThru) {
+// 		this.w = canvas.width;
+// 		this.h = canvas.height;
+// 		if (! AccelOrGyro.receivingData) {
+// 			inputs.aRanger = curry( range, [0, this.w] )
+// 			inputs.bRanger = curry( range, [0, this.h] )
+// 		}
+// 		// State.end();
+// 	}
+// };
+// Dimensions.resize = _.compose(
+// 	fit(canvas, window, pixels(1)),
+// 	function(){
+// 		setTimeout(Dimensions.postCanvasSetup.bind(Dimensions), 10) // 10 == magic :/
+// 	}
+// );
 
 
 
 window.addEventListener('load', function () {
+	var resize = fit(canvas, window, pixels(1));
 	State.setInitialBlend();
 	document.addEventListener('click', State.nextBlend.bind(State));
 	document.addEventListener('keydown', State.prevBlend.bind(State));
 	document.addEventListener('touchend', State.nextBlend.bind(State));
-	window.addEventListener('resize', Dimensions.resize.bind(Dimensions), false);
+	window.addEventListener('resize', resize, false);
 
 	setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
 	inputs.watchMouse();
 })
 
-Dimensions.resize();
+// Dimensions.resize();
 
 
 
@@ -185,17 +229,17 @@ function Dot (scaleX, scaleY) {
 	return this;
 }
 _.extend( Dot.prototype, {
-	bumpSize: function() {
-		if (this.size > 1) {
-			this.changeSizeBy = -dotGrowthSpeed;
-		} else if (this.size < 0) {
-			this.changeSizeBy = dotGrowthSpeed;
-			State.nextBlend();
-		}
-		this.size += this.changeSizeBy;
-		this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Quadratic.InOut(this.size) );
-	},
-	reposition: function(x, y) { // [0-1, 0-1]
+	// bumpSize: function() {
+	// 	if (this.size > 1) {
+	// 		this.changeSizeBy = -dotGrowthSpeed;
+	// 	} else if (this.size < 0) {
+	// 		this.changeSizeBy = dotGrowthSpeed;
+	// 		State.nextBlend();
+	// 	}
+	// 	this.size += this.changeSizeBy;
+	// 	this.pxSize = lerp(dotSizeRange[0], dotSizeRange[1], TWEEN.Easing.Quadratic.InOut(this.size) );
+	// },
+	move: function(x, y) { // [0-1, 0-1]
 		this.x = Math.round( this.scaleX(x) + pixels(50) )
 		this.y = Math.round( this.scaleY(y) + pixels(50) )
 	},
@@ -205,8 +249,8 @@ _.extend( Dot.prototype, {
 		this.savedSize = this.size;
 	},
 	hasMoved: function(x, y) {
-		var stationary = (almostEqual(this.savedX, this.x, 1, 0) &&
-		                  almostEqual(this.savedY, this.y, 1, 0) &&
+		var stationary = (almostEqual(this.savedX, this.x, .05, 0) &&
+		                  almostEqual(this.savedY, this.y, .05, 0) &&
                       almostEqual(this.savedSize, this.size, 0.01)
 		                 )
 		return ! stationary;
@@ -215,22 +259,19 @@ _.extend( Dot.prototype, {
 
 
 var dots = {
-	r: new Dot( function(n) { return lerp(Dimensions.w * 0.64, Dimensions.w * 0.80, n) },
-	            function(n) { return lerp(Dimensions.h * 0.80, Dimensions.h * 0.70, n) }),
-	g: new Dot( function(n) { return lerp(Dimensions.w * 0.72, Dimensions.w * 0.72, n) },
-	            function(n) { return lerp(Dimensions.h * 0.70, Dimensions.h * 0.8, n) }),
-	b: new Dot( function(n) { return lerp(Dimensions.w * 0.80, Dimensions.w * 0.64, n) },
-	            function(n) { return lerp(Dimensions.h * 0.80, Dimensions.h * 0.70, n) }),
-	collision: function() {
-		return dots.near(dots.r, dots.g, dots.b)
-	},
+	r: new Dot( Transform.output.r.x, Transform.output.r.y ),
+	g: new Dot( Transform.output.g.x, Transform.output.g.y ),
+	b: new Dot( Transform.output.b.x, Transform.output.b.y ),
+	// collision: function() {
+	// 	return dots.near(dots.r, dots.g, dots.b)
+	// },
 	update: function () {
 		var x = inputs.a;
 		var y = inputs.b;
 
-		dots.r.reposition(x, y)
-		dots.g.reposition(x, y)
-		dots.b.reposition(x, y)
+		dots.r.move(x, y)
+		dots.g.move(x, y)
+		dots.b.move(x, y)
 
 		// if (dots.collision()) {
 		// 	dots.r.bumpSize()
@@ -243,7 +284,6 @@ var dots = {
 	// 	       within(pixels(10), a.y, b.y ) && within(pixels(10), a.y, c.y )
 	// }
 }
-
 
 
 function draw() {
