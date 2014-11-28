@@ -3,6 +3,7 @@ var _      = require('underscore') // using: after extend
 var fit    = require('canvas-fit')
 var unlerp = require('unlerp')
 var lerp   = require('lerp')
+var clamp  = require('clamp')
 var curry  = require('lodash.curry')
 var almostEqual = require('almost-equal')
 
@@ -34,6 +35,16 @@ _.extend(Images, {
 });
 
 
+
+var TargetPosition = {
+	x:0, y:0,
+	init: function () {
+		this.x = canvas.width - pixels(100);
+		this.y = canvas.height - pixels(100);
+	}
+};
+
+
 var Transform = {
 	// util: {
 	// 	w: function (zto1) {
@@ -45,10 +56,13 @@ var Transform = {
 	// },
 	input: {
 		a: function(n) {
-			return unlerp(0, canvas.width, n)
+			// calc distance from target (0.5 == bang on)
+			var distance = 0.5 + ((TargetPosition.x - n) / canvas.width)
+			return distance;
 		},
 		b: function(n) {
-			return unlerp(0, canvas.height, n)
+			var distance = 0.5 + ((TargetPosition.y - n) / canvas.height)
+			return distance;
 		},
 		setForAccel: function (currentA, currentB) {
 			Transform.input.a = curry(unlerp)( -20, 20 )
@@ -206,6 +220,8 @@ window.addEventListener('load', function () {
 	document.addEventListener('keydown', State.prevBlend.bind(State));
 	document.addEventListener('touchend', State.nextBlend.bind(State));
 	window.addEventListener('resize', resize, false);
+
+	TargetPosition.init();
 
 	setTimeout( AccelOrGyro.setup.bind(AccelOrGyro), 500 );
 	Mouse.watch();
