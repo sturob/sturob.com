@@ -221,6 +221,9 @@ p {
 p:last-child {
   margin-bottom: 0;
 }
+h2 {
+  margin-bottom: 2px;
+}
 b {
   font-weight: normal;
   padding: 0 1px;
