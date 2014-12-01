@@ -205,18 +205,17 @@ body {
   font-family: Prociono, serif;
 }
 body {
-  color: #222;
   background: #fff;
   font-size: 16px;
   position: relative;
 }
 section {
   max-width: 480px;
-  padding: 16px;
+  padding: 1em;
 }
 p {
-  line-height: 1.5em;
-  margin: 0 0 0.75em 0;
+  line-height: 1.44em;
+  margin: 0 0 1em 0;
 }
 p:last-child {
   margin-bottom: 0;
@@ -226,7 +225,10 @@ h2 {
 }
 b {
   font-weight: normal;
+  text-transform: capitalize;
   padding: 0 1px;
+  color: #000;
+  margin: 0 -1px;
 }
 a {
   text-decoration: none;
