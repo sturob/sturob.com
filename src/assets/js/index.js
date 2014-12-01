@@ -36,11 +36,14 @@ _.extend(Images, {
 
 
 
+var imageWidth = 50;
+
+
 var Target = {
 	x:0, y:0,
 	init: function () {
-		this.x = canvas.width - pixels(125);
-		this.y = canvas.height - pixels(125);
+		this.x = canvas.width - pixels(imageWidth*2 - 4);
+		this.y = canvas.height - pixels(imageWidth*2 - 4);
 	}
 };
 
@@ -58,11 +61,11 @@ var Transform = {
 		a: function(n) {
 			// calc distance from target (0.5 == bang on)
 			var distance = 0.5 + ((Target.x - n) / canvas.width)
-			return distance;
+			return distance / 2;
 		},
 		b: function(n) {
 			var distance = 0.5 + ((Target.y - n) / canvas.height)
-			return distance;
+			return distance / 2;
 		},
 		setForAccel: function (currentA, currentB) {
 			Transform.input.a = curry(unlerp)( -15, 15 )
@@ -82,12 +85,12 @@ var Transform = {
 		},
 		r: {
 			x: function (zto1) {
-				var band = Transform.output.x(0.08);
+				var band = Transform.output.x(0.04);
 				return lerp(Target.x - band, Target.x + band, zto1)
 			},
 			y: function (zto1) {
-				var band = Transform.output.y(0.05);
-				return lerp(Target.y + band, Target.y - band, zto1)
+				var band = Transform.output.y(0.01);
+				return lerp(Target.y - band, Target.y + band, zto1)
 			}
 		},
 		g: {
@@ -95,17 +98,17 @@ var Transform = {
 				return Target.x
 			},
 			y: function (zto1) {
-				var band = Transform.output.y(0.05);
-				return lerp(Target.y - band, Target.y + band, zto1)
+				// var band = Transform.output.y(0.05);
+				return Target.y // lerp(Target.y - band, Target.y + band, zto1)
 			}
 		},
 		b: {
 			x: function (zto1) {
-				var band = Transform.output.x(0.08);
+				var band = Transform.output.x(0.04);
 				return lerp(Target.x + band, Target.x - band, zto1)
 			},
 			y: function (zto1) {
-				var band = Transform.output.y(0.05);
+				var band = Transform.output.y(0.01);
 				return lerp(Target.y + band, Target.y - band, zto1)
 			}
 		}
@@ -194,17 +197,17 @@ var AccelOrGyro = {
 
 window.State = {
 	drawCircles: false,
-	blends: ('screen overlay lighten color-dodge color-burn difference exclusion hue hard-light soft-light saturation color luminosity').split(' '),
+	blends: ('screen lighten color-dodge difference exclusion soft-light').split(' '),
+	setInitialBlend: function () {
+		State.blendCycle = cycle(State.blends)
+		this.setBlend( this.blendCycle() )
+	},
 	nextBlend: function () {
 		this.setBlend( this.blendCycle(+1) )
 	},
 	prevBlend: function (ev) {
 		if (ev.keyCode != 37) return;
 		this.setBlend( this.blendCycle(-1) )
-	},
-	setInitialBlend: function () {
-		State.blendCycle = cycle(State.blends)
-		this.setBlend( this.blendCycle() )
 	},
 	setBlend: function (blend) {
 		context.globalCompositeOperation = blend;
@@ -243,7 +246,7 @@ window.addEventListener('load', function () {
 
 function Dot (id, scaleX, scaleY, color) {
 	// var dotGrowthSpeed = 0.01;
-	var dotSizeRange = [ pixels(80), pixels(120) ];
+	var dotSizeRange = [ pixels(imageWidth), pixels(imageWidth) ];
 	_.extend(this, {
 		id:id, scaleX:scaleX, scaleY:scaleY, color:color, size:0, x:0, y:0
 	})
