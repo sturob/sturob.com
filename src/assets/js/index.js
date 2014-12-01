@@ -41,9 +41,12 @@ var imageWidth = 50;
 
 var Target = {
 	x:0, y:0,
-	init: function () {
-		this.x = canvas.width - pixels(imageWidth*2 - 4);
-		this.y = canvas.height - pixels(imageWidth*2 - 4);
+	init: function (a) {
+		setTimeout(function () {
+			Target.x = canvas.width - pixels(imageWidth*2 - 4);
+			Target.y = canvas.height - pixels(imageWidth*2 - 4);
+			State.setBlend( State.blendCycle(0))
+		}, 10)
 	}
 };
 
@@ -228,7 +231,9 @@ window.cycle = function (arr) {
 
 
 window.addEventListener('load', function () {
-	var resize = fit(canvas, window, pixels(1));
+	var resize = _.debounce(_.compose(
+		fit(canvas, window, pixels(1)), Target.init.bind(Target)
+	), 100);
 	State.setInitialBlend();
 	document.addEventListener('click', State.nextBlend.bind(State));
 	document.addEventListener('keydown', State.prevBlend.bind(State));
