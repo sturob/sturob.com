@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	
+
 	<link href="wc.css" media="screen" rel="stylesheet" type="text/css" />
 
 	<meta name="viewport" content="width=640" />
@@ -3013,13 +3013,13 @@ var matches = [
 		(function () {
 			var F = function () {};
 			Object.create = function (o) {
-				if (arguments.length > 1) { 
+				if (arguments.length > 1) {
 					throw Error('Second argument not supported');
 				}
-				if (o === null) { 
+				if (o === null) {
 					throw Error('Cannot set a null [[Prototype]]');
 				}
-				if (typeof o != 'object') { 
+				if (typeof o != 'object') {
 					throw TypeError('Argument must be an object');
 				}
 				F.prototype = o;
@@ -3248,7 +3248,7 @@ var Match = { // mixin
 	},
 	getCode: function() {
 		if (this.isGroupStage()) return '';
-		if (this.isRoundOf16()) { 
+		if (this.isRoundOf16()) {
 			return this.team1.substr(1) + this.team2.substr(1)
 		}
 
@@ -3409,7 +3409,7 @@ function markPastMatches() {
 	_.forEach(dts, function (el, n) {
 		var dt = new Date( el.getAttribute('sketch:datetime') );
 		var now = new Date();
-		
+
 		var matchInMs = (110*60*1000);
 		var dayInMs = (24*60*60*1000) * 0.85;
 
@@ -3449,7 +3449,7 @@ function markPastMatches() {
 			_.forEach(goalsEls, function(gEl, n) {
 				var teamName = orderedTeamNames[ gEl.id.split('-')[1] ];
 				var goalsN = scoreForTeamNameFromSimultaneous(playedMatches, teamName);
-			
+
 				var nudge = function(el) { };
 
 				if (goalsN > 1 && (goalsN % 2 == 0)) { // 2+ and even
@@ -3532,7 +3532,7 @@ function progressVictors() {
 		if (id.split('-').length == 2) { // round of 16
 			order = [0, 1, 2, 3]
 		}
-		
+
 		if (t1 || t2) {
 			r.style.visibility = 'visible';
 		} else {
@@ -3547,13 +3547,13 @@ function progressVictors() {
 		if (match.penalties1) {
 			var p1 = r.getElementsByTagName('g')[0];
 			var p2 = r.getElementsByTagName('g')[1];
-			
+
 			if (id.split('-').length > 2) { // QF or later
 				var tmp = p1;
 				p1 = p2;
 				p2 = tmp;
 			}
-			
+
 			_.forEach(match.penalties1.split(''), function(pen, n) {
 				var actualN = n + 1;
 
@@ -3583,7 +3583,7 @@ function progressVictors() {
 		// r.getElementsByTagName('g')[1]
 		// - penalties1
 		// - penalties2
-		
+
 		// hide line-text
 		var linetext_id = id.split('-').slice(1).join('-') + '-Linetext';
 		var linetext = document.getElementById(linetext_id);
@@ -3602,7 +3602,7 @@ function progressVictors() {
 			console.log(arrow)
 			console.log(t1 +  ' ' + t2)
 		}
- 
+
 	});
 }
 
@@ -3679,10 +3679,15 @@ function embedImage(parentId, height) {
 
 </script>
 
-<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"> </script> 
-<script type="text/javascript"> 
-	_uacct = "UA-1333551-1";
-	urchinTracker();
-</script>
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-KZD8FL"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KZD8FL');</script>
+<!-- End Google Tag Manager -->
+
 
 </html>
