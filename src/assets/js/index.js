@@ -36,6 +36,14 @@ _.extend(Images, {
 });
 
 
+// http://www.filamentgroup.com/lab/font-events.html
+var observer = new FontFaceObserver('Prociono', {});
+observer.check().then(function () {
+	document.documentElement.className += " fonts-loaded";
+}, function () {
+  // console.log('Font is not available');
+});
+
 
 var imageWidth = 50;
 
