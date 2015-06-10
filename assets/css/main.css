@@ -203,6 +203,9 @@ body * {
   /* Legacy iOS */
 }
 body {
+  font: serif;
+}
+html.fonts-loaded body {
   font-family: Prociono, serif;
 }
 body {
