@@ -23,6 +23,7 @@ var Images = {
 		return img;
 	},
 	onImagesLoaded: function () {
+		setTimeout( function() { bg.style.opacity = 1; }, 500);
 		animate();
 	}
 }
