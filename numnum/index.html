@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<head>
+	<title>numnum: explore historic + modern ways to display numbers</title>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+
+	<meta name="description" content= "The interactive way to learn about numeral systems. Numbers 0-99999 instantly converted to Chinese, Roman, Mayan, binary and more."/>
+
+	<meta name="keywords" content="compare, explore, learn, visualize, view, see, convert, represent, interact, deduce, numbers, numerals, numeral system, roman, roman numerals, historic, aegean, chinese, hebrew, mayan, arabic, myanmar, binary, morse, random, base20, base10, app, tool, service, application"/>
+
+	<!--  Twitter Card data -->
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:site" content="@sturob">
+	<meta name="twitter:title" content="explore historic + modern ways to display numbers">
+	<meta name="twitter:description" content="The interactive way to learn about numeral systems. Numbers 0-99999 instantly converted to Chinese, Roman, Mayan, binary and more.">
+	<meta name="twitter:creator" content="@sturob">
+	<!-- Twitter Summary card images must be at least 120x120px -->
+	<meta name="twitter:image" content="http://sturob.com/numnum/fonts/shot.png">
+
+	<meta property="og:site_name"          content="numnum">
+	<meta property="og:url"                content="http://sturob.com/numnum/">
+	<meta property="og:type"               content="website">
+	<meta property="og:title"              content="Explore historic + modern ways to display numbers">
+	<meta property="og:description"        content="Numbers you choose instantly converted to Chinese, Roman, Mayan, binary and more. The interactive way to learn about numeral systems.">
+	<meta property="og:image"              content="http://sturob.com/numnum/fonts/shot.png">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="css/one.css">
+</head>
+
+<body>
+	<div id="all">
+
+		<div id="main-input">
+			<div id="p-m">
+				<button id="plus"><span>▲</span></button>
+				<button id="minus"><span>▼</span></button>
+			</div>
+			<input id="a-number" type="number" min="0" max="99999" step="1" pattern="[0-9]*">
+
+			<button id="random"><span>RANDOM</span></button>
+		</div>
+		<div id="viz-hack"></div>
+
+		<!-- <div id="quick-nums">Popular numbers: <a>2017</a> <a>1984</a></div> -->
+
+		<ul id="notations">
+			<li id="aegean"><b></b></li>
+			<li id="japanese"><b></b></li>
+			<li id="chinese"><b></b></li>
+
+			<li id="roman"><b></b></li>
+			<li id="hebrew"><b></b></li>
+			<li id="mayan"><b></b></li>
+			<li id="eastarabic"><b></b></li>
+			<li id="myanmar"><b></b></li>
+
+			<li id="binary"><b></b></li>
+			<li id="morse"><b></b></li>
+			<li id="english"><b></b></li>
+		</ul>
+
+		<div id="footer">
+			<h1>What is <b>numnum</b>?</h1>
+			<p> The interactive way to learn about different numeral systems.</p>
+			<p><!--a href="">How to use</a--> <a href="https://en.wikipedia.org/wiki/Numeral_system">Numeral Systems on Wikipedia</a></p>
+
+			<!-- <h1>What can I do to the number?</h1>
+			<p>Type one in, generate a Random one, ▲Increment and ▼Decrement</P> -->
+		</div>
+
+		<div id="copyright">
+			&copy;2017 Stuart Robinson</a>
+			&middot; <a href="http://twitter.com/sturob">Twitter</a> &middot; <a href="mailto:numnum@sturob.com">Email</a>
+		</div>
+	</div>
+</body>
+
+<script src="bundle.js"></script>
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-KZD8FL"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KZD8FL');</script>
+<!-- End Google Tag Manager -->
+
+</html>
