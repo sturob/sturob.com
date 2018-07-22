@@ -3,36 +3,48 @@
 	<style>
 	* {margin: 0;padding: 0}
 	body {
-		background: #222;
+		background-color: #e3e3e3;
+		background: linear-gradient(to bottom, rgba(240,236,236,1) 0%,rgba(200,200,200,1) 100%);
+
 		font-family: sans-serif;
 		text-align: center;
 		font-size: 24px;
-		/* background-color: #111; */
 	}
 
 	a {
-		color: #99f;
+		font-size: 12px;
 	}
 
-	#preview {
+	#preview div {
 		width: 500px;
 		float: left;
 		margin-right: 40px;
 	}
+
+	#preview div#raw {
+		margin: 50px 0px;
+	}
+
 	div#dl {
 		margin: 1em;
 		color: #ddd;
 		width: 200px;
 	}
 	#links a {
-		display: block;
+		color: #fff;
+		text-decoration: none;
+		background: #6666aa;
+		padding: 5px 2px;
+		margin: 4px 0;
+		display: inline-block;
+		/* display: block; */
 	}
 	#other-tzs {
-		line-height: 1.5em;
+		line-height: 2em;
 		font-size: 16px;
 		/* margin-right: 100px; */
 		/* width: 100px; */
-		padding: 0.5em;
+		padding: 1em;
 		text-align: left;
 	}
 	#other-tzs a {
@@ -41,7 +53,7 @@
 	}
 
 	h2 {
-		color: #ddd;
+		color: #666;
 		font-size: 18px;
 	}
 	b {
@@ -57,14 +69,6 @@
 
 <body style="">
 
-<div id="preview">
-	<a href="gmt1/sturob-worldcup18-A4.pdf">
-		<img width="500" src="sturob-worldcup18-A4-BST@2x.png">
-	</a>
-</div>
-
-
-
 <div id="other-tzs">
 	<h2>Download for your timezone</h2>
 	<div id="links">
@@ -79,8 +83,8 @@
 		<a  href="gmt-4/sturob-worldcup18-A4.pdf">GMT -4</a>
 		<a  href="gmt-3/sturob-worldcup18-A4.pdf">GMT -3</a>
 		<a  href="gmt-2/sturob-worldcup18-A4.pdf">GMT -2</a>
-		<a  href="gmt-1/sturob-worldcup18-A4.pdf">GMT -1</a>
-		<a href="gmt0/sturob-worldcup18-A4.pdf">GMT</a>
+		<a  href="gmt-1/sturob-worldcup18-A4.pdf">GMT -1</a><br>
+		<a href="gmt0/sturob-worldcup18-A4.pdf">GMT</a><br>
 		<a   href="gmt1/sturob-worldcup18-A4.pdf">GMT +1</a>
 		<a   href="gmt2/sturob-worldcup18-A4.pdf">GMT +2</a>
 		<a   href="gmt3/sturob-worldcup18-A4.pdf">GMT +3</a>
@@ -97,6 +101,19 @@
 		<a  href="gmt10/sturob-worldcup18-A4.pdf">GMT +10</a>
 		<a  href="gmt11/sturob-worldcup18-A4.pdf">GMT +11</a>
 	</div>
+</div>
+
+<div id="preview">
+	<a href="gmt1/sturob-worldcup18-A4.pdf">
+		<div id="raw">
+			<img width="425" src="sturob-worldcup18-A4.jpg">
+		</div>
+	</a>
+	<a href="wc2018.jpg">
+		<div>
+			<img width="520" src="wc2018-s.jpg">
+		</div>
+	</a>
 </div>
 
 
