@@ -1,9 +1,9 @@
 /* Css Reset by Eric Meyer */
-/* 
+/*
 html5doctor.com Reset Stylesheet
 v1.6.1
 Last Updated: 2010-09-17
-Author: Richard Clark - http://richclarkdesign.com 
+Author: Richard Clark - http://richclarkdesign.com
 Twitter: @rich_clark
 */
 html,
@@ -198,7 +198,7 @@ body * {
   font-family: Prociono;
   src: url('../fonts/Prociono-Regular.eot');
   src: url('../fonts/Prociono-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/Prociono-Regular.woff') format('woff'), /* Modern Browsers */ url('../fonts/Prociono-Regular.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/Prociono-Regular.svg#svgFontName') format('svg');
-  
+
   /* IE9 Compat Modes */
   /* Legacy iOS */
 }
@@ -214,8 +214,8 @@ body {
   position: relative;
 }
 section {
-  max-width: 480px;
-  padding: 1em;
+  max-width: 550px;
+  padding: 16px;
 }
 p {
   line-height: 1.44em;
@@ -224,8 +224,16 @@ p {
 p:last-child {
   margin-bottom: 0;
 }
+h1 {
+  margin: 0 0 16px;
+  font-size: 1.333em;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
 h2 {
+  font-weight: 300;
   margin-bottom: 2px;
+  letter-spacing: 0.5px;
 }
 b {
   font-weight: normal;
