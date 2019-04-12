@@ -202,11 +202,15 @@ canvas {
 /* ---- ---- ---*/
 
 #blog-links {
-
+  list-style: none;
 }
 
 .blog-post-link {
   margin: 0 0 8px;
+}
+
+.blog-post-link small {
+  opacity: 0;
 }
 
 #blog-post {
