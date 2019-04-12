@@ -6,7 +6,7 @@
 
   <!-- <link id="main_styles" rel="stylesheet" href="less/main.css" type="text/css"> -->
 
-  <link id="styles" rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/main.css" type="text/css">
 
   <link rel="icon" href="/favicon.ico" type="image/ico">
 
@@ -17,30 +17,26 @@
   <link rel="" href="">
  -->
 
-  <script src="/base/js/dev.js"></script>
-  <script src="/base/js/lib/underscore.js"></script>
+  <!-- <script src="/base/js/dev.js"></script> -->
+  <!-- <script src="/base/js/lib/underscore.js"></script> -->
   <!-- // <script src="/base/js/lib/jquery.js"></script> -->
 
   <script type="text/javascript">
-    setTimeout(function() {
-      setInterval(less.refresh, 999)
-    }, 5000)
-
+    // setTimeout(function() {
+    //   setInterval(less.refresh, 999)
+    // }, 5000)
   </script>
 
 </head>
 
-<body>
-  <div id="wrap"><!-- footer sticker -->
+<body id="body">
+  <section id="main">
+    {{ content }}
+  </section>
 
-    <div id="main">
-      {{ content }}
-    </div>
+  <div id="push"></div>
 
-    <div id="push"></div>
-  </div><!-- end #wrap -->
-
-  <div id="footer" style="clear: both">
+  <section id="footer" style="clear: both">
     <div id="header">
       <a href="/">home</a>
       <a href="/posts">posts</a>
@@ -48,9 +44,9 @@
       <a href="/experiments/">experiments</a>
       <a href="/elsewhere/">elsewhere</a>
     </div>
-    &copy; 2013 Stuart Robinson
+    &copy; 2018 Stuart Robinson
 
-  </div>
+  </section>
 </body>
 
 <!-- Google Tag Manager -->
