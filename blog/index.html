@@ -5,9 +5,9 @@ title: blog posts
 
 <h1>{{ page.title }}</h1>
 
-<ul>
+<ul id="blog-links">
 {% for post in site.posts %}
-  <li>
+  <li class="blog-post-link">
     <a href="{{ post.url }}">{{ post.title }}</a>
      <small>{{ post.date }}</small>
   </li>

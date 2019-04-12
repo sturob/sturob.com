@@ -198,3 +198,17 @@ canvas {
 #projects a {
   margin-right: 4px;
 }
+
+/* ---- ---- ---*/
+
+#blog-links {
+
+}
+
+.blog-post-link {
+  margin: 0 0 8px;
+}
+
+#blog-post {
+  margin: 2em;
+}
