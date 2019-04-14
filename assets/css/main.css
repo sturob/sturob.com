@@ -127,7 +127,8 @@ html.fonts-loaded body {
   font-family: Prociono, serif;
 }
 body {
-  background: #fff;
+  background: #fdfdfd;
+  color: #070707;
   font-size: 16px;
   position: relative;
 }
@@ -138,7 +139,7 @@ section {
 p {
   line-height: 1.5em;
   margin: 0 0 1em 0;
-  letter-spacing: 0.1px;
+  letter-spacing: 0.2px;
 }
 p:last-child {
   margin-bottom: 0;
@@ -167,6 +168,9 @@ a {
 }
 a:hover {
   text-decoration: underline;
+}
+a.plain:hover {
+  text-decoration: none;
 }
 #stu {
   display: block;
@@ -197,6 +201,13 @@ canvas {
 }
 #projects a {
   margin-right: 4px;
+}
+#projects div {
+  color: #202020;
+  margin-bottom: 12px;
+}
+#projects div p {
+  margin-top: 0;
 }
 
 /* ---- ---- ---*/
