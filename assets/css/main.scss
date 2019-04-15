@@ -1,3 +1,6 @@
+---
+---
+
 /* Css Reset by Eric Meyer */
 /*
 html5doctor.com Reset Stylesheet
@@ -103,7 +106,7 @@ html {
 *:after {
   box-sizing: inherit;
 }
-* {
+body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -115,9 +118,6 @@ body * {
   font-family: Prociono;
   src: url('../fonts/Prociono-Regular.eot');
   src: url('../fonts/Prociono-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../fonts/Prociono-Regular.woff') format('woff'), /* Modern Browsers */ url('../fonts/Prociono-Regular.ttf') format('truetype'), /* Safari, Android, iOS */ url('../fonts/Prociono-Regular.svg#svgFontName') format('svg');
-
-  /* IE9 Compat Modes */
-  /* Legacy iOS */
 }
 
 body {
@@ -125,10 +125,13 @@ body {
 }
 html.fonts-loaded body {
   font-family: Prociono, serif;
+  // letter-spacing: 0.2px;
+  letter-spacing: 0.04em;
+  word-spacing: -0.05em;
 }
 body {
   background: #fdfdfd;
-  color: #070707;
+  color: #090909;
   font-size: 16px;
   position: relative;
 }
@@ -139,7 +142,6 @@ section {
 p {
   line-height: 1.5em;
   margin: 0 0 1em 0;
-  letter-spacing: 0.2px;
 }
 p:last-child {
   margin-bottom: 0;
@@ -148,12 +150,12 @@ h1 {
   margin: 0 0 16px;
   font-size: 1.333em;
   font-weight: 300;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.02em;
 }
 h2 {
   font-weight: 300;
   margin-bottom: 2px;
-  letter-spacing: 0.5px;
+  // letter-spacing: 0.5px;
 }
 b {
   font-weight: normal;
@@ -172,15 +174,16 @@ a:hover {
 a.plain:hover {
   text-decoration: none;
 }
-#stu {
-  display: block;
-  position: fixed;
-  width: 100px;
-  height: 100px;
-  z-index: 2;
-  right: 0;
-  bottom: 0;
-}
+// #stu {
+//   display: block;
+//   position: fixed;
+//   width: 100px;
+//   height: 100px;
+//   z-index: 2;
+//   right: 0;
+//   bottom: 0;
+// }
+
 canvas {
   position: fixed;
   top: 0;
@@ -196,18 +199,24 @@ canvas {
   position: absolute;
   background-blend-mode: lighten;
 }
+
+/* ---- ---- ---*/
+
 #projects {
   line-height: 1.8em;
 }
 #projects a {
-  margin-right: 4px;
+  margin-right: 8px;
 }
 #projects div {
-  color: #202020;
+  color: #a0a0a0;
   margin-bottom: 12px;
 }
 #projects div p {
   margin-top: 0;
+  font-size: 14px;
+  color: black;
+  // font-weight: 100;
 }
 
 /* ---- ---- ---*/
