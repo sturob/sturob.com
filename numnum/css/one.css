@@ -175,6 +175,7 @@ body {
     #notations li b {
       display: block;
       /*width: 220px;*/
+      letter-spacing: 0.2em;
       padding-right: 150px;
       font-weight: 300;
       overflow-wrap: break-word;
@@ -242,11 +243,10 @@ body {
     font-size: 90%;
     line-height: 0px; }
   #notations li#roman b {
-    line-height: 0;
-    padding-top: 16px;
+    padding-top: 2px;
     font-family: "Times New Roman", Times;
     font-weight: normal;
-    font-size: 80%; }
+    font-size: 90%; }
   #notations li#hebrew b {
     padding-top: 1px;
     font-size: 90%; }
